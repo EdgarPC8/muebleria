@@ -29,6 +29,20 @@ import { seedNotificationProgramsIfEmpty } from "./src/database/seedNotification
 import { seedAppSettingsIfEmpty } from "./src/database/seedAppSettings.js";
 import { startNotificationScheduler } from "./src/jobs/notificationScheduler.js";
 
+import os from "os";
+
+function getLocalIP() {
+  const nets = os.networkInterfaces();
+
+  for (const name of Object.keys(nets)) {
+    for (const net of nets[name]) {
+      if (net.family === "IPv4" && !net.internal) {
+        return net.address;
+      }
+    }
+  }
+}
+
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -81,7 +95,9 @@ app.use(`/${api}/notifications`, NotificationsRoutes);
 app.use(`/${api}/notification-programs`, NotificationProgramRoutes);
 app.use(`/${api}/comands`, ComandsRoutes);
 app.use(`/${api}/muebleria`, MuebleriaRoutes);
-app.get(`/${api}/health`, (_, res) => res.json({ ok: true, service: "muebleria" }));
+app.get(`/${api}/health`, (_, res) =>
+  res.json({ ok: true, service: "muebleria" }),
+);
 
 initNotificationSocket(io);
 
@@ -101,8 +117,11 @@ async function main() {
     startNotificationScheduler();
 
     httpServer.listen(PORT, () => {
-      console.log(`🟢 muebleria backend + Socket.IO en http://localhost:${PORT} (prefijo /${api})`);
+      console.log(
+        `🟢 muebleria backend + Socket.IO en http://localhost:${PORT} (prefijo /${api})`,
+      );
     });
+    console.log("ip local maquina", getLocalIP());
   } catch (error) {
     console.error("❌ Error de base de datos:", error.message);
   }

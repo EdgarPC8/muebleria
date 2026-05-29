@@ -7,10 +7,10 @@ import { BrowserRouter } from "react-router-dom";
 import { SnackbarProvider } from "notistack";
 import { ThemeModeProvider } from "./theme/ThemeModeProvider.jsx";
 import App from "./App.jsx";
-import "@fontsource/nunito-sans/400.css";
-import "@fontsource/nunito-sans/500.css";
-import "@fontsource/nunito-sans/600.css";
-import "@fontsource/nunito-sans/700.css";
+// import "@fontsource/nunito-sans/400.css";
+//import "@fontsource/nunito-sans/500.css";
+//import "@fontsource/nunito-sans/600.css";
+//import "@fontsource/nunito-sans/700.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
@@ -21,5 +21,5 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         </BrowserRouter>
       </SnackbarProvider>
     </ThemeModeProvider>
-  </React.StrictMode>
+  </React.StrictMode>,
 );

@@ -20,7 +20,7 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import mermaid from "mermaid";
+//import mermaid from "mermaid";
 import { getDatabaseSchema } from "../api/muebleriaRequest.js";
 
 function TableCard({ table }) {
@@ -36,8 +36,20 @@ function TableCard({ table }) {
         borderWidth: 2,
       }}
     >
-      <Box sx={{ bgcolor: "primary.main", color: "primary.contrastText", px: 1.5, py: 0.75 }}>
-        <Typography variant="subtitle2" fontWeight={700} noWrap title={table.name}>
+      <Box
+        sx={{
+          bgcolor: "primary.main",
+          color: "primary.contrastText",
+          px: 1.5,
+          py: 0.75,
+        }}
+      >
+        <Typography
+          variant="subtitle2"
+          fontWeight={700}
+          noWrap
+          title={table.name}
+        >
           {table.name}
         </Typography>
         <Typography variant="caption" sx={{ opacity: 0.9 }}>
@@ -56,12 +68,29 @@ function TableCard({ table }) {
             >
               <TableCell sx={{ py: 0.4, pl: 1, width: 52, border: 0 }}>
                 {col.primaryKey ? (
-                  <Chip label="PK" size="small" color="warning" sx={{ height: 18, fontSize: "0.65rem" }} />
+                  <Chip
+                    label="PK"
+                    size="small"
+                    color="warning"
+                    sx={{ height: 18, fontSize: "0.65rem" }}
+                  />
                 ) : col.foreignKey ? (
-                  <Chip label="FK" size="small" color="info" sx={{ height: 18, fontSize: "0.65rem" }} />
+                  <Chip
+                    label="FK"
+                    size="small"
+                    color="info"
+                    sx={{ height: 18, fontSize: "0.65rem" }}
+                  />
                 ) : null}
               </TableCell>
-              <TableCell sx={{ py: 0.4, border: 0, fontFamily: "ui-monospace, monospace", fontSize: "0.72rem" }}>
+              <TableCell
+                sx={{
+                  py: 0.4,
+                  border: 0,
+                  fontFamily: "ui-monospace, monospace",
+                  fontSize: "0.72rem",
+                }}
+              >
                 {col.name}
               </TableCell>
               <TableCell
@@ -82,11 +111,24 @@ function TableCard({ table }) {
         </TableBody>
       </Table>
       {table.columns.some((c) => c.foreignKey) ? (
-        <Box sx={{ px: 1, py: 0.75, bgcolor: "action.selected", borderTop: 1, borderColor: "divider" }}>
+        <Box
+          sx={{
+            px: 1,
+            py: 0.75,
+            bgcolor: "action.selected",
+            borderTop: 1,
+            borderColor: "divider",
+          }}
+        >
           {table.columns
             .filter((c) => c.foreignKey)
             .map((c) => (
-              <Typography key={c.name} variant="caption" display="block" color="info.main">
+              <Typography
+                key={c.name}
+                variant="caption"
+                display="block"
+                color="info.main"
+              >
                 {c.name} → {c.foreignKey}
               </Typography>
             ))}
@@ -97,12 +139,19 @@ function TableCard({ table }) {
 }
 
 function GroupSection({ group, tablesByName }) {
-  const groupTables = group.tables.map((name) => tablesByName[name]).filter(Boolean);
+  const groupTables = group.tables
+    .map((name) => tablesByName[name])
+    .filter(Boolean);
   if (groupTables.length === 0) return null;
 
   return (
     <Box sx={{ mb: 4 }}>
-      <Typography variant="h6" fontWeight={700} color="primary.main" gutterBottom>
+      <Typography
+        variant="h6"
+        fontWeight={700}
+        color="primary.main"
+        gutterBottom
+      >
         {group.label}
       </Typography>
       <Box
@@ -156,8 +205,14 @@ function MermaidDiagram({ code }) {
   }, [code, renderId]);
 
   return (
-    <Paper variant="outlined" sx={{ p: 2, overflow: "auto", bgcolor: "background.paper" }}>
-      <Box ref={containerRef} sx={{ minHeight: 320, "& svg": { maxWidth: "100%", height: "auto" } }} />
+    <Paper
+      variant="outlined"
+      sx={{ p: 2, overflow: "auto", bgcolor: "background.paper" }}
+    >
+      <Box
+        ref={containerRef}
+        sx={{ minHeight: 320, "& svg": { maxWidth: "100%", height: "auto" } }}
+      />
     </Paper>
   );
 }
@@ -178,7 +233,10 @@ export default function DatabaseSchemaDiagram() {
         if (!cancelled) setSchema(res.data);
       } catch (e) {
         if (!cancelled) {
-          setError(e?.response?.data?.message || "No se pudo cargar el esquema de la base de datos.");
+          setError(
+            e?.response?.data?.message ||
+              "No se pudo cargar el esquema de la base de datos.",
+          );
           setSchema(null);
         }
       } finally {
@@ -198,7 +256,8 @@ export default function DatabaseSchemaDiagram() {
   return (
     <Box sx={{ pt: 2 }}>
       <Alert severity="success" sx={{ mb: 2 }}>
-        Esquema leído desde los <strong>modelos del backend</strong> (MySQL <strong>muebleria</strong>).
+        Esquema leído desde los <strong>modelos del backend</strong> (MySQL{" "}
+        <strong>muebleria</strong>).
         {schema ? (
           <>
             {" "}
@@ -232,7 +291,9 @@ export default function DatabaseSchemaDiagram() {
               <GroupSection key={g.id} group={g} tablesByName={tablesByName} />
             ))}
 
-          {view === "diagrama" ? <MermaidDiagram code={schema.mermaidEr} /> : null}
+          {view === "diagrama" ? (
+            <MermaidDiagram code={schema.mermaidEr} />
+          ) : null}
 
           {view === "relaciones" ? (
             <TableContainer component={Paper} variant="outlined">
@@ -247,13 +308,20 @@ export default function DatabaseSchemaDiagram() {
                 <TableBody>
                   {schema.relations.map((r, i) => (
                     <TableRow key={i} hover>
-                      <TableCell sx={{ fontFamily: "monospace", fontSize: "0.8rem" }}>
+                      <TableCell
+                        sx={{ fontFamily: "monospace", fontSize: "0.8rem" }}
+                      >
                         {r.fromTable}.{r.fromColumn}
                       </TableCell>
-                      <TableCell align="center" sx={{ color: "primary.main", fontWeight: 700 }}>
+                      <TableCell
+                        align="center"
+                        sx={{ color: "primary.main", fontWeight: 700 }}
+                      >
                         →
                       </TableCell>
-                      <TableCell sx={{ fontFamily: "monospace", fontSize: "0.8rem" }}>
+                      <TableCell
+                        sx={{ fontFamily: "monospace", fontSize: "0.8rem" }}
+                      >
                         {r.toTable}.{r.toColumn}
                       </TableCell>
                     </TableRow>

@@ -9,7 +9,8 @@ export const getSessionRequest = () => axios.get("/getSession", authHeaders());
 export const getUsersRequest = () => axios.get("/users", auth());
 export const getOneUserRequest = (id) => axios.get(`/users/${id}`, auth());
 export const addUserRequest = (data) => axios.post("/users", data, auth());
-export const updateUserRequest = (id, data) => axios.put(`/users/${id}`, data, auth());
+export const updateUserRequest = (id, data) =>
+  axios.put(`/users/${id}`, data, auth());
 export const deleteUserRequest = (id) => axios.delete(`/users/${id}`, auth());
 
 export const updateUserPhotoRequest = (userId, formData) =>

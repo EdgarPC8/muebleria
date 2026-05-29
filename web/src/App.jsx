@@ -52,8 +52,14 @@ export default function App() {
             <Route path="/clientes" element={<ClientesPage />} />
             <Route path="/pedidos" element={<PedidosPage />} />
             <Route path="/caja" element={<CajaPage />} />
-            <Route path="/pedidos-clientes" element={<Navigate to="/pedidos" replace />} />
-            <Route path="/pedidos-proveedores" element={<Navigate to="/pedidos" replace />} />
+            <Route
+              path="/pedidos-clientes"
+              element={<Navigate to="/pedidos" replace />}
+            />
+            <Route
+              path="/pedidos-proveedores"
+              element={<Navigate to="/pedidos" replace />}
+            />
             <Route path="/proveedores" element={<ProveedoresPage />} />
             <Route path="/unidades" element={<UnidadesPage />} />
             <Route path="/movimientos" element={<MovimientosPage />} />
@@ -61,7 +67,10 @@ export default function App() {
             <Route path="/notifications" element={<NotificationsPage />} />
             <Route path="/comandos" element={<ComandosPage />} />
             <Route path="/documentacion" element={<DocumentacionPage />} />
-            <Route path="/comandos/prueba" element={<Navigate to="/documentacion" replace />} />
+            <Route
+              path="/comandos/prueba"
+              element={<Navigate to="/documentacion" replace />}
+            />
             <Route path="/panel_control" element={<PanelControlPage />} />
             <Route path="/logs" element={<LogsPage />} />
             <Route path="/usuarios" element={<UsuariosPage />} />

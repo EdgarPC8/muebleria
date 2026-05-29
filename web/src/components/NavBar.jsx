@@ -58,6 +58,7 @@ import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
 import SwapVertIcon from "@mui/icons-material/SwapVert";
+
 import { useAuth } from "../context/AuthContext.jsx";
 import ThemeSwitcher from "./ThemeSwitcher.jsx";
 import NotificationList from "./NotificationList.jsx";
@@ -69,66 +70,34 @@ import { LOGO_PATH } from "../config.js";
 
 const DRAWER_W = 260;
 
-const menuItem = (name, link, icon, roles) => ({ name, link, icon, roles });
-
 const MENU_GROUPS = [
   {
     id: "general",
     label: "General",
-    items: [menuItem("Panel", "/", <DashboardIcon />, ["Programador", "Administrador", "Empleado"])],
-  },
-  {
-    id: "inventario",
-    label: "Inventario",
     items: [
-      menuItem("Productos", "/productos", <InventoryIcon />, ["Programador", "Administrador", "Empleado"]),
-      menuItem("Categorías", "/categorias", <CategoryIcon />, ["Programador", "Administrador"]),
-      menuItem("Unidades", "/unidades", <StraightenIcon />, ["Programador", "Administrador"]),
-      menuItem("Movimientos", "/movimientos", <SwapVertIcon />, ["Programador", "Administrador", "Empleado"]),
+      { name: "Panel", link: "/", icon: <DashboardIcon />, roles: ["Programador", "Administrador", "Empleado"] },
+      { name: "Notificaciones", link: "/notifications", icon: <NotificationsIcon />, roles: ["Programador", "Administrador", "Empleado"] },
     ],
   },
   {
-    id: "ventas",
-    label: "Ventas",
+    id: "catalog",
+    label: "Catálogo",
     items: [
-      menuItem("Clientes", "/clientes", <PeopleIcon />, ["Programador", "Administrador", "Empleado"]),
-      menuItem("Pedidos", "/pedidos", <ShoppingCartIcon />, ["Programador", "Administrador", "Empleado"]),
-      menuItem("Caja", "/caja", <PointOfSaleIcon />, ["Programador", "Administrador", "Empleado"]),
+      { name: "Productos", link: "/productos", icon: <InventoryIcon />, roles: ["Programador", "Administrador", "Empleado"] },
+      { name: "Categorías", link: "/categorias", icon: <CategoryIcon />, roles: ["Programador", "Administrador"] },
+      { name: "Clientes", link: "/clientes", icon: <PeopleIcon />, roles: ["Programador", "Administrador", "Empleado"] },
+      { name: "Proveedores", link: "/proveedores", icon: <LocalShippingIcon />, roles: ["Programador", "Administrador"] },
+      { name: "Unidades", link: "/unidades", icon: <StraightenIcon />, roles: ["Programador", "Administrador"] },
     ],
-  },
-  {
-    id: "compras",
-    label: "Compras",
-    items: [menuItem("Proveedores", "/proveedores", <LocalShippingIcon />, ["Programador", "Administrador"])],
   },
   {
     id: "admin",
     label: "Administración",
     items: [
-      menuItem("Usuarios", "/usuarios", <GroupIcon />, ["Programador", "Administrador"]),
-      menuItem("Cuentas", "/cuentas", <ManageAccountsIcon />, ["Programador", "Administrador"]),
-      menuItem("Notificaciones", "/notifications", <NotificationsIcon />, ["Programador", "Administrador", "Empleado"]),
-      menuItem("Panel de control", "/panel_control", <DnsIcon />, ["Programador", "Administrador"]),
-      menuItem("Logs", "/logs", <HistoryIcon />, ["Programador", "Administrador"]),
-    ],
-  },
-  {
-    id: "info",
-    label: "Información",
-    items: [
-      menuItem("Info", "/info", <InfoOutlinedIcon />, ["Programador", "Administrador", "Empleado"]),
-      menuItem("Donaciones", "/donaciones", <CardGiftcardIcon />, ["Programador", "Administrador", "Empleado"]),
-      menuItem("Documentación", "/documentacion", <MenuBookIcon />, ["Programador", "Administrador"]),
-    ],
-  },
-  {
-    id: "programador",
-    label: "Programador",
-    items: [
-      menuItem("Comandos", "/comandos", <TerminalIcon />, ["Programador"]),
-      menuItem("Config. sistema", "/config-app", <SettingsApplicationsIcon />, ["Programador"]),
-      menuItem("Imágenes", "/img-manager", <ImageIcon />, ["Programador"]),
-      menuItem("Archivos", "/archivos", <InsertDriveFileIcon />, ["Programador"]),
+      { name: "Usuarios", link: "/usuarios", icon: <GroupIcon />, roles: ["Administrador"] },
+      { name: "Panel de control", link: "/panel_control", icon: <DnsIcon />, roles: ["Programador", "Administrador"] },
+      { name: "Logs", link: "/logs", icon: <HistoryIcon />, roles: ["Programador", "Administrador"] },
+      { name: "Comandos", link: "/comandos", icon: <TerminalIcon />, roles: ["Programador"] },
     ],
   },
 ];
@@ -170,7 +139,9 @@ export default function NavBar() {
   const profileLoading = isAuthenticated && !profileReady;
 
   const displayName =
-    [user?.firstName, user?.firstLastName].filter(Boolean).join(" ") || user?.username || "";
+    [user?.firstName, user?.firstLastName].filter(Boolean).join(" ") ||
+    user?.username ||
+    "";
 
   const menuGroups = useMemo(() => menuGroupsForRole(user?.loginRol), [user?.loginRol]);
 
@@ -230,12 +201,20 @@ export default function NavBar() {
   const drawerContent = (
     <>
       <DrawerHeader>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1, flex: 1, px: 1 }}>
+        <Box
+          sx={{ display: "flex", alignItems: "center", gap: 1, flex: 1, px: 1 }}
+        >
           <Box
             component="img"
             src={LOGO_PATH}
             alt="Calva Cueva"
-            sx={{ width: 44, height: 44, borderRadius: "50%", objectFit: "cover", bgcolor: "primary.main" }}
+            sx={{
+              width: 44,
+              height: 44,
+              borderRadius: "50%",
+              objectFit: "cover",
+              bgcolor: "primary.main",
+            }}
           />
           {drawerOpen && (
             <Typography variant="subtitle2" fontWeight={700} noWrap>
@@ -321,7 +300,12 @@ export default function NavBar() {
       >
         <Toolbar>
           {showDrawer && !drawerOpen && (
-            <IconButton color="inherit" edge="start" onClick={() => setDrawerOpen(true)} sx={{ mr: 1 }}>
+            <IconButton
+              color="inherit"
+              edge="start"
+              onClick={() => setDrawerOpen(true)}
+              sx={{ mr: 1 }}
+            >
               <MenuIcon />
             </IconButton>
           )}
@@ -373,18 +357,28 @@ export default function NavBar() {
 
           <ThemeSwitcher />
 
-          {profileLoading && <CircularProgress size={22} color="inherit" sx={{ ml: 2 }} />}
-
-          {!showUserActions && !profileLoading && !isAuthenticated && !isLoading && (
-            <Button
-              variant="outlined"
-              color="inherit"
-              sx={{ ml: 2, textTransform: "none", fontWeight: 700, borderColor: "rgba(255,255,255,0.5)" }}
-              onClick={() => navigate("/login")}
-            >
-              Iniciar sesión
-            </Button>
+          {profileLoading && (
+            <CircularProgress size={22} color="inherit" sx={{ ml: 2 }} />
           )}
+
+          {!showUserActions &&
+            !profileLoading &&
+            !isAuthenticated &&
+            !isLoading && (
+              <Button
+                variant="outlined"
+                color="inherit"
+                sx={{
+                  ml: 2,
+                  textTransform: "none",
+                  fontWeight: 700,
+                  borderColor: "rgba(255,255,255,0.5)",
+                }}
+                onClick={() => navigate("/login")}
+              >
+                Iniciar sesión
+              </Button>
+            )}
 
           {showUserActions && (
             <>
@@ -421,7 +415,10 @@ export default function NavBar() {
                 </Box>
               </Popover>
 
-              <Typography variant="body2" sx={{ mx: 1.5, display: { xs: "none", sm: "block" } }}>
+              <Typography
+                variant="body2"
+                sx={{ mx: 1.5, display: { xs: "none", sm: "block" } }}
+              >
                 {displayName}
               </Typography>
               <IconButton color="inherit" onClick={(e) => setUserAnchor(e.currentTarget)}>
@@ -432,7 +429,11 @@ export default function NavBar() {
                   {(displayName[0] || "U").toUpperCase()}
                 </Avatar>
               </IconButton>
-              <Menu anchorEl={userAnchor} open={Boolean(userAnchor)} onClose={() => setUserAnchor(null)}>
+              <Menu
+                anchorEl={userAnchor}
+                open={Boolean(userAnchor)}
+                onClose={() => setUserAnchor(null)}
+              >
                 <MenuItem
                   onClick={() => {
                     setUserAnchor(null);
@@ -503,7 +504,10 @@ export default function NavBar() {
         </Drawer>
       )}
 
-      <Box component="main" sx={{ flexGrow: 1, pt: 10, px: { xs: 2, md: 3 }, pb: 3, width: "100%" }}>
+      <Box
+        component="main"
+        sx={{ flexGrow: 1, pt: 10, px: { xs: 2, md: 3 }, pb: 3, width: "100%" }}
+      >
         <Outlet />
       </Box>
     </Box>

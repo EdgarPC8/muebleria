@@ -26,7 +26,7 @@ export const Account = sequelize.define(
   },
   {
     timestamps: false,
-  }
+  },
 );
 
 export const AccountRoles = sequelize.define(
@@ -43,7 +43,7 @@ export const AccountRoles = sequelize.define(
   },
   {
     timestamps: false,
-  }
+  },
 );
 
 Account.belongsToMany(Roles, {

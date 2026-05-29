@@ -1,22 +1,38 @@
 /**
  * CRUD de usuarios del sistema (tabla users).
  */
-import { Users } from "../models/Users.js";
 import { Account } from "../models/Account.js";
+import { Users } from "../models/Users.js";
 import { UniqueConstraintError } from "sequelize";
+import bcrypt from "bcrypt";
 
 export const addUser = async (req, res) => {
   try {
     const { photo, ...data } = req.body;
 
-    const newUser = await Users.create(data);
+    const newUser = await Users.create({
+      ci: data.ci,
+      firstName: data.firstName,
+      firstLastName: data.firstLastName,
+    });
+
+    const hashedPassword = await bcrypt.hash(data.password, 10);
+    const newAccount = await Account.create({
+      username: data.username,
+      password: hashedPassword,
+      userId: newUser.id,
+    });
 
     return res.json({
       message: "agregado con éxito",
       user: newUser,
+      success: true,
     });
   } catch (error) {
-    if (error instanceof UniqueConstraintError || error.name === "SequelizeUniqueConstraintError") {
+    if (
+      error instanceof UniqueConstraintError ||
+      error.name === "SequelizeUniqueConstraintError"
+    ) {
       return res.status(400).json({
         message: "Esa cédula ya existe",
       });
@@ -58,7 +74,13 @@ export const getUsers = async (req, res) => {
       ],
     });
 
-    res.json(users || []);
+    const filter = users.filter((u) => u.id !== req.user.userId);
+
+    if (!filter || filter.length === 0) {
+      return res.status(404).json({ message: "No se encontraron usuarios." });
+    }
+
+    res.json(filter);
   } catch (error) {
     console.error("Error al obtener usuarios:", error);
     res.status(500).json({ message: "Error en el servidor." });

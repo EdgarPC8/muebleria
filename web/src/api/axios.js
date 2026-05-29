@@ -10,7 +10,11 @@ const API_ENV = "server";
 const API_PATH = "muebleriaapi";
 const API_PORT = 3007;
 /** Servidor en red (pruebas / despliegue interno) */
-const SERVER_HOST = "192.168.110.199";
+
+const PATO = "192.168.110.161";
+const EDGAR = "192.168.110.199";
+
+const SERVER_HOST = PATO;
 const PRODUCTION_ORIGIN = "https://aplicaciones.marianosamaniego.edu.ec";
 // ─────────────────────────────────────────────────────────────────
 
@@ -105,12 +109,14 @@ instance.interceptors.response.use(
     const msg = String(error?.response?.data?.message || "").toLowerCase();
     if (
       status === 401 &&
-      (msg.includes("jwt") || msg.includes("token") || msg.includes("unauthorized"))
+      (msg.includes("jwt") ||
+        msg.includes("token") ||
+        msg.includes("unauthorized"))
     ) {
       clearToken();
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 if (!getToken() && localStorage.getItem("token")) clearToken();
