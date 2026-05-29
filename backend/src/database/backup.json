@@ -1,0 +1,37 @@
+{
+  "Roles": [
+    { "id": 1, "name": "Programador" },
+    { "id": 2, "name": "Administrador" },
+    { "id": 3, "name": "Empleado" }
+  ],
+  "Users": [
+    {
+      "id": 1,
+      "ci": "0000000001",
+      "documentType": "Cedula",
+      "firstName": "Admin",
+      "secondName": "",
+      "firstLastName": "Muebleria",
+      "secondLastName": "",
+      "birthday": "2000-01-01",
+      "gender": "M",
+      "photo": null
+    }
+  ],
+  "UserData": [],
+  "Account": [
+    {
+      "id": 1,
+      "username": "administrador",
+      "password": "$2b$10$cQWP88LnQCA9M1DBv7msCOrgirHtDfq6Vfabj5LrnMPUy4MylUNzS",
+      "userId": 1
+    }
+  ],
+  "AccountRoles": [
+    { "accountId": 1, "roleId": 1 },
+    { "accountId": 1, "roleId": 2 },
+    { "accountId": 1, "roleId": 3 }
+  ],
+  "Notifications": [],
+  "Logs": []
+}
