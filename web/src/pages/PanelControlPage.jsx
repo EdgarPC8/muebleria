@@ -15,11 +15,8 @@ export default function PanelControlPage() {
     return <Navigate to="/" replace />;
   }
 
-  const handleSave = () =>
-    toast({ promise: saveBackup() });
-
-  const handleDownload = () =>
-    toast({ promise: downloadBackup() });
+  const handleSave = () => toast({ promise: saveBackup() });
+  const handleDownload = () => toast({ promise: downloadBackup() });
 
   return (
     <Box>

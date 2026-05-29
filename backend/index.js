@@ -20,10 +20,13 @@ import NotificationProgramRoutes from "./src/routes/NotificationProgramRoutes.js
 import ComandsRoutes from "./src/routes/ComandsRoutes.js";
 import ImgRoutes from "./src/routes/ImgRoutes.js";
 import MuebleriaRoutes from "./src/routes/MuebleriaRoutes.js";
+import AppSettingsRoutes from "./src/routes/AppSettingsRoutes.js";
+import FilesRoutes from "./src/routes/FilesRoutes.js";
 import { initNotificationSocket } from "./src/sockets/notificationSocket.js";
 import { insertDataIfEmpty } from "./src/database/insertData.js";
-import { seedMuebleriaUnitsIfEmpty } from "./src/database/seedMuebleriaUnits.js";
+import { seedMuebleriaFromBackupIfEmpty } from "./src/database/muebleriaBackup.js";
 import { seedNotificationProgramsIfEmpty } from "./src/database/seedNotificationPrograms.js";
+import { seedAppSettingsIfEmpty } from "./src/database/seedAppSettings.js";
 import { startNotificationScheduler } from "./src/jobs/notificationScheduler.js";
 
 const app = express();
@@ -65,6 +68,9 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(`/${api}/img`, ImgRoutes);
 app.use(`/${api}/img`, express.static(path.join(__dirname, "src", "img")));
+app.use(`/${api}/files`, FilesRoutes);
+app.use(`/${api}/files`, express.static(path.join(__dirname, "src", "files")));
+app.use(`/${api}/app-settings`, AppSettingsRoutes);
 
 app.set("muebleriaApiPrefix", api);
 
@@ -88,8 +94,9 @@ async function main() {
     console.log("✅ Modelos sincronizados.");
 
     await insertDataIfEmpty();
-    await seedMuebleriaUnitsIfEmpty();
+    await seedMuebleriaFromBackupIfEmpty();
     await seedNotificationProgramsIfEmpty();
+    await seedAppSettingsIfEmpty();
 
     startNotificationScheduler();
 

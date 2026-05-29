@@ -23,13 +23,21 @@ import {
     children,
     maxWidth = "sm",   // por defecto "sm"
     fullWidth = false, // por defecto false
+    hideClose = false,
+    disableClose = false,
   }) {
+    const handleClose = (event, reason) => {
+      if (disableClose && (reason === "backdropClick" || reason === "escapeKeyDown")) return;
+      onClose?.(event, reason);
+    };
+
     return (
 <Dialog
   open={open}
-  onClose={onClose}
+  onClose={handleClose}
   maxWidth={maxWidth}
   fullWidth={fullWidth}
+  disableEscapeKeyDown={disableClose}
 >
 
 
@@ -38,6 +46,7 @@ import {
             <DialogTitle id="alert-dialog-title" sx={{ flexGrow: 1 }}>
               {tittle ? tittle : "Titulo"}
             </DialogTitle>
+            {!hideClose && (
             <IconButton
               aria-label="close"
               onClick={onClose}
@@ -47,6 +56,7 @@ import {
             >
               <CloseIcon />
             </IconButton>
+            )}
           </Box>
   
           <DialogContent>

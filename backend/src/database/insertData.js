@@ -16,14 +16,32 @@ import { Notifications } from "../models/Notifications.js";
 import { UserData } from "../models/UserData.js";
 import { Logs } from "../models/Logs.js";
 import { NotificationProgram } from "../models/NotificationProgram.js";
+import { applyMuebleriaBackup, exportMuebleriaBackup } from "./muebleriaBackup.js";
 
-/** JSON principal de respaldo base (users/roles/account/notifications/logs). */
+/** JSON principal de respaldo (auth + catálogo + pedidos de prueba). */
 export const backupFilePath = resolve(__dirname, "backup.json");
 export const backups = resolve(__dirname, "..", "backups");
 
 const BULK_OPT = { returning: false };
 
 const emptyBackup = () => ({
+  _comentarios: {
+    Roles: "Roles del sistema (Programador, Administrador, Empleado).",
+    Users: "Personas vinculadas a cuentas de acceso.",
+    Account: "Credenciales de login (username/password bcrypt).",
+    AccountRoles: "Relación N:M cuenta ↔ rol.",
+    MeasureUnits: "Unidades de medida para productos (und, juego, metro…).",
+    ProductCategories: "Categorías del catálogo (Sala, Comedor, etc.).",
+    Brands: "Marcas comerciales de muebles.",
+    Suppliers: "Proveedores de mercadería.",
+    StoreProducts: "Productos con stock, precio e impuestos.",
+    Customers: "Clientes de la tienda.",
+    SaleOrders: "Pedidos de clientes (cabecera).",
+    SaleOrderItems: "Líneas de pedidos de clientes.",
+    SupplierOrders: "Pedidos a proveedores (cabecera).",
+    SupplierOrderItems: "Líneas de pedidos a proveedor.",
+    StockMovements: "Kardex de inventario: entradas, salidas y ajustes de stock.",
+  },
   Roles: [],
   Users: [],
   UserData: [],
@@ -32,6 +50,17 @@ const emptyBackup = () => ({
   Notifications: [],
   NotificationProgram: [],
   Logs: [],
+  MeasureUnits: [],
+  ProductCategories: [],
+  Brands: [],
+  Suppliers: [],
+  StoreProducts: [],
+  Customers: [],
+  SaleOrders: [],
+  SaleOrderItems: [],
+  SupplierOrders: [],
+  SupplierOrderItems: [],
+  StockMovements: [],
 });
 
 async function applyBackupFromJson(jsonData, opts = {}) {
@@ -136,7 +165,10 @@ export const saveBackup = async () => {
     Logs.findAll({ raw: true }),
   ]);
 
+  const muebleriaData = await exportMuebleriaBackup();
+
   const backupData = {
+    _comentarios: emptyBackup()._comentarios,
     Roles: rolesData,
     Users: usersData,
     UserData: userDataRows,
@@ -145,6 +177,7 @@ export const saveBackup = async () => {
     Notifications: notificationsData,
     NotificationProgram: notificationProgramData,
     Logs: logsData,
+    ...muebleriaData,
   };
 
   await fs.mkdir(backups, { recursive: true });

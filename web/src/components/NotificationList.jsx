@@ -25,15 +25,50 @@ import {
 } from "../api/notificationsRequest.js";
 import { useAuth } from "../context/AuthContext.jsx";
 
+function parseNotificationDate(dateString) {
+  if (!dateString) return null;
+  const direct = new Date(dateString);
+  if (!Number.isNaN(direct.getTime())) return direct;
+  if (typeof dateString === "string" && /^\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}/.test(dateString)) {
+    const normalized = new Date(dateString.trim().replace(" ", "T"));
+    if (!Number.isNaN(normalized.getTime())) return normalized;
+  }
+  return null;
+}
+
+/** Tiempo relativo en español; evita valores negativos por desfase de reloj/UTC. */
 function getRelativeTime(dateString) {
-  const now = new Date();
-  const createdAt = new Date(dateString);
-  const diff = Math.floor((now - createdAt) / 1000 / 60 / 60 / 24);
-  if (diff === 0) return "hoy";
-  if (diff === 1) return "1 d";
-  if (diff < 7) return `${diff} d`;
-  if (diff < 30) return `${Math.floor(diff / 7)} sem`;
-  return `${Math.floor(diff / 30)} mes`;
+  const createdAt = parseNotificationDate(dateString);
+  if (!createdAt) return "";
+
+  let diffSec = Math.floor((Date.now() - createdAt.getTime()) / 1000);
+  if (diffSec < 0) diffSec = 0;
+
+  if (diffSec < 30) return "Ahora mismo";
+  if (diffSec < 60) return "Hace un momento";
+  if (diffSec < 120) return "Hace 1 minuto";
+
+  const diffMin = Math.floor(diffSec / 60);
+  if (diffMin < 60) return `Hace ${diffMin} minutos`;
+
+  const diffHours = Math.floor(diffMin / 60);
+  if (diffHours === 1) return "Hace 1 hora";
+  if (diffHours < 24) return `Hace ${diffHours} horas`;
+
+  const diffDays = Math.floor(diffHours / 24);
+  if (diffDays === 1) return "Hace 1 día";
+  if (diffDays < 7) return `Hace ${diffDays} días`;
+
+  const diffWeeks = Math.floor(diffDays / 7);
+  if (diffWeeks === 1) return "Hace 1 semana";
+  if (diffWeeks < 5) return `Hace ${diffWeeks} semanas`;
+
+  const diffMonths = Math.floor(diffDays / 30);
+  if (diffMonths === 1) return "Hace 1 mes";
+  if (diffMonths < 12) return `Hace ${diffMonths} meses`;
+
+  const diffYears = Math.floor(diffDays / 365);
+  return diffYears === 1 ? "Hace 1 año" : `Hace ${diffYears} años`;
 }
 
 export default function NotificationList({ setCount }) {
@@ -43,6 +78,12 @@ export default function NotificationList({ setCount }) {
   const [menuAllAnchor, setMenuAllAnchor] = useState(null);
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [, setTimeTick] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => setTimeTick((t) => t + 1), 30000);
+    return () => clearInterval(id);
+  }, []);
   const { user, toast } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();

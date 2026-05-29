@@ -148,6 +148,17 @@ export default function HomePublic() {
           ))}
         </Grid>
       </Container>
+
+      <Box sx={{ py: 3, textAlign: "center", borderTop: 1, borderColor: "divider" }}>
+        <Stack direction="row" spacing={2} justifyContent="center" flexWrap="wrap">
+          <Button component={RouterLink} to="/info" size="small" color="inherit">
+            Info del sistema
+          </Button>
+          <Button component={RouterLink} to="/donaciones" size="small" color="inherit">
+            Donaciones
+          </Button>
+        </Stack>
+      </Box>
     </Box>
   );
 }

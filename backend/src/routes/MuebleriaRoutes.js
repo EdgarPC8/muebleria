@@ -24,6 +24,8 @@ import {
   getFinanceEntries,
   createFinanceEntry,
   getFinanceSummary,
+  getDashboardStats,
+  getDatabaseSchema,
   getCustomers,
   createCustomer,
   updateCustomer,
@@ -68,6 +70,8 @@ router.get("/expiry-alerts", isAuthenticated, getExpiryAlerts);
 router.get("/finance/entries", isAuthenticated, getFinanceEntries);
 router.post("/finance/entries", isAuthenticated, createFinanceEntry);
 router.get("/finance/summary", isAuthenticated, getFinanceSummary);
+router.get("/dashboard/stats", isAuthenticated, getDashboardStats);
+router.get("/database/schema", isAuthenticated, getDatabaseSchema);
 router.get("/customers", isAuthenticated, getCustomers);
 router.post("/customers", isAuthenticated, createCustomer);
 router.put("/customers/:id", isAuthenticated, updateCustomer);

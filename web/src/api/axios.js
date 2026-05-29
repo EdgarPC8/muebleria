@@ -52,6 +52,7 @@ const instance = axios.create({
 });
 
 export const pathImg = `${baseURL.replace(/\/$/, "")}/img/`;
+export const pathFiles = `${baseURL.replace(/\/$/, "")}/files/`;
 
 export const buildImageUrl = (imagePath) => {
   if (!imagePath) return null;

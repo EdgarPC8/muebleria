@@ -4,6 +4,25 @@
 import { createTheme, alpha } from "@mui/material/styles";
 
 /** Paleta por modo */
+const FONT_FAMILY = '"Nunito Sans", "Segoe UI", system-ui, sans-serif';
+
+const calvaTypography = {
+  fontFamily: FONT_FAMILY,
+  fontSize: 14,
+  h1: { fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1.2 },
+  h2: { fontWeight: 700, letterSpacing: "-0.025em", lineHeight: 1.25 },
+  h3: { fontWeight: 700, letterSpacing: "-0.02em", lineHeight: 1.3 },
+  h4: { fontWeight: 700, letterSpacing: "-0.02em", lineHeight: 1.35 },
+  h5: { fontWeight: 700, letterSpacing: "-0.015em", lineHeight: 1.4 },
+  h6: { fontWeight: 700, letterSpacing: "-0.01em", lineHeight: 1.45 },
+  subtitle1: { fontWeight: 600, letterSpacing: "-0.01em" },
+  subtitle2: { fontWeight: 600 },
+  body1: { lineHeight: 1.55 },
+  body2: { lineHeight: 1.5 },
+  button: { fontWeight: 600, letterSpacing: "0.01em" },
+  caption: { lineHeight: 1.4 },
+};
+
 const calvaPalette = {
   light: {
     primary: { light: "#42A5F5", main: "#1565C0", dark: "#0D47A1", contrastText: "#fff" },
@@ -84,11 +103,15 @@ export function getThemeMuebleria(mode = "light") {
         divider: alpha(p.primary.main, 0.2),
       },
       shape: { borderRadius: 14 },
-      typography: { fontFamily: `'Inter', system-ui, sans-serif` },
+      typography: calvaTypography,
       components: {
         MuiCssBaseline: {
           styleOverrides: {
+            html: { fontFamily: FONT_FAMILY },
             body: {
+              fontFamily: FONT_FAMILY,
+              WebkitFontSmoothing: "antialiased",
+              MozOsxFontSmoothing: "grayscale",
               background: `radial-gradient(900px 500px at 0% 0%, ${alpha(p.primary.main, 0.15)}, transparent 55%),
                 radial-gradient(700px 400px at 100% 0%, ${alpha(p.secondary.main, 0.08)}, transparent 50%),
                 #0A1628`,
@@ -113,11 +136,15 @@ export function getThemeMuebleria(mode = "light") {
         divider: alpha(p.secondary.main, 0.3),
       },
       shape: { borderRadius: 18 },
-      typography: { fontFamily: `'Inter', system-ui, sans-serif` },
+      typography: calvaTypography,
       components: {
         MuiCssBaseline: {
           styleOverrides: {
+            html: { fontFamily: FONT_FAMILY },
             body: {
+              fontFamily: FONT_FAMILY,
+              WebkitFontSmoothing: "antialiased",
+              MozOsxFontSmoothing: "grayscale",
               background: `radial-gradient(1000px 500px at 15% -5%, ${alpha(p.primary.main, 0.25)}, transparent 55%),
                 radial-gradient(800px 400px at 95% 5%, ${alpha(p.secondary.main, 0.18)}, transparent 50%),
                 #050810`,
@@ -149,11 +176,15 @@ export function getThemeMuebleria(mode = "light") {
       divider: alpha(p.primary.main, 0.15),
     },
     shape: { borderRadius: 12 },
-    typography: { fontFamily: `'Inter', system-ui, sans-serif` },
+    typography: calvaTypography,
     components: {
       MuiCssBaseline: {
         styleOverrides: {
+          html: { fontFamily: FONT_FAMILY },
           body: {
+            fontFamily: FONT_FAMILY,
+            WebkitFontSmoothing: "antialiased",
+            MozOsxFontSmoothing: "grayscale",
             background: `radial-gradient(900px 450px at 10% -5%, ${alpha(p.primary.light, 0.2)}, transparent 55%),
               radial-gradient(700px 350px at 100% 0%, ${alpha(p.secondary.light, 0.35)}, transparent 50%),
               linear-gradient(180deg, #F8FBFF 0%, #E3EEF9 100%)`,

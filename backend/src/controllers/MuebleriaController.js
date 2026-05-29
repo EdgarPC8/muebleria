@@ -28,6 +28,7 @@ import { Notifications } from "../models/Notifications.js";
 import { sendNotificationToUser } from "../sockets/notificationSocket.js";
 import { normalizeCustomerPayload, validateCustomerPayload } from "../utils/customerHelpers.js";
 import { entityWithMessage } from "../utils/jsonResponse.js";
+import { exportDatabaseSchema } from "../utils/databaseSchemaExport.js";
 
 const slugify = (value = "") =>
   value
@@ -376,6 +377,47 @@ export const createFinanceEntry = async (req, res) => {
   res.status(201).json(created);
 };
 
+const saleOrderTotal = (order) =>
+  (order.muebleria_order_items || []).reduce(
+    (acc, item) =>
+      acc +
+      Number(item.lineTotal ?? Number(item.quantity || 0) * Number(item.price || 0)),
+    0
+  );
+
+const supplierOrderTotal = (order) =>
+  (order.muebleria_supplier_order_items || []).reduce(
+    (acc, item) => acc + Number(item.quantity || 0) * Number(item.unitPrice || 0),
+    0
+  );
+
+const buildDailySeries = (entries, dayCount = 14) => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const keys = [];
+  const labels = [];
+  for (let i = dayCount - 1; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(d.getDate() - i);
+    const key = d.toISOString().slice(0, 10);
+    keys.push(key);
+    labels.push(d.toLocaleDateString("es-EC", { weekday: "short", day: "numeric" }));
+  }
+  const incomeMap = new Map(keys.map((k) => [k, 0]));
+  const expenseMap = new Map(keys.map((k) => [k, 0]));
+  for (const row of entries) {
+    const key = String(row.date || "").slice(0, 10);
+    if (!incomeMap.has(key)) continue;
+    if (row.kind === "income") incomeMap.set(key, (incomeMap.get(key) || 0) + Number(row.amount || 0));
+    if (row.kind === "expense") expenseMap.set(key, (expenseMap.get(key) || 0) + Number(row.amount || 0));
+  }
+  return {
+    labels,
+    income: keys.map((k) => Number((incomeMap.get(k) || 0).toFixed(2))),
+    expense: keys.map((k) => Number((expenseMap.get(k) || 0).toFixed(2))),
+  };
+};
+
 export const getFinanceSummary = async (req, res) => {
   const from = req.query.from || null;
   const to = req.query.to || null;
@@ -383,21 +425,37 @@ export const getFinanceSummary = async (req, res) => {
   if (from) dateWhere[Op.gte] = from;
   if (to) dateWhere[Op.lte] = to;
   const hasRange = Object.keys(dateWhere).length > 0;
+  const orderDateWhere = hasRange
+    ? { [Op.gte]: from || "1900-01-01", [Op.lte]: to || "2999-12-31T23:59:59" }
+    : undefined;
 
-  const [manualEntries, purchases, orders] = await Promise.all([
-    FinanceEntry.findAll({
-      where: hasRange ? { date: dateWhere } : undefined,
-      raw: true,
-    }),
-    Purchase.findAll({
-      where: hasRange ? { date: dateWhere } : undefined,
-      raw: true,
-    }),
-    SaleOrder.findAll({
-      where: hasRange ? { date: { [Op.gte]: from || "1900-01-01", [Op.lte]: to || "2999-12-31T23:59:59" } } : undefined,
-      include: [{ model: SaleOrderItem, attributes: ["quantity", "price", "lineTotal"] }],
-    }),
-  ]);
+  const [manualEntries, purchases, orders, supplierOrders, allOrdersPending, allSupplierPending] =
+    await Promise.all([
+      FinanceEntry.findAll({
+        where: hasRange ? { date: dateWhere } : undefined,
+        raw: true,
+      }),
+      Purchase.findAll({
+        where: hasRange ? { date: dateWhere } : undefined,
+        raw: true,
+      }),
+      SaleOrder.findAll({
+        where: orderDateWhere ? { date: orderDateWhere } : undefined,
+        include: [{ model: SaleOrderItem, attributes: ["quantity", "price", "lineTotal"] }],
+      }),
+      SupplierOrder.findAll({
+        where: orderDateWhere ? { date: orderDateWhere } : undefined,
+        include: [{ model: SupplierOrderItem, attributes: ["quantity", "unitPrice"] }],
+      }),
+      SaleOrder.findAll({
+        where: { paidAt: null },
+        include: [{ model: SaleOrderItem, attributes: ["quantity", "price", "lineTotal"] }],
+      }),
+      SupplierOrder.findAll({
+        where: { paidAt: null },
+        include: [{ model: SupplierOrderItem, attributes: ["quantity", "unitPrice"] }],
+      }),
+    ]);
 
   const manualIncome = manualEntries
     .filter((e) => e.type === "income")
@@ -406,32 +464,91 @@ export const getFinanceSummary = async (req, res) => {
     .filter((e) => e.type === "expense")
     .reduce((acc, e) => acc + Number(e.amount || 0), 0);
   const purchasesExpense = purchases.reduce((acc, p) => acc + Number(p.total || 0), 0);
-  const salesIncome = orders.reduce((acc, o) => {
-    const total = (o.muebleria_order_items || []).reduce(
-      (a, item) =>
-        a +
-        Number(
-          item.lineTotal ??
-            Number(item.quantity || 0) * Number(item.price || 0)
-        ),
-      0
-    );
-    return acc + total;
-  }, 0);
+  const salesIncome = orders.reduce((acc, o) => acc + saleOrderTotal(o), 0);
+  const supplierOrdersExpense = supplierOrders.reduce((acc, o) => acc + supplierOrderTotal(o), 0);
 
   const totalIncome = manualIncome + salesIncome;
-  const totalExpense = manualExpense + purchasesExpense;
+  const totalExpense = manualExpense + purchasesExpense + supplierOrdersExpense;
+
+  const expectedCash = allOrdersPending.reduce((acc, o) => acc + saleOrderTotal(o), 0);
+  const debts = allSupplierPending.reduce((acc, o) => acc + supplierOrderTotal(o), 0);
+
+  const dailyRows = [];
+  for (const o of orders) {
+    const key = String(o.date || o.createdAt || "").slice(0, 10);
+    dailyRows.push({ date: key, kind: "income", amount: saleOrderTotal(o) });
+  }
+  for (const e of manualEntries.filter((x) => x.type === "income")) {
+    dailyRows.push({ date: e.date, kind: "income", amount: e.amount });
+  }
+  for (const p of purchases) {
+    dailyRows.push({ date: p.date, kind: "expense", amount: p.total });
+  }
+  for (const o of supplierOrders) {
+    const key = String(o.date || o.createdAt || "").slice(0, 10);
+    dailyRows.push({ date: key, kind: "expense", amount: supplierOrderTotal(o) });
+  }
+  for (const e of manualEntries.filter((x) => x.type === "expense")) {
+    dailyRows.push({ date: e.date, kind: "expense", amount: e.amount });
+  }
 
   res.json({
     totalIncome,
     totalExpense,
     balance: totalIncome - totalExpense,
+    expectedCash,
+    debts,
     breakdown: {
       salesIncome,
       manualIncome,
       purchasesExpense,
       manualExpense,
+      supplierOrdersExpense,
     },
+    dailySeries: buildDailySeries(dailyRows),
+  });
+};
+
+/** Estructura de tablas y relaciones (modelos Sequelize) para diagrama en frontend. */
+export const getDatabaseSchema = async (_req, res) => {
+  try {
+    res.json(exportDatabaseSchema());
+  } catch (error) {
+    res.status(500).json({ message: error.message || "No se pudo exportar el esquema." });
+  }
+};
+
+/** Conteos del negocio para el panel principal (gráfica de panorama). */
+export const getDashboardStats = async (_req, res) => {
+  const [
+    categories,
+    products,
+    customers,
+    suppliers,
+    customerOrders,
+    supplierOrders,
+    brands,
+    movements,
+  ] = await Promise.all([
+    ProductCategory.count(),
+    StoreProduct.count(),
+    Customer.count(),
+    Supplier.count(),
+    SaleOrder.count(),
+    SupplierOrder.count(),
+    Brand.count(),
+    StockMovement.count(),
+  ]);
+
+  res.json({
+    categories,
+    products,
+    customers,
+    suppliers,
+    customerOrders,
+    supplierOrders,
+    brands,
+    movements,
   });
 };
 

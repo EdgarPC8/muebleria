@@ -48,11 +48,7 @@ export const getUsers = async (req, res) => {
   try {
     const users = await Users.findAll();
 
-    if (!users || users.length === 0) {
-      return res.status(404).json({ message: "No se encontraron usuarios." });
-    }
-
-    res.json(users);
+    res.json(users || []);
   } catch (error) {
     console.error("Error al obtener usuarios:", error);
     res.status(500).json({ message: "Error en el servidor." });

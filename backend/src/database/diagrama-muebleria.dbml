@@ -1,0 +1,372 @@
+// ============================================================
+// MUEBLERÍA — Base de datos MySQL "muebleria"
+// Comercial Calva Cueva — Sistema SoftEd
+// Pegar en https://dbdiagram.io  (Import → pegar este archivo)
+// Fuente de verdad: modelos en backend/src/models/
+// Última revisión: 2026-05-29
+// ============================================================
+
+// ---------- SISTEMA BASE (auth, config, notificaciones, logs) ----------
+
+Table users {
+  id int [pk, increment]
+  ci varchar [unique]
+  documentType varchar
+  firstName varchar
+  secondName varchar
+  firstLastName varchar
+  secondLastName varchar
+  birthday date
+  gender varchar
+  photo text
+}
+
+Table user_data {
+  id int [pk, increment]
+  idUser int [unique, not null, ref: > users.id]
+  direction varchar
+  placeResidence varchar
+  phone varchar
+  cellPhone varchar
+  bloodType varchar
+  personalEmail varchar
+  institutionalEmail varchar
+}
+
+Table roles {
+  id int [pk, increment]
+  name varchar [note: 'Programador | Administrador | Empleado']
+}
+
+Table accounts {
+  id int [pk, increment]
+  username varchar
+  password varchar [note: 'bcrypt']
+  userId int [ref: > users.id]
+}
+
+Table accountRoles [note: 'N:M cuenta ↔ roles — PK compuesta'] {
+  accountId int [not null, ref: > accounts.id]
+  roleId int [not null, ref: > roles.id]
+
+  indexes {
+    (accountId, roleId) [pk]
+  }
+}
+
+Table app_settings [note: 'Config pública app — fila única id=1'] {
+  id int [pk, default: 1]
+  appName varchar [not null]
+  version varchar [not null]
+  description text
+  authors varchar
+  logoPath varchar [note: 'ruta bajo /img, ej. branding/logo.png']
+  createdAt datetime
+  updatedAt datetime
+}
+
+Table notifications {
+  id int [pk, increment]
+  userId int [not null, ref: > users.id]
+  type varchar [note: 'info | alert | reminder | message']
+  title varchar
+  message text
+  link varchar
+  deleted boolean [default: false]
+  seen boolean [default: false]
+  createdAt datetime
+}
+
+Table notification_programs {
+  id int [pk, increment]
+  code varchar [not null, note: 'BUENOS_DIAS, BIENVENIDA, etc.']
+  title varchar [not null]
+  message text [not null]
+  link varchar
+  scheduleType varchar [note: 'daily | manual']
+  scheduleTime varchar [note: 'HH:mm si daily']
+  scopeType varchar [note: 'user | account']
+  targetType varchar [note: 'all_users | by_role']
+  targetRoleIds json
+  active boolean [default: true]
+  lastSentAt datetime
+  createdAt datetime
+  updatedAt datetime
+}
+
+Table logs {
+  id int [pk, increment]
+  httpMethod text
+  action text
+  endPoint text
+  description text
+  system text
+  date datetime
+}
+
+// ---------- CATÁLOGO E INVENTARIO ----------
+
+Table muebleria_suppliers {
+  id int [pk, increment]
+  name varchar [unique, not null]
+  document varchar
+  phone varchar
+  address varchar
+  note text
+  isActive boolean [default: true]
+  createdAt datetime
+  updatedAt datetime
+}
+
+Table muebleria_measure_units {
+  id int [pk, increment]
+  name varchar [unique, not null]
+  abbreviation varchar [not null]
+  groupName varchar [not null, default: 'unit', note: 'unit | peso | longitud | area']
+  factorToBase float [not null, default: 1]
+  isBase boolean [default: false]
+}
+
+Table muebleria_product_categories {
+  id int [pk, increment]
+  name varchar [not null]
+  slug varchar [unique, not null]
+  parentId int [ref: > muebleria_product_categories.id, note: 'jerarquía padre/hijo']
+  description text
+  isActive boolean [not null, default: true]
+  sortOrder int [not null, default: 0]
+  createdAt datetime
+  updatedAt datetime
+}
+
+Table muebleria_brands {
+  id int [pk, increment]
+  name varchar [unique, not null]
+  isActive boolean [not null, default: true]
+}
+
+Table muebleria_products {
+  id int [pk, increment]
+  name varchar [not null]
+  sku varchar [unique]
+  barcode varchar [unique]
+  categoryId int [ref: > muebleria_product_categories.id]
+  brandId int [ref: > muebleria_brands.id]
+  baseUnitId int [not null, ref: > muebleria_measure_units.id]
+  sizeLabel varchar
+  stockBase float [not null, default: 0, note: 'stock en unidad base']
+  minStockBase float [not null, default: 0]
+  avgCostBase decimal [not null, default: 0]
+  salePrice decimal [not null, default: 0]
+  taxType varchar [not null, default: 'gravado', note: 'gravado | zero | exento']
+  taxRate decimal [not null, default: 15]
+  primaryImageUrl varchar
+  wholesaleMinQty float [not null, default: 0]
+  wholesalePrice decimal [not null, default: 0]
+  isActive boolean [default: true]
+  createdAt datetime
+  updatedAt datetime
+}
+
+Table muebleria_customers {
+  id int [pk, increment]
+  name varchar [not null]
+  firstName varchar
+  secondName varchar
+  firstLastName varchar
+  secondLastName varchar
+  birthDate date
+  documentType varchar [note: 'cedula | pasaporte | otro']
+  documentNumber varchar
+  ci varchar [unique]
+  nickname varchar
+  email varchar
+  phone varchar
+  secondaryPhone varchar
+  address varchar
+  city varchar
+  reference varchar
+  notes text
+  createdAt datetime
+  updatedAt datetime
+}
+
+// ---------- VENTAS (clientes + caja POS) ----------
+
+Table muebleria_orders {
+  id int [pk, increment]
+  customerId int [not null, ref: > muebleria_customers.id]
+  date datetime [not null]
+  notes text [note: 'puede incluir [CAJA_POS] si viene de punto de venta']
+  receivedAt datetime
+  paidAt datetime
+  paymentMethod varchar [note: 'efectivo | transferencia | tarjeta']
+  status varchar [not null, default: 'pendiente', note: 'pendiente | entregado | pagado']
+  createdAt datetime
+  updatedAt datetime
+}
+
+Table muebleria_order_items {
+  id int [pk, increment]
+  orderId int [not null, ref: > muebleria_orders.id]
+  productId int [not null, ref: > muebleria_products.id]
+  quantity float [not null]
+  price decimal [not null]
+  taxType varchar [not null, default: 'gravado']
+  taxRate decimal [not null, default: 15]
+  taxBase decimal [not null, default: 0]
+  taxAmount decimal [not null, default: 0]
+  lineTotal decimal [not null, default: 0]
+  deliveredAt datetime
+  paidAt datetime
+}
+
+// ---------- COMPRAS A PROVEEDOR ----------
+
+Table muebleria_supplier_orders {
+  id int [pk, increment]
+  supplierId int [not null, ref: > muebleria_suppliers.id]
+  date datetime [not null]
+  notes text
+  receivedAt datetime [note: 'al recibir → ingresa stock']
+  paidAt datetime
+  paymentMethod varchar
+  status varchar [not null, default: 'pendiente', note: 'pendiente | recibido | cancelado']
+  createdAt datetime
+  updatedAt datetime
+}
+
+Table muebleria_supplier_order_items {
+  id int [pk, increment]
+  orderId int [not null, ref: > muebleria_supplier_orders.id]
+  productId int [not null, ref: > muebleria_products.id]
+  quantity float [not null]
+  unitPrice decimal [not null, default: 0]
+}
+
+// ---------- COMPRAS / INGRESO INVENTARIO (factura) ----------
+
+Table muebleria_purchases {
+  id int [pk, increment]
+  supplierId int [not null, ref: > muebleria_suppliers.id]
+  date date [not null]
+  invoiceNumber varchar
+  note text
+  total decimal [not null, default: 0]
+  createdAt datetime
+  updatedAt datetime
+}
+
+Table muebleria_purchase_items {
+  id int [pk, increment]
+  purchaseId int [not null, ref: > muebleria_purchases.id]
+  productId int [not null, ref: > muebleria_products.id]
+  unitId int [not null, ref: > muebleria_measure_units.id]
+  quantity float [not null]
+  quantityBase float [not null, note: 'equivalente en unidad base del producto']
+  expiryDate date
+  unitPrice decimal [not null]
+  lineTotal decimal [not null]
+}
+
+// ---------- KARDEX ----------
+
+Table muebleria_stock_movements {
+  id int [pk, increment]
+  productId int [not null, ref: > muebleria_products.id]
+  type varchar [not null, note: 'entrada_compra | salida_venta | ajuste_entrada | ajuste_salida']
+  quantityBase float [not null]
+  unitCostBase decimal
+  referenceType varchar [note: 'purchase | order | supplier_order | pos_adjustment | open_box']
+  referenceId int
+  note text
+  createdAt datetime
+  updatedAt datetime
+}
+
+// ---------- FINANZAS MANUALES ----------
+
+Table muebleria_finance_entries {
+  id int [pk, increment]
+  type varchar [not null, note: 'income | expense']
+  date date [not null]
+  amount decimal [not null]
+  category varchar
+  description varchar
+  sourceType varchar [not null, default: 'manual']
+  sourceId int
+  createdAt datetime
+  updatedAt datetime
+}
+
+// ---------- TAREAS / PLANES DE TRABAJO ----------
+
+Table muebleria_task_plans {
+  id int [pk, increment]
+  title varchar [not null]
+  description text
+  startDate date [not null]
+  endDate date [not null]
+  status varchar [not null, default: 'draft', note: 'draft | published | closed']
+  createdByUserId int [not null, ref: > users.id]
+  publishedAt datetime
+  createdAt datetime
+  updatedAt datetime
+}
+
+Table muebleria_task_items {
+  id int [pk, increment]
+  planId int [not null, ref: > muebleria_task_plans.id]
+  title varchar [not null]
+  description text
+  assignedUserId int [not null, ref: > users.id]
+  status varchar [not null, default: 'pending', note: 'pending | in_progress | done | blocked']
+  priority int [not null, default: 0]
+  dueDate date
+  actionType varchar [not null, default: 'none', note: 'none | open_box']
+  actionPayload text [note: 'JSON: abrir caja → unidades']
+  checkedAt datetime
+  checkedByUserId int [ref: > users.id]
+  resultNote text
+  createdAt datetime
+  updatedAt datetime
+}
+
+// ---------- AGRUPACIÓN VISUAL (dbdiagram.io) ----------
+
+TableGroup sistema_base {
+  users
+  user_data
+  roles
+  accounts
+  accountRoles
+  app_settings
+  notifications
+  notification_programs
+  logs
+}
+
+TableGroup muebleria_catalogo {
+  muebleria_suppliers
+  muebleria_measure_units
+  muebleria_product_categories
+  muebleria_brands
+  muebleria_products
+  muebleria_customers
+}
+
+TableGroup muebleria_operacion {
+  muebleria_orders
+  muebleria_order_items
+  muebleria_supplier_orders
+  muebleria_supplier_order_items
+  muebleria_purchases
+  muebleria_purchase_items
+  muebleria_stock_movements
+  muebleria_finance_entries
+}
+
+TableGroup muebleria_tareas {
+  muebleria_task_plans
+  muebleria_task_items
+}

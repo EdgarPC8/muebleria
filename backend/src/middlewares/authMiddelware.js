@@ -50,4 +50,11 @@ const isAdmin = async (req, res, next) => {
   }
 };
 
-export { isAuthenticated, isAdmin };
+const isProgramador = async (req, res, next) => {
+  if (String(req.user?.loginRol || "") !== "Programador") {
+    return res.status(403).json({ message: "Solo programador" });
+  }
+  next();
+};
+
+export { isAuthenticated, isAdmin, isProgramador };

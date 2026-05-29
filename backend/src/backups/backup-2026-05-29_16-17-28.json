@@ -1,0 +1,224 @@
+{
+  "Roles": [
+    {
+      "id": 1,
+      "name": "Programador"
+    },
+    {
+      "id": 2,
+      "name": "Administrador"
+    },
+    {
+      "id": 3,
+      "name": "Empleado"
+    }
+  ],
+  "Users": [
+    {
+      "id": 1,
+      "ci": "0000000001",
+      "documentType": "Cedula",
+      "firstName": "Admin",
+      "secondName": "",
+      "firstLastName": "Muebleria",
+      "secondLastName": "",
+      "birthday": "2000-01-01",
+      "gender": "M",
+      "photo": null
+    },
+    {
+      "id": 2,
+      "ci": "1106011420",
+      "documentType": null,
+      "firstName": "Patricio",
+      "secondName": "Alexander",
+      "firstLastName": "Briceño",
+      "secondLastName": "Sarango",
+      "birthday": "2003-05-23",
+      "gender": "M",
+      "photo": null
+    }
+  ],
+  "UserData": [],
+  "Account": [
+    {
+      "id": 1,
+      "username": "administrador",
+      "password": "$2b$10$cQWP88LnQCA9M1DBv7msCOrgirHtDfq6Vfabj5LrnMPUy4MylUNzS",
+      "userId": 1
+    },
+    {
+      "id": 2,
+      "username": "pato",
+      "password": "$2b$10$7P6LHV2YvycpvZ6C2mDYZ.vrR0W5T/rAyjHVqzHRoKuO1B0XtGhsu",
+      "userId": 2
+    }
+  ],
+  "AccountRoles": [
+    {
+      "accountId": 1,
+      "roleId": 1
+    },
+    {
+      "accountId": 2,
+      "roleId": 1
+    },
+    {
+      "accountId": 1,
+      "roleId": 2
+    },
+    {
+      "accountId": 2,
+      "roleId": 2
+    },
+    {
+      "accountId": 1,
+      "roleId": 3
+    },
+    {
+      "accountId": 2,
+      "roleId": 3
+    }
+  ],
+  "Notifications": [],
+  "NotificationProgram": [
+    {
+      "id": 1,
+      "code": "BUENOS_DIAS",
+      "title": "Buenos días",
+      "message": "¡Que tengas un excelente día en Comercial Calva Cueva!",
+      "link": null,
+      "scheduleType": "daily",
+      "scheduleTime": "08:00",
+      "scopeType": "user",
+      "targetType": "all_users",
+      "targetRoleIds": null,
+      "active": 0,
+      "lastSentAt": null,
+      "createdAt": "2026-05-29T20:38:01.000Z",
+      "updatedAt": "2026-05-29T20:38:01.000Z"
+    },
+    {
+      "id": 2,
+      "code": "BUENAS_TARDES",
+      "title": "Buenas tardes",
+      "message": "¡Que tengas una excelente tarde!",
+      "link": null,
+      "scheduleType": "daily",
+      "scheduleTime": "14:00",
+      "scopeType": "user",
+      "targetType": "all_users",
+      "targetRoleIds": null,
+      "active": 0,
+      "lastSentAt": null,
+      "createdAt": "2026-05-29T20:38:01.000Z",
+      "updatedAt": "2026-05-29T20:38:01.000Z"
+    },
+    {
+      "id": 3,
+      "code": "BIENVENIDA",
+      "title": "Bienvenida",
+      "message": "¡Bienvenido al sistema! Esperamos que tengas una excelente experiencia.",
+      "link": null,
+      "scheduleType": "manual",
+      "scheduleTime": null,
+      "scopeType": "user",
+      "targetType": "all_users",
+      "targetRoleIds": null,
+      "active": 1,
+      "lastSentAt": null,
+      "createdAt": "2026-05-29T20:38:01.000Z",
+      "updatedAt": "2026-05-29T20:38:01.000Z"
+    },
+    {
+      "id": 4,
+      "code": "ACTUALIZACION",
+      "title": "Actualización del sistema",
+      "message": "Se realizaron mejoras en el sistema. ¡Explora las nuevas funcionalidades!",
+      "link": null,
+      "scheduleType": "manual",
+      "scheduleTime": null,
+      "scopeType": "user",
+      "targetType": "all_users",
+      "targetRoleIds": null,
+      "active": 1,
+      "lastSentAt": null,
+      "createdAt": "2026-05-29T20:38:01.000Z",
+      "updatedAt": "2026-05-29T20:38:01.000Z"
+    }
+  ],
+  "Logs": [
+    {
+      "id": 1,
+      "httpMethod": "POST",
+      "action": "request",
+      "endPoint": "/muebleriaapi/login",
+      "description": "POST /muebleriaapi/login",
+      "system": "muebleria",
+      "date": "2026-05-29T20:45:17.000Z"
+    },
+    {
+      "id": 2,
+      "httpMethod": "POST",
+      "action": "request",
+      "endPoint": "/muebleriaapi/login",
+      "description": "POST /muebleriaapi/login",
+      "system": "muebleria",
+      "date": "2026-05-29T20:45:18.000Z"
+    },
+    {
+      "id": 3,
+      "httpMethod": "POST",
+      "action": "request",
+      "endPoint": "/muebleriaapi/changeRole",
+      "description": "POST /muebleriaapi/changeRole",
+      "system": "muebleria",
+      "date": "2026-05-29T20:50:37.000Z"
+    },
+    {
+      "id": 4,
+      "httpMethod": "POST",
+      "action": "request",
+      "endPoint": "/muebleriaapi/changeRole",
+      "description": "POST /muebleriaapi/changeRole",
+      "system": "muebleria",
+      "date": "2026-05-29T20:51:30.000Z"
+    },
+    {
+      "id": 5,
+      "httpMethod": "POST",
+      "action": "request",
+      "endPoint": "/muebleriaapi/changeRole",
+      "description": "POST /muebleriaapi/changeRole",
+      "system": "muebleria",
+      "date": "2026-05-29T21:12:18.000Z"
+    },
+    {
+      "id": 6,
+      "httpMethod": "POST",
+      "action": "request",
+      "endPoint": "/muebleriaapi/changeRole",
+      "description": "POST /muebleriaapi/changeRole",
+      "system": "muebleria",
+      "date": "2026-05-29T21:12:55.000Z"
+    },
+    {
+      "id": 7,
+      "httpMethod": "POST",
+      "action": "request",
+      "endPoint": "/muebleriaapi/users",
+      "description": "POST /muebleriaapi/users",
+      "system": "muebleria",
+      "date": "2026-05-29T21:16:47.000Z"
+    },
+    {
+      "id": 8,
+      "httpMethod": "POST",
+      "action": "request",
+      "endPoint": "/muebleriaapi/account",
+      "description": "POST /muebleriaapi/account",
+      "system": "muebleria",
+      "date": "2026-05-29T21:17:12.000Z"
+    }
+  ]
+}

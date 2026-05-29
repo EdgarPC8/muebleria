@@ -1,4 +1,4 @@
-/** Rutas /img: subida y gestión de archivos estáticos. */
+/** Rutas /img: subida y gestión de imágenes (solo Programador). */
 import { Router } from "express";
 import {
   uploadImage,
@@ -6,7 +6,7 @@ import {
   scanImages as scanImagesController,
   downloadFolderZip,
 } from "../controllers/ImgController.js";
-import { isAuthenticated } from "../middlewares/authMiddelware.js";
+import { isAuthenticated, isProgramador } from "../middlewares/authMiddelware.js";
 import {
   makeImageUpload,
   deleteImage as deleteImageMiddleware,
@@ -15,22 +15,18 @@ import {
 } from "../middlewares/imgMiddleware.js";
 
 const router = new Router();
+const guard = [isAuthenticated, isProgramador];
 
-router.get("/download", isAuthenticated, downloadFolderZip);
+router.get("/download", ...guard, downloadFolderZip);
 
-router.post(
-  "/upload",
-  isAuthenticated,
-  makeImageUpload({ fieldName: "file" }),
-  uploadImage
-);
+router.post("/upload", ...guard, makeImageUpload({ fieldName: "file" }), uploadImage);
 
-router.delete("/delete", isAuthenticated, deleteImageMiddleware(), deleteImage);
+router.delete("/delete", ...guard, deleteImageMiddleware(), deleteImage);
 
-router.get("/scan", isAuthenticated, scanImages(), scanImagesController);
+router.get("/scan", ...guard, scanImages(), scanImagesController);
 
-router.delete("/folder", isAuthenticated, deleteFolder(), (req, res) => {
-  res.json({ ok: true, ...req.imageManager });
+router.delete("/folder", ...guard, deleteFolder(), (req, res) => {
+  res.json({ message: "Carpeta eliminada correctamente.", ...req.imageManager });
 });
 
 export default router;

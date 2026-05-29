@@ -141,7 +141,7 @@ export const updateAccountUser = async (req, res) => {
 export const getAccounts = async (req, res) => {
   try {
     const data = await Account.findAll({
-      attributes: ["id", "username"],
+      attributes: ["id", "username", "userId"],
       include: [
         {
           model: Roles,

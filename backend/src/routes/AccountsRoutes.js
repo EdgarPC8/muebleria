@@ -15,22 +15,24 @@ import {
   deleteRol,
   updateRol,
 } from "../controllers/AccountController.js";
-import { isAuthenticated } from "../middlewares/authMiddelware.js";
+import { isAuthenticated, isAdmin } from "../middlewares/authMiddelware.js";
 
 const router = new Router();
-router.get("/account", isAuthenticated, getAccounts);
-router.get("/account/:accountId/:rolId", isAuthenticated, getAccount);
-router.get("/account/:id", isAuthenticated, getOneAccount);
-router.post("/account", isAuthenticated, addAccount);
-router.delete("/account/:id", isAuthenticated, deleteAccount);
-router.put("/account/resetPassword/:id", isAuthenticated, resetPassword);
-router.put("/account/updateAccountUser/:id/:userId/:rolId", isAuthenticated, updateAccountUser);
-router.put("/account/:id", isAuthenticated, updateAccount);
 
-router.get("/rol", getRoles);
-router.get("/rol/:id", isAuthenticated, getOneRol);
-router.post("/rol", isAuthenticated, addRol);
-router.delete("/rol/:id", isAuthenticated, deleteRol);
-router.put("/rol/:id", isAuthenticated, updateRol);
+router.get("/account/:accountId/:rolId", isAuthenticated, getAccount);
+router.put("/account/updateAccountUser/:id/:userId/:rolId", isAuthenticated, updateAccountUser);
+
+router.get("/account", isAuthenticated, isAdmin, getAccounts);
+router.get("/account/:id", isAuthenticated, isAdmin, getOneAccount);
+router.post("/account", isAuthenticated, isAdmin, addAccount);
+router.delete("/account/:id", isAuthenticated, isAdmin, deleteAccount);
+router.put("/account/resetPassword/:id", isAuthenticated, isAdmin, resetPassword);
+router.put("/account/:id", isAuthenticated, isAdmin, updateAccount);
+
+router.get("/rol", isAuthenticated, isAdmin, getRoles);
+router.get("/rol/:id", isAuthenticated, isAdmin, getOneRol);
+router.post("/rol", isAuthenticated, isAdmin, addRol);
+router.delete("/rol/:id", isAuthenticated, isAdmin, deleteRol);
+router.put("/rol/:id", isAuthenticated, isAdmin, updateRol);
 
 export default router;

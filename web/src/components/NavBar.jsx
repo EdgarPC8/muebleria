@@ -25,9 +25,14 @@ import {
   useTheme,
   Badge,
   Popover,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  ListItem,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import HomeIcon from "@mui/icons-material/Home";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import InventoryIcon from "@mui/icons-material/Inventory";
@@ -40,7 +45,18 @@ import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import TerminalIcon from "@mui/icons-material/Terminal";
 import HistoryIcon from "@mui/icons-material/History";
+import MenuBookIcon from "@mui/icons-material/MenuBook";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import CardGiftcardIcon from "@mui/icons-material/CardGiftcard";
+import ImageIcon from "@mui/icons-material/Image";
+import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
+import SettingsApplicationsIcon from "@mui/icons-material/SettingsApplications";
 import DnsIcon from "@mui/icons-material/Dns";
+import GroupIcon from "@mui/icons-material/Group";
+import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
+import SwapVertIcon from "@mui/icons-material/SwapVert";
 import { useAuth } from "../context/AuthContext.jsx";
 import ThemeSwitcher from "./ThemeSwitcher.jsx";
 import NotificationList from "./NotificationList.jsx";
@@ -52,22 +68,76 @@ import { LOGO_PATH } from "../config.js";
 
 const DRAWER_W = 260;
 
-const MENU_CATALOG = [
-  { name: "Panel", link: "/", icon: <DashboardIcon />, roles: ["Programador", "Administrador", "Empleado"] },
-  { name: "Productos", link: "/productos", icon: <InventoryIcon />, roles: ["Programador", "Administrador", "Empleado"] },
-  { name: "Categorías", link: "/categorias", icon: <CategoryIcon />, roles: ["Programador", "Administrador"] },
-  { name: "Clientes", link: "/clientes", icon: <PeopleIcon />, roles: ["Programador", "Administrador", "Empleado"] },
-  { name: "Proveedores", link: "/proveedores", icon: <LocalShippingIcon />, roles: ["Programador", "Administrador"] },
-  { name: "Unidades", link: "/unidades", icon: <StraightenIcon />, roles: ["Programador", "Administrador"] },
-  { name: "Notificaciones", link: "/notifications", icon: <NotificationsIcon />, roles: ["Programador", "Administrador", "Empleado"] },
-  { name: "Panel de control", link: "/panel_control", icon: <DnsIcon />, roles: ["Programador", "Administrador"] },
-  { name: "Logs", link: "/logs", icon: <HistoryIcon />, roles: ["Programador", "Administrador"] },
-  { name: "Comandos", link: "/comandos", icon: <TerminalIcon />, roles: ["Programador"] },
+const menuItem = (name, link, icon, roles) => ({ name, link, icon, roles });
+
+const MENU_GROUPS = [
+  {
+    id: "general",
+    label: "General",
+    items: [menuItem("Panel", "/", <DashboardIcon />, ["Programador", "Administrador", "Empleado"])],
+  },
+  {
+    id: "inventario",
+    label: "Inventario",
+    items: [
+      menuItem("Productos", "/productos", <InventoryIcon />, ["Programador", "Administrador", "Empleado"]),
+      menuItem("Categorías", "/categorias", <CategoryIcon />, ["Programador", "Administrador"]),
+      menuItem("Unidades", "/unidades", <StraightenIcon />, ["Programador", "Administrador"]),
+      menuItem("Movimientos", "/movimientos", <SwapVertIcon />, ["Programador", "Administrador", "Empleado"]),
+    ],
+  },
+  {
+    id: "ventas",
+    label: "Ventas",
+    items: [
+      menuItem("Clientes", "/clientes", <PeopleIcon />, ["Programador", "Administrador", "Empleado"]),
+      menuItem("Pedidos", "/pedidos", <ShoppingCartIcon />, ["Programador", "Administrador", "Empleado"]),
+      menuItem("Caja", "/caja", <PointOfSaleIcon />, ["Programador", "Administrador", "Empleado"]),
+    ],
+  },
+  {
+    id: "compras",
+    label: "Compras",
+    items: [menuItem("Proveedores", "/proveedores", <LocalShippingIcon />, ["Programador", "Administrador"])],
+  },
+  {
+    id: "admin",
+    label: "Administración",
+    items: [
+      menuItem("Usuarios", "/usuarios", <GroupIcon />, ["Programador", "Administrador"]),
+      menuItem("Cuentas", "/cuentas", <ManageAccountsIcon />, ["Programador", "Administrador"]),
+      menuItem("Notificaciones", "/notifications", <NotificationsIcon />, ["Programador", "Administrador", "Empleado"]),
+      menuItem("Panel de control", "/panel_control", <DnsIcon />, ["Programador", "Administrador"]),
+      menuItem("Logs", "/logs", <HistoryIcon />, ["Programador", "Administrador"]),
+    ],
+  },
+  {
+    id: "info",
+    label: "Información",
+    items: [
+      menuItem("Info", "/info", <InfoOutlinedIcon />, ["Programador", "Administrador", "Empleado"]),
+      menuItem("Donaciones", "/donaciones", <CardGiftcardIcon />, ["Programador", "Administrador", "Empleado"]),
+      menuItem("Documentación", "/documentacion", <MenuBookIcon />, ["Programador", "Administrador"]),
+    ],
+  },
+  {
+    id: "programador",
+    label: "Programador",
+    items: [
+      menuItem("Comandos", "/comandos", <TerminalIcon />, ["Programador"]),
+      menuItem("Config. sistema", "/config-app", <SettingsApplicationsIcon />, ["Programador"]),
+      menuItem("Imágenes", "/img-manager", <ImageIcon />, ["Programador"]),
+      menuItem("Archivos", "/archivos", <InsertDriveFileIcon />, ["Programador"]),
+    ],
+  },
 ];
 
-function menuForRole(loginRol) {
+function menuGroupsForRole(loginRol) {
   if (!loginRol) return [];
-  return MENU_CATALOG.filter((m) => m.roles.includes(loginRol));
+  return MENU_GROUPS.map((group) => ({
+    ...group,
+    items: group.items.filter((item) => item.roles.includes(loginRol)),
+  })).filter((group) => group.items.length > 0);
 }
 
 const DrawerHeader = styled("div")(({ theme }) => ({
@@ -85,6 +155,7 @@ export default function NavBar() {
   const { isAuthenticated, isLoading, user, logout } = useAuth();
 
   const [drawerOpen, setDrawerOpen] = useState(true);
+  const [expandedGroupId, setExpandedGroupId] = useState(null);
   const [userAnchor, setUserAnchor] = useState(null);
   const [notifAnchor, setNotifAnchor] = useState(null);
   const [openChangeRol, setOpenChangeRol] = useState(false);
@@ -100,7 +171,42 @@ export default function NavBar() {
   const displayName =
     [user?.firstName, user?.firstLastName].filter(Boolean).join(" ") || user?.username || "";
 
-  const pagesToShow = useMemo(() => menuForRole(user?.loginRol), [user?.loginRol]);
+  const menuGroups = useMemo(() => menuGroupsForRole(user?.loginRol), [user?.loginRol]);
+
+  useEffect(() => {
+    const activeGroup = menuGroups.find((group) =>
+      group.items.some((item) => item.link === location.pathname)
+    );
+    if (activeGroup) {
+      setExpandedGroupId(activeGroup.id);
+    }
+  }, [location.pathname, menuGroups]);
+
+  const handleGroupAccordionChange = (groupId) => (_event, isExpanded) => {
+    setExpandedGroupId(isExpanded ? groupId : null);
+  };
+
+  const renderMenuItem = (item, nested = false) => (
+    <ListItem key={item.link} disablePadding sx={{ display: "block", pl: nested ? 1 : 0 }}>
+      <ListItemButton
+        selected={location.pathname === item.link}
+        onClick={() => navigate(item.link)}
+        sx={{
+          borderRadius: 2,
+          mb: 0.5,
+          justifyContent: drawerOpen ? "initial" : "center",
+          minHeight: 40,
+        }}
+      >
+        <Tooltip title={!drawerOpen ? item.name : ""} placement="right">
+          <ListItemIcon sx={{ minWidth: drawerOpen ? 40 : "auto", justifyContent: "center" }}>
+            {item.icon}
+          </ListItemIcon>
+        </Tooltip>
+        {drawerOpen && <ListItemText primary={item.name} />}
+      </ListItemButton>
+    </ListItem>
+  );
 
   const fetchUnreadCount = useCallback(async () => {
     if (!user?.userId) return;
@@ -136,27 +242,65 @@ export default function NavBar() {
             </Typography>
           )}
         </Box>
-        <IconButton onClick={() => setDrawerOpen(false)}>
+        <IconButton
+          onClick={() => {
+            setDrawerOpen(false);
+            setExpandedGroupId(null);
+          }}
+        >
           <ChevronLeftIcon />
         </IconButton>
       </DrawerHeader>
       <Divider />
       <List sx={{ px: 1, py: 1 }}>
-        {pagesToShow.map((item) => (
-          <ListItemButton
-            key={item.link}
-            selected={location.pathname === item.link}
-            onClick={() => navigate(item.link)}
-            sx={{ borderRadius: 2, mb: 0.5, justifyContent: drawerOpen ? "initial" : "center" }}
-          >
-            <Tooltip title={!drawerOpen ? item.name : ""} placement="right">
-              <ListItemIcon sx={{ minWidth: drawerOpen ? 40 : "auto", justifyContent: "center" }}>
-                {item.icon}
-              </ListItemIcon>
-            </Tooltip>
-            {drawerOpen && <ListItemText primary={item.name} />}
-          </ListItemButton>
-        ))}
+        {menuGroups.map((group, groupIndex) =>
+          drawerOpen ? (
+            <Accordion
+              key={group.id}
+              expanded={expandedGroupId === group.id}
+              onChange={handleGroupAccordionChange(group.id)}
+              disableGutters
+              elevation={0}
+              sx={{
+                boxShadow: "none",
+                bgcolor: "transparent",
+                "&:before": { display: "none" },
+                mb: groupIndex < menuGroups.length - 1 ? 0.25 : 0,
+              }}
+            >
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon fontSize="small" />}
+                sx={{
+                  minHeight: 36,
+                  px: 0.5,
+                  "& .MuiAccordionSummary-content": { my: 0.5 },
+                }}
+              >
+                <Typography
+                  variant="caption"
+                  sx={{
+                    color: "text.secondary",
+                    fontWeight: 700,
+                    letterSpacing: "0.06em",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  {group.label}
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails sx={{ p: 0, pt: 0 }}>
+                <List component="div" disablePadding>
+                  {group.items.map((item) => renderMenuItem(item, true))}
+                </List>
+              </AccordionDetails>
+            </Accordion>
+          ) : (
+            <Box key={group.id} component="li" sx={{ listStyle: "none" }}>
+              {groupIndex > 0 && <Divider sx={{ my: 0.75 }} />}
+              {group.items.map((item) => renderMenuItem(item))}
+            </Box>
+          )
+        )}
       </List>
     </>
   );
@@ -186,14 +330,31 @@ export default function NavBar() {
           </Typography>
 
           {showUserActions && (
-            <Button
-              color="inherit"
-              startIcon={<HomeIcon />}
-              onClick={() => navigate("/inicio")}
-              sx={{ textTransform: "none", fontWeight: 600, mr: 1 }}
-            >
-              Inicio
-            </Button>
+            <>
+              <Button
+                color="inherit"
+                startIcon={<HomeIcon />}
+                onClick={() => navigate("/inicio")}
+                sx={{ textTransform: "none", fontWeight: 600, mr: 1 }}
+              >
+                Inicio
+              </Button>
+              {["Programador", "Administrador", "Empleado"].includes(user?.loginRol) && (
+                <Button
+                  color="inherit"
+                  startIcon={<PointOfSaleIcon />}
+                  onClick={() => navigate("/caja")}
+                  sx={{
+                    textTransform: "none",
+                    fontWeight: 600,
+                    mr: 1,
+                    ...(location.pathname === "/caja" && { bgcolor: "rgba(255,255,255,0.12)" }),
+                  }}
+                >
+                  Caja
+                </Button>
+              )}
+            </>
           )}
 
           {!showUserActions && !profileLoading && (
