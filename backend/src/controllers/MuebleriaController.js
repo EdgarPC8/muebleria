@@ -1,3 +1,6 @@
+/**
+ * Controlador principal del negocio: catálogo, inventario, clientes, pedidos y tareas.
+ */
 import { sequelize } from "../database/connection.js";
 import { Op, Transaction } from "sequelize";
 import {
@@ -24,6 +27,7 @@ import { Roles } from "../models/Roles.js";
 import { Notifications } from "../models/Notifications.js";
 import { sendNotificationToUser } from "../sockets/notificationSocket.js";
 import { normalizeCustomerPayload, validateCustomerPayload } from "../utils/customerHelpers.js";
+import { entityWithMessage } from "../utils/jsonResponse.js";
 
 const slugify = (value = "") =>
   value
@@ -71,7 +75,7 @@ export const getSuppliers = async (_req, res) => {
 
 export const createSupplier = async (req, res) => {
   const created = await Supplier.create(req.body);
-  res.status(201).json(created);
+  res.status(201).json(entityWithMessage(created, "Proveedor guardado correctamente."));
 };
 
 export const getUnits = async (_req, res) => {
@@ -96,7 +100,7 @@ export const createUnit = async (req, res) => {
       factorToBase: f,
       isBase: Boolean(isBase),
     });
-    res.status(201).json(created);
+    res.status(201).json(entityWithMessage(created, "Unidad de medida guardada correctamente."));
   } catch (e) {
     if (e.name === "SequelizeUniqueConstraintError") {
       return res.status(400).json({ message: "Ya existe una unidad con ese nombre." });
@@ -127,7 +131,7 @@ export const createBrand = async (req, res) => {
     return res.status(400).json({ message: "El nombre de marca es requerido." });
   }
   const created = await Brand.create({ name: name.trim() });
-  res.status(201).json(created);
+  res.status(201).json(entityWithMessage(created, "Marca creada correctamente."));
 };
 
 export const createCategory = async (req, res) => {
@@ -164,7 +168,7 @@ export const createCategory = async (req, res) => {
     isActive: Boolean(isActive),
     sortOrder: Number(sortOrder || 0),
   });
-  res.status(201).json(created);
+  res.status(201).json(entityWithMessage(created, "Categoría creada correctamente."));
 };
 
 export const getProducts = async (_req, res) => {
@@ -192,7 +196,7 @@ export const createProduct = async (req, res) => {
     wholesaleMinQty: Number(req.body.wholesaleMinQty || 0),
     wholesalePrice: Number(req.body.wholesalePrice || 0),
   });
-  res.status(201).json(created);
+  res.status(201).json(entityWithMessage(created, "Producto creado correctamente."));
 };
 
 export const updateProduct = async (req, res) => {
@@ -223,7 +227,8 @@ export const updateProduct = async (req, res) => {
   }
 
   await product.update(payload);
-  res.json(product);
+  await product.reload();
+  res.json(entityWithMessage(product, "Producto actualizado correctamente."));
 };
 
 /**
@@ -528,7 +533,7 @@ export const createCustomer = async (req, res) => {
     if (err) return res.status(400).json({ message: err });
 
     const created = await Customer.create(payload);
-    res.status(201).json(created);
+    res.status(201).json(entityWithMessage(created, "Cliente creado correctamente."));
   } catch (error) {
     if (error?.name === "SequelizeUniqueConstraintError") {
       return res.status(400).json({ message: "Ya existe un cliente con ese documento." });
@@ -554,7 +559,7 @@ export const updateCustomer = async (req, res) => {
 
     await customer.update(payload);
     await customer.reload();
-    res.json(customer);
+    res.json(entityWithMessage(customer, "Cliente actualizado correctamente."));
   } catch (error) {
     if (error?.name === "SequelizeUniqueConstraintError") {
       return res.status(400).json({ message: "Ya existe un cliente con ese documento." });

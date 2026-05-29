@@ -1,3 +1,4 @@
+/** Suscripción Socket.IO a notificaciones nuevas del usuario. */
 import { useEffect } from "react";
 import { socket } from "../api/axios.js";
 

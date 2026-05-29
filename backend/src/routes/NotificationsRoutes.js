@@ -1,3 +1,4 @@
+/** Rutas /notifications: bandeja del usuario. */
 import { Router } from "express";
 import {
   getNotificationsByUser,

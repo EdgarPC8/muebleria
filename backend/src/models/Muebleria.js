@@ -1,3 +1,6 @@
+/**
+ * Modelos del dominio mueblería: productos, stock, compras, ventas, finanzas y tareas.
+ */
 import { DataTypes } from "sequelize";
 import { sequelize } from "../database/connection.js";
 import { Users } from "./Users.js";

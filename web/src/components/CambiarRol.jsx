@@ -1,3 +1,6 @@
+/**
+ * Diálogo para cambiar el rol activo de la sesión (varios roles en la cuenta).
+ */
 import { Button, Typography, Stack } from "@mui/material";
 import { useAuth } from "../context/AuthContext.jsx";
 

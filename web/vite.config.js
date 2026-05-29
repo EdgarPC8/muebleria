@@ -1,3 +1,4 @@
+/** Vite: base /muebleria/ y proxy al API en puerto 3007. */
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 

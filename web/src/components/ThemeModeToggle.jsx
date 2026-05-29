@@ -1,3 +1,4 @@
+/** Botones compactos para alternar modo claro/oscuro. */
 import { ToggleButton, ToggleButtonGroup, Tooltip } from "@mui/material";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";

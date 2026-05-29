@@ -1,3 +1,4 @@
+/** Rutas /users: administración de usuarios. */
 import { Router } from "express";
 import {
   getUsers,

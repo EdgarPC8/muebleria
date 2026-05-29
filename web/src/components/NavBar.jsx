@@ -1,3 +1,6 @@
+/**
+ * Barra superior: navegación, tema, notificaciones y menú de usuario.
+ */
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useNavigate, useLocation, Outlet } from "react-router-dom";
 import {
@@ -36,6 +39,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import TerminalIcon from "@mui/icons-material/Terminal";
+import HistoryIcon from "@mui/icons-material/History";
 import DnsIcon from "@mui/icons-material/Dns";
 import { useAuth } from "../context/AuthContext.jsx";
 import ThemeSwitcher from "./ThemeSwitcher.jsx";
@@ -57,6 +61,7 @@ const MENU_CATALOG = [
   { name: "Unidades", link: "/unidades", icon: <StraightenIcon />, roles: ["Programador", "Administrador"] },
   { name: "Notificaciones", link: "/notifications", icon: <NotificationsIcon />, roles: ["Programador", "Administrador", "Empleado"] },
   { name: "Panel de control", link: "/panel_control", icon: <DnsIcon />, roles: ["Programador", "Administrador"] },
+  { name: "Logs", link: "/logs", icon: <HistoryIcon />, roles: ["Programador", "Administrador"] },
   { name: "Comandos", link: "/comandos", icon: <TerminalIcon />, roles: ["Programador"] },
 ];
 

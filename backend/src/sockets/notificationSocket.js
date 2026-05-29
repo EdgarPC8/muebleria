@@ -1,3 +1,6 @@
+/**
+ * Socket.IO: sala por userId y emisión de notificaciones en tiempo real.
+ */
 let io;
 
 export const initNotificationSocket = (ioServer) => {

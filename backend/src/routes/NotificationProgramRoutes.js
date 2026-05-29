@@ -1,3 +1,4 @@
+/** Rutas /notification-programs: CRUD y envío de programadas. */
 import { Router } from "express";
 import {
   getAll,

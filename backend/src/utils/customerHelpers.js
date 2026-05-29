@@ -1,3 +1,6 @@
+/**
+ * Normalización y validación de payloads de cliente para el API.
+ */
 /** Arma nombre completo para listados y campo legacy `name`. */
 export function buildCustomerFullName({
   firstName,

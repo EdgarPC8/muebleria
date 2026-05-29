@@ -1,3 +1,6 @@
+/**
+ * Tabla MUI con búsqueda, paginación y acciones por fila.
+ */
 import React, { useState } from 'react';
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,

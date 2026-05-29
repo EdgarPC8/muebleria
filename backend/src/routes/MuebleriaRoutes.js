@@ -1,3 +1,6 @@
+/**
+ * Rutas del dominio mueblería: productos, clientes, stock, pedidos, tareas.
+ */
 import { Router } from "express";
 import { isAuthenticated } from "../middlewares/authMiddelware.js";
 import { muebleriaUploadSingle } from "../middlewares/uploadMuebleriaMiddleware.js";

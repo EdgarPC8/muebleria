@@ -1,3 +1,6 @@
+/**
+ * Cliente HTTP y Socket.IO: base URL, token JWT e interceptores.
+ */
 import axios from "axios";
 import { io } from "socket.io-client";
 

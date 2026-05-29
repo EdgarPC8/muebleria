@@ -1,3 +1,6 @@
+/**
+ * Lista de notificaciones del usuario; toasts de mutación usan message del API.
+ */
 import { useState, useEffect } from "react";
 import {
   Box,
@@ -40,7 +43,7 @@ export default function NotificationList({ setCount }) {
   const [menuAllAnchor, setMenuAllAnchor] = useState(null);
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { user } = useAuth();
+  const { user, toast } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -66,34 +69,54 @@ export default function NotificationList({ setCount }) {
 
   const handleMarkAsRead = async () => {
     if (!selectedNotifId) return;
-    await markNotificationAsSeen(selectedNotifId);
-    setNotifications((prev) => {
-      const updated = prev.map((n) => (n.id === selectedNotifId ? { ...n, seen: true } : n));
-      if (setCount) setCount(updated.filter((n) => !n.seen).length);
-      return updated;
-    });
+    const id = selectedNotifId;
     setMenuAnchor(null);
     setSelectedNotifId(null);
+    try {
+      await toast({ promise: markNotificationAsSeen(id) });
+      setNotifications((prev) => {
+        const updated = prev.map((n) => (n.id === id ? { ...n, seen: true } : n));
+        if (setCount) setCount(updated.filter((n) => !n.seen).length);
+        return updated;
+      });
+    } catch {
+      /* toast mostró error */
+    }
   };
 
   const handleDelete = async () => {
     if (!selectedNotifId) return;
-    await deleteNotification(selectedNotifId);
-    setNotifications((prev) => {
-      const updated = prev.filter((n) => n.id !== selectedNotifId);
-      if (setCount) setCount(updated.filter((n) => !n.seen).length);
-      return updated;
-    });
+    const id = selectedNotifId;
     setMenuAnchor(null);
     setSelectedNotifId(null);
+    try {
+      await toast({ promise: deleteNotification(id) });
+      setNotifications((prev) => {
+        const updated = prev.filter((n) => n.id !== id);
+        if (setCount) setCount(updated.filter((n) => !n.seen).length);
+        return updated;
+      });
+    } catch {
+      /* toast mostró error */
+    }
   };
 
   const handleMarkAll = async () => {
     const unseen = notifications.filter((n) => !n.seen);
-    await Promise.all(unseen.map((n) => markNotificationAsSeen(n.id)));
-    setNotifications((prev) => prev.map((n) => ({ ...n, seen: true })));
-    if (setCount) setCount(0);
+    if (unseen.length === 0) {
+      setMenuAllAnchor(null);
+      return;
+    }
     setMenuAllAnchor(null);
+    try {
+      await toast({
+        promise: Promise.all(unseen.map((n) => markNotificationAsSeen(n.id))),
+      });
+      setNotifications((prev) => prev.map((n) => ({ ...n, seen: true })));
+      if (setCount) setCount(0);
+    } catch {
+      /* toast mostró error */
+    }
   };
 
   const filtered = tab === "unread" ? notifications.filter((n) => !n.seen) : notifications;

@@ -1,9 +1,13 @@
+/**
+ * Categorías de producto (árbol padre/hijo).
+ */
 import { useEffect, useState } from "react";
 import { Box, Paper, Typography, Grid, TextField, Button, MenuItem } from "@mui/material";
 import TablePro from "../components/Tables/TablePro.jsx";
 import SimpleDialog from "../components/Dialogs/SimpleDialog.jsx";
 import { createCategory, getCategories } from "../api/muebleriaRequest.js";
 import { useAuth } from "../context/AuthContext.jsx";
+import { withMutationToast } from "../utils/mutationToast.js";
 
 export default function CategoriasPage() {
   const { toast } = useAuth();
@@ -28,19 +32,22 @@ export default function CategoriasPage() {
       return;
     }
     try {
-      await createCategory({
-        name: name.trim(),
-        description: description.trim() || null,
-        parentId: parentId || null,
+      await withMutationToast(toast, {
+        promise: createCategory({
+          name: name.trim(),
+          description: description.trim() || null,
+          parentId: parentId || null,
+        }),
+        onSuccess: async () => {
+          setName("");
+          setDescription("");
+          setParentId("");
+          setOpenDialog(false);
+          await loadData();
+        },
       });
-      setName("");
-      setDescription("");
-      setParentId("");
-      setOpenDialog(false);
-      await loadData();
-      toast({ message: "Categoría creada.", variant: "success" });
-    } catch (e) {
-      toast({ message: e?.response?.data?.message || "Error al crear.", variant: "error" });
+    } catch {
+      /* toast mostró error */
     }
   };
 

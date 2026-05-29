@@ -1,5 +1,9 @@
+/**
+ * Notificaciones en bandeja del usuario (listar, marcar leída, eliminar).
+ */
 import { Notifications } from "../models/Notifications.js";
 import { sendNotificationToUser } from "../sockets/notificationSocket.js";
+import { entityWithMessage } from "../utils/jsonResponse.js";
 
 export const getUnreadCountByUser = async (req, res) => {
   const { userId } = req.params;
@@ -59,7 +63,7 @@ export const markAsSeen = async (req, res) => {
     if (!notification) return res.status(404).json({ message: "No encontrada" });
     notification.seen = true;
     await notification.save();
-    res.json(notification);
+    res.json(entityWithMessage(notification, "Notificación marcada como leída."));
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

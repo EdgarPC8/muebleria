@@ -1,3 +1,6 @@
+/**
+ * Bandeja de notificaciones del usuario y pestaña de programadas (admin).
+ */
 import { useState } from "react";
 import { Box, Paper, Tabs, Tab, Typography } from "@mui/material";
 import NotificationList from "../components/NotificationList.jsx";

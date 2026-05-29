@@ -1,3 +1,4 @@
+/** Modelo Sequelize: cuenta de acceso (username, userId, roles N:M). */
 import { sequelize } from "../database/connection.js";
 import { DataTypes } from "sequelize";
 import { Users } from "./Users.js";

@@ -1,3 +1,4 @@
+/** Rutas /img: subida y gestión de archivos estáticos. */
 import { Router } from "express";
 import {
   uploadImage,

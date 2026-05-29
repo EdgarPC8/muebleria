@@ -1,3 +1,4 @@
+/** Cliente API del dominio mueblería (productos, clientes, categorías, etc.). */
 import axios, { authHeaders, jwt } from "./axios.js";
 
 const auth = () => authHeaders();

@@ -1,3 +1,6 @@
+/**
+ * Gestión de imágenes: listado, subida y descarga ZIP de carpetas.
+ */
 import path from "path";
 import fs from "fs";
 import archiver from "archiver";

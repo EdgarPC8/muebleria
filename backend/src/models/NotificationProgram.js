@@ -1,3 +1,4 @@
+/** Modelo Sequelize: plantilla de notificación programada (cron/target). */
 import { DataTypes } from "sequelize";
 import { sequelize } from "../database/connection.js";
 

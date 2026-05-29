@@ -1,3 +1,4 @@
+/** Panel admin: guardar/descargar backup (mensajes del backend). */
 import { Navigate } from "react-router-dom";
 import { Box, Paper, Typography, Button, Stack, Alert } from "@mui/material";
 import SaveIcon from "@mui/icons-material/Save";
@@ -15,16 +16,10 @@ export default function PanelControlPage() {
   }
 
   const handleSave = () =>
-    toast({
-      promise: saveBackup(),
-      successMessage: "Copia de seguridad guardada en el servidor",
-    });
+    toast({ promise: saveBackup() });
 
   const handleDownload = () =>
-    toast({
-      promise: downloadBackup(),
-      successMessage: "Backup descargado correctamente",
-    });
+    toast({ promise: downloadBackup() });
 
   return (
     <Box>

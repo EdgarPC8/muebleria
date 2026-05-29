@@ -1,6 +1,9 @@
+/**
+ * Seed de unidades de medida por defecto (und, juego, metro, etc.).
+ */
 import { MeasureUnit } from "../models/Muebleria.js";
 
-/** Unidades para mueblería (piezas, juegos, medidas lineales — sin peso/granos). */
+/** Catálogo inicial */
 const DEFAULT_UNITS = [
   { name: "Unidad", abbreviation: "und", groupName: "unit", factorToBase: 1, isBase: true },
   { name: "Juego", abbreviation: "jgo", groupName: "unit", factorToBase: 1, isBase: false },

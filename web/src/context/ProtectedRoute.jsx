@@ -1,3 +1,6 @@
+/**
+ * Envuelve rutas que requieren sesión; redirige a login si no hay token.
+ */
 import { Navigate, Outlet } from "react-router-dom";
 import { Box, CircularProgress } from "@mui/material";
 import { useAuth } from "./AuthContext.jsx";

@@ -1,3 +1,4 @@
+/** Rutas /comands: backup, recarga BD y logs (admin). */
 import { Router } from "express";
 import {
   getLogs,
@@ -6,7 +7,7 @@ import {
   saveBackupController,
 } from "../controllers/ComandsController.js";
 import { downloadBackup } from "../database/insertData.js";
-import { isAuthenticated } from "../middlewares/authMiddelware.js";
+import { isAuthenticated, isAdmin } from "../middlewares/authMiddelware.js";
 import multer from "multer";
 
 const router = Router();
@@ -17,7 +18,7 @@ const upload = multer({
   },
 });
 
-router.get("/getLogs", isAuthenticated, getLogs);
+router.get("/getLogs", isAuthenticated, isAdmin, getLogs);
 router.get("/saveBackup", isAuthenticated, saveBackupController);
 router.get("/downloadBackup", isAuthenticated, downloadBackup);
 router.get("/reloadBD", isAuthenticated, reloadBdController);

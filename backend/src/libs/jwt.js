@@ -1,3 +1,6 @@
+/**
+ * Creación y verificación de tokens JWT de sesión.
+ */
 import jwt from "jsonwebtoken";
 
 const SECRET = "privateKey";

@@ -1,9 +1,13 @@
+/**
+ * Proveedores: registro y listado.
+ */
 import { useEffect, useState } from "react";
 import { Box, Button, Grid, Paper, TextField, Typography } from "@mui/material";
 import TablePro from "../components/Tables/TablePro.jsx";
 import SimpleDialog from "../components/Dialogs/SimpleDialog.jsx";
 import { createSupplier, getSuppliers } from "../api/muebleriaRequest.js";
 import { useAuth } from "../context/AuthContext.jsx";
+import { withMutationToast } from "../utils/mutationToast.js";
 
 export default function ProveedoresPage() {
   const { toast } = useAuth();
@@ -26,19 +30,22 @@ export default function ProveedoresPage() {
       return;
     }
     try {
-      await createSupplier({
-        name: form.name.trim(),
-        phone: form.phone?.trim() || null,
-        document: form.document?.trim() || null,
-        address: form.address?.trim() || null,
-        note: form.note?.trim() || null,
+      await withMutationToast(toast, {
+        promise: createSupplier({
+          name: form.name.trim(),
+          phone: form.phone?.trim() || null,
+          document: form.document?.trim() || null,
+          address: form.address?.trim() || null,
+          note: form.note?.trim() || null,
+        }),
+        onSuccess: async () => {
+          setForm({ name: "", phone: "", document: "", address: "", note: "" });
+          setOpenDialog(false);
+          await load();
+        },
       });
-      setForm({ name: "", phone: "", document: "", address: "", note: "" });
-      setOpenDialog(false);
-      await load();
-      toast({ message: "Proveedor guardado.", variant: "success" });
-    } catch (e) {
-      toast({ message: e?.response?.data?.message || "No se pudo guardar.", variant: "error" });
+    } catch {
+      /* toast mostró error */
     }
   };
 

@@ -1,3 +1,4 @@
+/** Modelo Sequelize: persona/usuario (nombres, documento). */
 import { DataTypes } from "sequelize";
 import { sequelize } from "../database/connection.js";
 

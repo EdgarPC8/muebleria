@@ -1,3 +1,6 @@
+/**
+ * Utilidades de cliente: tipos de documento, validación y mapeo formulario ↔ API.
+ */
 export const DOC_TYPE_OPTIONS = [
   { value: "cedula", label: "Cédula" },
   { value: "pasaporte", label: "Pasaporte" },

@@ -1,3 +1,4 @@
+/** Campos reutilizables del formulario de cliente. */
 import { Grid, TextField, MenuItem } from "@mui/material";
 import { DOC_TYPE_OPTIONS } from "../utils/customerUtils.js";
 

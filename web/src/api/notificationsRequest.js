@@ -1,3 +1,4 @@
+/** API de notificaciones en bandeja (listar, marcar leída, eliminar). */
 import axios, { authHeaders, jwt } from "./axios.js";
 
 export const getNotificationsByUser = (userId) =>

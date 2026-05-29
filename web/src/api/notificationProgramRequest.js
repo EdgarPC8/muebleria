@@ -1,3 +1,4 @@
+/** API de notificaciones programadas (CRUD y envío inmediato). */
 import axios, { authHeaders } from "./axios.js";
 
 export const getNotificationPrograms = () =>

@@ -1,3 +1,6 @@
+/**
+ * Inicio de sesión y selección de rol cuando la cuenta tiene varios roles.
+ */
 import { useState, useEffect } from "react";
 import {
   Typography,

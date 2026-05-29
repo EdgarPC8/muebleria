@@ -1,3 +1,6 @@
+/**
+ * Multer y utilidades para subida/listado de archivos en /img.
+ */
 import multer from "multer";
 import path from "path";
 import fs from "fs";

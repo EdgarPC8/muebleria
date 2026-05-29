@@ -1,12 +1,16 @@
+/**
+ * Comandos de administración: backup, recarga de BD y consulta de logs.
+ */
 import { sequelize } from "../database/connection.js";
 import { backupFilePath, insertData, saveBackup } from "../database/insertData.js";
 import { Logs } from "../models/Logs.js";
+import { messageOnly } from "../utils/jsonResponse.js";
 import { promises as fs } from "fs";
 
 export const saveBackupController = async (req, res) => {
   try {
     await saveBackup();
-    res.json("ok");
+    res.json(messageOnly("Copia de seguridad guardada en el servidor."));
   } catch (error) {
     console.error("Error en saveBackupController:", error);
     return res.status(500).json({
@@ -60,7 +64,7 @@ export const uploadBackupController = async (req, res) => {
 
 export const getLogs = async (req, res) => {
   try {
-    const data = await Logs.findAll();
+    const data = await Logs.findAll({ order: [["id", "DESC"]] });
     res.json(data);
   } catch (error) {
     console.error("Error al obtener logs:", error);

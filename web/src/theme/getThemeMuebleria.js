@@ -1,6 +1,9 @@
+/**
+ * Tema MUI Comercial Calva Cueva (azul/amarillo, claro y oscuro).
+ */
 import { createTheme, alpha } from "@mui/material/styles";
 
-/** Azul y amarillo — Comercial Calva Cueva */
+/** Paleta por modo */
 const calvaPalette = {
   light: {
     primary: { light: "#42A5F5", main: "#1565C0", dark: "#0D47A1", contrastText: "#fff" },

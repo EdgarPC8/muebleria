@@ -1,3 +1,4 @@
+/** Contexto de tema MUI (claro/oscuro) persistido en localStorage. */
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { ThemeProvider, CssBaseline } from "@mui/material";
 import { getThemeMuebleria } from "./getThemeMuebleria.js";

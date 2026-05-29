@@ -1,3 +1,4 @@
+/** Modelo Sequelize: datos de contacto/ubicación del usuario. */
 import { sequelize } from "../database/connection.js";
 import { DataTypes } from "sequelize";
 import { Users } from "./Users.js";

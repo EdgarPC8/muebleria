@@ -1,3 +1,6 @@
+/**
+ * Catálogo de productos: listado, alta/edición con imagen y marcas.
+ */
 import { useEffect, useState } from "react";
 import {
   Box,
@@ -25,6 +28,7 @@ import {
 } from "../api/muebleriaRequest.js";
 import { buildImageUrl } from "../api/axios.js";
 import { useAuth } from "../context/AuthContext.jsx";
+import { withMutationToast } from "../utils/mutationToast.js";
 
 const emptyForm = () => ({
   name: "",
@@ -93,43 +97,45 @@ export default function ProductosPage() {
       toast({ message: "Nombre y unidad son obligatorios.", variant: "warning" });
       return;
     }
-    try {
-      const fd = new FormData();
-      fd.append("name", form.name.trim());
-      if (form.sku) fd.append("sku", form.sku.trim());
-      if (form.categoryId) fd.append("categoryId", form.categoryId);
-      if (form.brandId) fd.append("brandId", form.brandId);
-      fd.append("baseUnitId", form.baseUnitId);
-      if (form.sizeLabel) fd.append("sizeLabel", form.sizeLabel.trim());
-      fd.append("salePrice", form.salePrice || "0");
-      fd.append("stockBase", form.stockBase || "0");
-      fd.append("minStockBase", form.minStockBase || "0");
-      if (imageFile) fd.append("image", imageFile);
+    const fd = new FormData();
+    fd.append("name", form.name.trim());
+    if (form.sku) fd.append("sku", form.sku.trim());
+    if (form.categoryId) fd.append("categoryId", form.categoryId);
+    if (form.brandId) fd.append("brandId", form.brandId);
+    fd.append("baseUnitId", form.baseUnitId);
+    if (form.sizeLabel) fd.append("sizeLabel", form.sizeLabel.trim());
+    fd.append("salePrice", form.salePrice || "0");
+    fd.append("stockBase", form.stockBase || "0");
+    fd.append("minStockBase", form.minStockBase || "0");
+    if (imageFile) fd.append("image", imageFile);
 
-      if (editing?.id) {
-        await updateProduct(editing.id, fd);
-        toast({ message: "Producto actualizado.", variant: "success" });
-      } else {
-        await createProduct(fd);
-        toast({ message: "Producto creado.", variant: "success" });
-      }
-      setOpenDialog(false);
-      await loadAll();
-    } catch (e) {
-      toast({ message: e?.response?.data?.message || "Error al guardar producto.", variant: "error" });
+    const isEdit = Boolean(editing?.id);
+    try {
+      await withMutationToast(toast, {
+        promise: isEdit ? updateProduct(editing.id, fd) : createProduct(fd),
+        onSuccess: async () => {
+          setOpenDialog(false);
+          await loadAll();
+        },
+      });
+    } catch {
+      /* toast mostró error */
     }
   };
 
   const addBrand = async () => {
     if (!newBrand.trim()) return;
     try {
-      await createBrand({ name: newBrand.trim() });
-      setNewBrand("");
-      const { data } = await getBrands();
-      setBrands(data || []);
-      toast({ message: "Marca creada.", variant: "success" });
-    } catch (e) {
-      toast({ message: e?.response?.data?.message || "Error.", variant: "error" });
+      await withMutationToast(toast, {
+        promise: createBrand({ name: newBrand.trim() }),
+        onSuccess: async () => {
+          setNewBrand("");
+          const { data } = await getBrands();
+          setBrands(data || []);
+        },
+      });
+    } catch {
+      /* toast mostró error */
     }
   };
 

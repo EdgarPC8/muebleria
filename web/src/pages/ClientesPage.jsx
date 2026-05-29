@@ -1,3 +1,6 @@
+/**
+ * Gestión de clientes: listado y formulario crear/editar.
+ */
 import { useEffect, useState } from "react";
 import { Box, Button, Paper, Typography } from "@mui/material";
 import TablePro from "../components/Tables/TablePro.jsx";
@@ -5,6 +8,7 @@ import SimpleDialog from "../components/Dialogs/SimpleDialog.jsx";
 import CustomerFormFields from "../components/CustomerFormFields.jsx";
 import { createCustomer, getCustomers, updateCustomer } from "../api/muebleriaRequest.js";
 import { useAuth } from "../context/AuthContext.jsx";
+import { withMutationToast } from "../utils/mutationToast.js";
 import {
   EMPTY_CUSTOMER_FORM,
   buildCustomerDisplayName,
@@ -36,21 +40,20 @@ export default function ClientesPage() {
       toast({ message: err, variant: "warning" });
       return;
     }
+    const payload = formToCustomerPayload(form);
+    const isEdit = Boolean(editing?.id);
     try {
-      const payload = formToCustomerPayload(form);
-      if (editing?.id) {
-        await updateCustomer(editing.id, payload);
-        toast({ message: "Cliente actualizado.", variant: "success" });
-      } else {
-        await createCustomer(payload);
-        toast({ message: "Cliente creado.", variant: "success" });
-      }
-      setForm(EMPTY_CUSTOMER_FORM);
-      setEditing(null);
-      setOpenDialog(false);
-      await load();
-    } catch (e) {
-      toast({ message: e?.response?.data?.message || "Error al guardar.", variant: "error" });
+      await withMutationToast(toast, {
+        promise: isEdit ? updateCustomer(editing.id, payload) : createCustomer(payload),
+        onSuccess: async () => {
+          setForm(EMPTY_CUSTOMER_FORM);
+          setEditing(null);
+          setOpenDialog(false);
+          await load();
+        },
+      });
+    } catch {
+      /* toast mostró error */
     }
   };
 

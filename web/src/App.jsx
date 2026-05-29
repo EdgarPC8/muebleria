@@ -1,3 +1,6 @@
+/**
+ * Definición de rutas de la app web (públicas, protegidas y panel admin).
+ */
 import { Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext.jsx";
 import ProtectedRoute from "./context/ProtectedRoute.jsx";
@@ -13,7 +16,9 @@ import ProveedoresPage from "./pages/ProveedoresPage.jsx";
 import UnidadesPage from "./pages/UnidadesPage.jsx";
 import NotificationsPage from "./pages/NotificationsPage.jsx";
 import ComandosPage from "./pages/ComandosPage.jsx";
+import PruebaPage from "./pages/comandos/PruebaPage.jsx";
 import PanelControlPage from "./pages/PanelControlPage.jsx";
+import LogsPage from "./pages/LogsPage.jsx";
 
 export default function App() {
   return (
@@ -36,7 +41,9 @@ export default function App() {
             <Route path="/unidades" element={<UnidadesPage />} />
             <Route path="/notifications" element={<NotificationsPage />} />
             <Route path="/comandos" element={<ComandosPage />} />
+            <Route path="/comandos/prueba" element={<PruebaPage />} />
             <Route path="/panel_control" element={<PanelControlPage />} />
+            <Route path="/logs" element={<LogsPage />} />
           </Route>
         </Route>
 

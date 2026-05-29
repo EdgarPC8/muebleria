@@ -1,3 +1,4 @@
+/** Rutas /accounts: perfil, sesión y cuentas. */
 import { Router } from "express";
 import {
   updateAccountUser,

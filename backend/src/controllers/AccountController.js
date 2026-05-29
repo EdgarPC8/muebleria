@@ -1,3 +1,6 @@
+/**
+ * Cuentas de acceso: perfil, roles y operaciones de administración.
+ */
 import { Account, AccountRoles } from "../models/Account.js";
 import { Roles } from "../models/Roles.js";
 import { Users } from "../models/Users.js";

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Documento de trabajo en equipo — Mueblería</title>
+  <style>
+    body { font-family: Calibri, Arial, sans-serif; margin: 2cm; color: #222; }
+    h1 { font-size: 18pt; color: #1a3a6b; border-bottom: 2px solid #f0b429; padding-bottom: 8px; }
+    h2 { font-size: 13pt; color: #1a3a6b; margin-top: 28px; }
+    h3 { font-size: 11pt; color: #333; margin-top: 16px; }
+    table { border-collapse: collapse; width: 100%; margin-bottom: 18px; }
+    th, td { border: 1px solid #666; padding: 8px 10px; text-align: left; vertical-align: top; }
+    th { background-color: #1a3a6b; color: #fff; font-weight: bold; }
+    tr:nth-child(even) td { background-color: #f0f4f8; }
+    a { color: #1565c0; }
+    .sub { font-size: 10pt; color: #555; margin-bottom: 20px; }
+  </style>
+</head>
+<body>
+
+<h1>DOCUMENTO DE TRABAJO EN EQUIPO<br>Proyecto Mueblería — Comercial Calva Cueva</h1>
+
+<h2>Información general</h2>
+<table>
+  <tr><th>Campo</th><th>Valor</th></tr>
+  <tr><td>Equipo</td><td>Patricio Briceño, Edgar Torres</td></tr>
+  <tr><td>Fecha de inicio</td><td>29/05/2026</td></tr>
+  <tr><td>Última actualización</td><td>29/05/2026</td></tr>
+  <tr><td>Versión del documento</td><td>1.0</td></tr>
+</table>
+
+<h2>1. Objetivo del proyecto</h2>
+<table>
+  <tr><th>Ítem</th><th>Descripción</th></tr>
+  <tr>
+    <td>Qué hacemos</td>
+    <td>Sistema Mueblería: catálogo, clientes, proveedores, notificaciones, respaldos JSON y panel administrativo (Comercial Calva Cueva).</td>
+  </tr>
+  <tr><td>Alcance actual</td><td>Backend API + Aplicación Web React</td></tr>
+  <tr><td>Pendiente</td><td>Aplicación móvil (appMovil) y aplicación de escritorio (appDesktop)</td></tr>
+</table>
+
+<h2>2. Recursos y enlaces principales</h2>
+<table>
+  <tr><th>Recurso</th><th>Enlace</th></tr>
+  <tr>
+    <td>Repositorio GitHub</td>
+    <td><a href="https://github.com/EdgarPC8/muebleria.git">https://github.com/EdgarPC8/muebleria.git</a></td>
+  </tr>
+  <tr>
+    <td>Diagrama base de datos</td>
+    <td><a href="https://dbdiagram.io/d/Diagrama-Muebleria-6a19ed5a2eeb2f46cd1c9563">https://dbdiagram.io/d/Diagrama-Muebleria-6a19ed5a2eeb2f46cd1c9563</a></td>
+  </tr>
+</table>
+
+<h2>3. Estructura del repositorio</h2>
+<table>
+  <tr><th>Carpeta</th><th>Descripción</th><th>Estado</th><th>Responsable</th></tr>
+  <tr><td>backend/</td><td>API Node.js + MySQL, puerto 3007, prefijo muebleriaapi</td><td>En uso</td><td></td></tr>
+  <tr><td>web/</td><td>React + Vite, puerto 5174, ruta /muebleria/</td><td>En uso</td><td></td></tr>
+  <tr><td>appMovil/</td><td>Aplicación móvil</td><td>Pendiente</td><td></td></tr>
+  <tr><td>appDesktop/</td><td>Aplicación de escritorio</td><td>Pendiente</td><td></td></tr>
+</table>
+<p><strong>Base de datos:</strong> muebleria</p>
+
+<h2>4. Entorno de desarrollo</h2>
+<h3>4.1 Herramientas</h3>
+<table>
+  <tr><th>Herramienta</th><th>Uso</th></tr>
+  <tr><td>Node.js</td><td>Runtime backend y frontend</td></tr>
+  <tr><td>npm</td><td>Gestión de dependencias y scripts</td></tr>
+  <tr><td>MySQL</td><td>Base de datos</td></tr>
+  <tr><td>Git</td><td>Control de versiones</td></tr>
+  <tr><td>Cursor / VS Code</td><td>Editor de desarrollo</td></tr>
+</table>
+
+<h3>4.2 Comandos</h3>
+<table>
+  <tr><th>Paso</th><th>Comando</th></tr>
+  <tr>
+    <td>Crear base de datos</td>
+    <td>CREATE DATABASE muebleria CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</td>
+  </tr>
+  <tr><td>Backend</td><td>cd backend → npm install → npm run dev</td></tr>
+  <tr><td>Frontend</td><td>cd web → npm install → npm run dev</td></tr>
+</table>
+
+<h3>4.3 Acceso de prueba</h3>
+<table>
+  <tr><th>Dato</th><th>Valor</th></tr>
+  <tr><td>Usuario inicial</td><td>administrador</td></tr>
+  <tr><td>Contraseña</td><td>Revisar backend/src/database/backup.json</td></tr>
+  <tr><td>Configuración API</td><td>web/src/api/axios.js → API_ENV: local / server / production</td></tr>
+</table>
+
+<h2>5. Convenciones de trabajo en equipo</h2>
+<h3>5.1 Control de versiones (Git)</h3>
+<table>
+  <tr><th>Regla</th><th>Detalle</th></tr>
+  <tr><td>Antes de trabajar</td><td>Ejecutar git pull</td></tr>
+  <tr><td>Ramas</td><td>Una rama por funcionalidad o una rama compartida acordada</td></tr>
+  <tr><td>Commits</td><td>Mensajes claros (ej.: feat: notificaciones)</td></tr>
+  <tr><td>No subir</td><td>.env, contraseñas, node_modules</td></tr>
+  <tr><td>Integrar a main</td><td>Revisar cambios en GitHub antes de fusionar</td></tr>
+</table>
+
+<h3>5.2 Reparto de tareas</h3>
+<table>
+  <tr><th>Módulo</th><th>Responsable</th><th>Estado</th><th>Notas</th></tr>
+  <tr><td>Backend / API</td><td></td><td></td><td></td></tr>
+  <tr><td>Web – Catálogo</td><td></td><td></td><td></td></tr>
+  <tr><td>Web – Notificaciones</td><td></td><td></td><td></td></tr>
+  <tr><td>Web – Panel y comandos JSON</td><td></td><td></td><td></td></tr>
+  <tr><td>Diagrama base de datos</td><td></td><td></td><td></td></tr>
+  <tr><td>App móvil</td><td></td><td></td><td></td></tr>
+  <tr><td>Pruebas (comandos/prueba)</td><td></td><td></td><td>web/src/pages/comandos/PruebaPage.jsx</td></tr>
+</table>
+
+<h3>5.3 Reuniones</h3>
+<table>
+  <tr><th>Tema</th><th>Valor acordado</th></tr>
+  <tr><td>Frecuencia</td><td>Ej.: 2 veces por semana</td></tr>
+  <tr><td>Duración</td><td>Ej.: 30 minutos</td></tr>
+  <tr><td>Qué revisar</td><td>Avances, bloqueos y entregables</td></tr>
+</table>
+
+<h2>6. Rutas web (desarrollo local)</h2>
+<table>
+  <tr><th>Pantalla</th><th>Ruta</th><th>Roles</th></tr>
+  <tr><td>Inicio público</td><td>/muebleria/home</td><td>Todos</td></tr>
+  <tr><td>Login</td><td>/muebleria/login</td><td>Todos</td></tr>
+  <tr><td>Panel principal</td><td>/muebleria/</td><td>Usuarios autenticados</td></tr>
+  <tr><td>Inicio logueado</td><td>/muebleria/inicio</td><td>Usuarios autenticados</td></tr>
+  <tr><td>Productos</td><td>/muebleria/productos</td><td>Según permisos</td></tr>
+  <tr><td>Categorías</td><td>/muebleria/categorias</td><td>Administrador / Programador</td></tr>
+  <tr><td>Clientes</td><td>/muebleria/clientes</td><td>Según permisos</td></tr>
+  <tr><td>Proveedores</td><td>/muebleria/proveedores</td><td>Administrador / Programador</td></tr>
+  <tr><td>Unidades</td><td>/muebleria/unidades</td><td>Administrador / Programador</td></tr>
+  <tr><td>Notificaciones</td><td>/muebleria/notifications</td><td>Usuarios autenticados</td></tr>
+  <tr><td>Programar saludos y avisos</td><td>Pestaña en Notificaciones</td><td>Administrador / Programador</td></tr>
+  <tr><td>Panel de control JSON</td><td>/muebleria/panel_control</td><td>Administrador / Programador</td></tr>
+  <tr><td>Comandos del sistema</td><td>/muebleria/comandos</td><td>Solo Programador</td></tr>
+  <tr><td>Comandos / Prueba (sandbox)</td><td>/muebleria/comandos/prueba</td><td>Solo Programador — editar PruebaPage.jsx</td></tr>
+</table>
+
+<h2>7. Base de datos</h2>
+<table>
+  <tr><th>Concepto</th><th>Valor</th></tr>
+  <tr><td>Motor</td><td>MySQL</td></tr>
+  <tr><td>Nombre de base de datos</td><td>muebleria</td></tr>
+  <tr>
+    <td>Diagrama</td>
+    <td><a href="https://dbdiagram.io/d/Diagrama-Muebleria-6a19ed5a2eeb2f46cd1c9563">https://dbdiagram.io/d/Diagrama-Muebleria-6a19ed5a2eeb2f46cd1c9563</a></td>
+  </tr>
+</table>
+
+<h3>7.1 Bloques de tablas</h3>
+<table>
+  <tr><th>Bloque</th><th>Prefijo / grupo</th><th>Tablas principales</th></tr>
+  <tr>
+    <td>Sistema</td>
+    <td>Sin prefijo</td>
+    <td>users, accounts, roles, accountRoles, user_data, notifications, notification_programs, logs</td>
+  </tr>
+  <tr>
+    <td>Negocio</td>
+    <td>muebleria_</td>
+    <td>products, customers, orders, suppliers, purchases, stock_movements, finance_entries, task_plans, entre otras</td>
+  </tr>
+</table>
+
+<h3>7.2 Sistema de respaldos JSON</h3>
+<table>
+  <tr><th>Acción</th><th>Ubicación</th><th>Quién puede realizarla</th></tr>
+  <tr><td>Guardar / descargar respaldo</td><td>Panel de control</td><td>Administrador, Programador</td></tr>
+  <tr><td>Subir / recargar base de datos</td><td>Comandos</td><td>Solo Programador</td></tr>
+</table>
+
+<h2>Control de versiones del documento</h2>
+<table>
+  <tr><th>Versión</th><th>Fecha</th><th>Descripción</th><th>Responsable</th></tr>
+  <tr><td>1.0</td><td>29/05/2026</td><td>Documento inicial del proyecto</td><td>Equipo</td></tr>
+</table>
+
+<p class="sub">Abrir este archivo con Microsoft Word (Archivo → Abrir) para conservar todas las tablas.</p>
+
+</body>
+</html>

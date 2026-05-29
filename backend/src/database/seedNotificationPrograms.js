@@ -1,3 +1,6 @@
+/**
+ * Seed inicial de notificaciones programadas (ej. buenos días).
+ */
 import { NotificationProgram } from "../models/NotificationProgram.js";
 
 const DEFAULT_PROGRAMS = [

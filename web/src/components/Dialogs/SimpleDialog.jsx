@@ -1,3 +1,6 @@
+/**
+ * Diálogo modal genérico con título, contenido y acciones.
+ */
 import {
     Container,
     Button,

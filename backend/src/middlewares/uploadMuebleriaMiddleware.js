@@ -1,3 +1,6 @@
+/**
+ * Multer para imagen principal de producto (req.uploadInfo).
+ */
 import multer from "multer";
 import fs from "fs";
 import path from "path";

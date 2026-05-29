@@ -1,3 +1,6 @@
+/**
+ * Landing pública de Comercial Calva Cueva (sin sesión o enlace al panel).
+ */
 import { Link as RouterLink } from "react-router-dom";
 import {
   Box,

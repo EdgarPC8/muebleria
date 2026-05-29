@@ -1,3 +1,4 @@
+/** Selector de tema claro/oscuro/sistema en menú. */
 import { useState } from "react";
 import { IconButton, Tooltip, Menu, MenuItem, ListItemIcon, ListItemText } from "@mui/material";
 import SettingsBrightnessIcon from "@mui/icons-material/SettingsBrightness";

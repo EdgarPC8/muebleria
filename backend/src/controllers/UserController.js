@@ -1,3 +1,6 @@
+/**
+ * CRUD de usuarios del sistema (tabla users).
+ */
 import { Users } from "../models/Users.js";
 import { UniqueConstraintError } from "sequelize";
 

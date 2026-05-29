@@ -1,9 +1,9 @@
+/**
+ * Conexión Sequelize a MySQL (base `muebleria`).
+ * Crear antes: CREATE DATABASE muebleria CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+ */
 import Sequelize from "sequelize";
 
-/**
- * Base `muebleria` — créala antes en MySQL:
- *   CREATE DATABASE muebleria CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
- */
 const sequelize = new Sequelize("muebleria", "root", "", {
   host: "localhost",
   dialect: "mysql",

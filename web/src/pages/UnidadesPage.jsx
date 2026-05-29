@@ -1,3 +1,6 @@
+/**
+ * Unidades de medida (grupos y factor a unidad base).
+ */
 import { useEffect, useMemo, useState } from "react";
 import {
   Box,
@@ -15,6 +18,7 @@ import TablePro from "../components/Tables/TablePro.jsx";
 import SimpleDialog from "../components/Dialogs/SimpleDialog.jsx";
 import { createUnit, getUnits } from "../api/muebleriaRequest.js";
 import { useAuth } from "../context/AuthContext.jsx";
+import { withMutationToast } from "../utils/mutationToast.js";
 
 const GROUP_PRESETS = [
   { value: "unit", label: "Pieza — unidad, juego, par, set" },
@@ -66,18 +70,21 @@ export default function UnidadesPage() {
       return;
     }
     try {
-      await createUnit({
-        name: name.trim(),
-        abbreviation: abbreviation.trim(),
-        groupName,
-        factorToBase: f,
-        isBase,
+      await withMutationToast(toast, {
+        promise: createUnit({
+          name: name.trim(),
+          abbreviation: abbreviation.trim(),
+          groupName,
+          factorToBase: f,
+          isBase,
+        }),
+        onSuccess: async () => {
+          setOpenDialog(false);
+          await loadData();
+        },
       });
-      setOpenDialog(false);
-      await loadData();
-      toast({ message: "Unidad guardada.", variant: "success" });
-    } catch (e) {
-      toast({ message: e?.response?.data?.message || "Error al guardar.", variant: "error" });
+    } catch {
+      /* toast mostró error */
     }
   };
 

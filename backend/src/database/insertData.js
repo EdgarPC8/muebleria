@@ -1,3 +1,6 @@
+/**
+ * Backup/restore: exportar BD a JSON, importar backup.json y descarga para admin.
+ */
 import { promises as fs } from "fs";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
@@ -160,17 +163,21 @@ export const saveBackup = async () => {
   return backupPath;
 };
 
+/** Descarga backup.json; el mensaje de éxito va en cabecera para el toast del frontend. */
 export const downloadBackup = async (req, res) => {
   try {
     const backupPath = await saveBackup();
+    res.setHeader("X-Api-Message", "Backup descargado correctamente.");
     res.download(backupPath, (err) => {
       if (err) {
         console.error("Error al enviar el archivo:", err);
-        res.status(500).send("Error al enviar el archivo.");
+        if (!res.headersSent) {
+          res.status(500).json({ message: "Error al enviar el archivo de backup." });
+        }
       }
     });
   } catch (error) {
     console.error("Error al realizar el backup:", error);
-    res.status(500).send("Error al realizar el backup.");
+    res.status(500).json({ message: "Error al realizar el backup." });
   }
 };

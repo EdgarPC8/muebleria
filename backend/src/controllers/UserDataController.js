@@ -1,3 +1,6 @@
+/**
+ * Datos extendidos del usuario (dirección, contacto, etc.).
+ */
 import { UserData } from "../models/UserData.js";
 
 const allowedFields = [

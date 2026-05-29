@@ -1,3 +1,6 @@
+/**
+ * Autenticación: login, verificación de token y cambio de rol activo.
+ */
 import { Users } from "../models/Users.js";
 import { Account } from "../models/Account.js";
 import bcrypt from "bcrypt";
@@ -102,7 +105,7 @@ export const changeRole = async (req, res) => {
     };
 
     const token = await createAccessToken({ payload });
-    res.json({ token });
+    res.json({ token, message: `Rol activo: ${hasRole.name}.` });
   } catch (error) {
     res.status(500).json({ message: "Error al cambiar de rol", error: error.message });
   }

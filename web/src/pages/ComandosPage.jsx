@@ -1,3 +1,4 @@
+/** Comandos admin: backup y recarga BD; mensajes desde muebleriaapi. */
 import { useState } from "react";
 import {
   Card,
@@ -15,6 +16,8 @@ import BackupIcon from "@mui/icons-material/Backup";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import SaveIcon from "@mui/icons-material/Save";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
+import { Link as RouterLink } from "react-router-dom";
+import ScienceIcon from "@mui/icons-material/Science";
 import { reloadBD, saveBackup, downloadBackup, uploadBackup } from "../api/comandsRequest.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import { Navigate } from "react-router-dom";
@@ -34,10 +37,7 @@ const COMMANDS = [
         if (!file) return;
         const fd = new FormData();
         fd.append("backup", file);
-        toast({
-          promise: uploadBackup(fd),
-          successMessage: "Backup reemplazado correctamente",
-        });
+        toast({ promise: uploadBackup(fd) });
       };
       input.click();
     },
@@ -48,21 +48,23 @@ const COMMANDS = [
     info: "Descarga el estado actual de la base en JSON",
     icon: BackupIcon,
     run: (toast) =>
-      toast({
-        promise: downloadBackup(),
-        successMessage: "Backup descargado",
-      }),
+      toast({ promise: downloadBackup() }),
   },
   {
     key: "reload",
     name: "Recargar BD",
     info: "Borra y vuelve a crear tablas desde backup.json",
     icon: RefreshIcon,
-    run: (toast) =>
-      toast({
-        promise: reloadBD(),
-        successMessage: "Base de datos recargada",
-      }),
+    run: (toast) => {
+      if (
+        !window.confirm(
+          "¿Recargar la base de datos desde backup.json? Se borrarán todos los datos actuales."
+        )
+      ) {
+        return;
+      }
+      toast({ promise: reloadBD() });
+    },
   },
   {
     key: "save",
@@ -70,10 +72,7 @@ const COMMANDS = [
     info: "Guarda backup.json y copia con fecha en /backups",
     icon: SaveIcon,
     run: (toast) =>
-      toast({
-        promise: saveBackup(),
-        successMessage: "Copia guardada en el servidor",
-      }),
+      toast({ promise: saveBackup() }),
   },
 ];
 
@@ -87,12 +86,24 @@ export default function ComandosPage() {
 
   return (
     <Box>
-      <Typography variant="h5" fontWeight={700} gutterBottom>
-        Comandos — Programador
-      </Typography>
+      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 1, mb: 1 }}>
+        <Typography variant="h5" fontWeight={700}>
+          Comandos — Programador
+        </Typography>
+        <Button
+          component={RouterLink}
+          to="/comandos/prueba"
+          variant="outlined"
+          startIcon={<ScienceIcon />}
+          sx={{ textTransform: "none", fontWeight: 600 }}
+        >
+          Comandos / Prueba
+        </Button>
+      </Box>
       <Alert severity="warning" sx={{ mb: 2 }}>
         Recargar BD elimina todos los datos actuales y los restaura desde <strong>backup.json</strong>.
-        Úsalo con precaución.
+        Úsalo con precaución. El documento del equipo (tablas) está en{" "}
+        <strong>Comandos / Prueba</strong>.
       </Alert>
       <Grid container spacing={2}>
         {COMMANDS.map((cmd) => {

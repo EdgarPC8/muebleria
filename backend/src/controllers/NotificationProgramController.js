@@ -1,3 +1,6 @@
+/**
+ * CRUD de notificaciones programadas y envío inmediato (admin/programador).
+ */
 import { Op } from "sequelize";
 import { NotificationProgram } from "../models/NotificationProgram.js";
 import { Notifications } from "../models/Notifications.js";
@@ -5,6 +8,7 @@ import { Account } from "../models/Account.js";
 import { Roles } from "../models/Roles.js";
 import { Users } from "../models/Users.js";
 import { sendNotificationToUser } from "../sockets/notificationSocket.js";
+import { entityWithMessage } from "../utils/jsonResponse.js";
 
 async function getTargetUserIds(targetType, targetRoleIds) {
   if (targetType === "all_users") {
@@ -41,7 +45,7 @@ export const getAll = async (req, res) => {
 export const create = async (req, res) => {
   try {
     const prog = await NotificationProgram.create(req.body);
-    res.status(201).json(prog);
+    res.status(201).json(entityWithMessage(prog, "Notificación programada creada."));
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -52,7 +56,8 @@ export const update = async (req, res) => {
     const prog = await NotificationProgram.findByPk(req.params.id);
     if (!prog) return res.status(404).json({ message: "No encontrado" });
     await prog.update(req.body);
-    res.json(prog);
+    await prog.reload();
+    res.json(entityWithMessage(prog, "Notificación programada actualizada."));
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -63,7 +68,7 @@ export const remove = async (req, res) => {
     const prog = await NotificationProgram.findByPk(req.params.id);
     if (!prog) return res.status(404).json({ message: "No encontrado" });
     await prog.destroy();
-    res.json({ message: "Eliminado" });
+    res.json({ message: "Notificación programada eliminada." });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

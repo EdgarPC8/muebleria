@@ -1,3 +1,6 @@
+/**
+ * Tarea periódica: envía notificaciones programadas según cron/intervalo.
+ */
 import { Op } from "sequelize";
 import { NotificationProgram } from "../models/NotificationProgram.js";
 import { Notifications } from "../models/Notifications.js";

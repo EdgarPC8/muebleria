@@ -1,3 +1,6 @@
+/**
+ * Middleware JWT: isAuthenticated, isAdmin y carga de req.user.
+ */
 import { getHeaderToken, verifyJWT } from "../libs/jwt.js";
 import { Account } from "../models/Account.js";
 import { Roles } from "../models/Roles.js";

@@ -1,3 +1,4 @@
+/** Modelo Sequelize: notificación en bandeja de un usuario. */
 import { DataTypes } from "sequelize";
 import { sequelize } from "../database/connection.js";
 import { Users } from "./Users.js";

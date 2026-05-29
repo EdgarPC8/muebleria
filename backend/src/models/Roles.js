@@ -1,3 +1,4 @@
+/** Modelo Sequelize: roles del sistema (Administrador, Vendedor, etc.). */
 import { DataTypes } from "sequelize";
 import { sequelize } from "../database/connection.js";
 

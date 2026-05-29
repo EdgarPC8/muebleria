@@ -1,3 +1,6 @@
+/**
+ * Peticiones de comandos admin: backup, recarga BD, logs.
+ */
 import axios, { jwt } from "./axios.js";
 
 const auth = () => ({ headers: { Authorization: jwt() } });
@@ -24,6 +27,7 @@ export const downloadBackup = async () => {
   a.click();
   a.remove();
   window.URL.revokeObjectURL(url);
+  return response;
 };
 
 export const uploadBackup = (formData) => {

@@ -1,9 +1,14 @@
+/**
+ * Sesión global: login, perfil, rol activo y toasts unificados.
+ * Los toasts de mutación muestran el `message` que devuelve el backend.
+ */
 import { createContext, useContext, useState, useEffect } from "react";
 import { useSnackbar } from "notistack";
 import { loginRequest, getSessionRequest } from "../api/userRequest.js";
 import { getAccount } from "../api/accountRequest.js";
 import { changeRole as changeRoleRequest } from "../api/authRequest.js";
 import { clearToken, getToken, pathImg, setToken } from "../api/axios.js";
+import { getApiErrorMessage, getApiSuccessMessage } from "../utils/apiMessages.js";
 
 const AuthContext = createContext(null);
 
@@ -56,7 +61,7 @@ export function AuthProvider({ children }) {
       setIsAuthenticated(false);
       setIsLoading(false);
       setErrors({
-        message: error.response?.data?.message || "Error de conexión",
+        message: getApiErrorMessage(error, "Error de conexión"),
         status: "error",
       });
       return { error: true };
@@ -78,37 +83,43 @@ export function AuthProvider({ children }) {
       });
       if (!setToken(data?.token)) {
         logout();
-        enqueueSnackbar("Token inválido al cambiar de rol", { variant: "error" });
+        enqueueSnackbar(
+          getApiErrorMessage({ message: "Token inválido al cambiar de rol" }),
+          { variant: "error" }
+        );
         return;
       }
       await loadUserProfile();
-      enqueueSnackbar("Rol actualizado", { variant: "success" });
+      enqueueSnackbar(getApiSuccessMessage({ data }), { variant: "success" });
     } catch (error) {
-      enqueueSnackbar(
-        error?.response?.data?.message || "Error al cambiar de rol",
-        { variant: "error" }
-      );
+      enqueueSnackbar(getApiErrorMessage(error), { variant: "error" });
     }
   };
 
-  const toast = async ({
-    message,
-    variant = "info",
-    promise,
-    successMessage = "Operación exitosa",
-    errorMessage = "Ocurrió un error",
-  }) => {
+  /**
+   * Toast unificado.
+   * - `message`: texto directo (validaciones locales).
+   * - `promise`: mutación; éxito/error leen `response.data.message` del backend.
+   */
+  const toast = async ({ message, variant = "info", promise } = {}) => {
     if (message && !promise) {
       enqueueSnackbar(message, { variant, autoHideDuration: 3000 });
       return;
     }
     if (!promise) return;
+
     try {
-      await promise;
-      enqueueSnackbar(successMessage, { variant: "success", autoHideDuration: 3000 });
+      const result = await promise;
+      const text = getApiSuccessMessage(result);
+      if (text) {
+        enqueueSnackbar(text, { variant: "success", autoHideDuration: 3000 });
+      }
+      return result;
     } catch (error) {
-      const msg = error?.response?.data?.message || errorMessage || error?.message;
-      enqueueSnackbar(msg, { variant: "error", autoHideDuration: 4000 });
+      const text = getApiErrorMessage(error);
+      if (text) {
+        enqueueSnackbar(text, { variant: "error", autoHideDuration: 4000 });
+      }
       throw error;
     }
   };

@@ -1,3 +1,4 @@
+/** Modelo Sequelize: registro de petición HTTP (auditoría). */
 import { DataTypes } from "sequelize";
 import { sequelize } from "../database/connection.js";
 

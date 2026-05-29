@@ -1,3 +1,6 @@
+/**
+ * CRUD de notificaciones programadas y envío manual (Admin/Programador).
+ */
 import { useState, useEffect } from "react";
 import {
   Box,
@@ -72,7 +75,7 @@ export default function NotificationProgramsPage() {
       setList(progsRes.data || []);
       setRoles(rolesRes.data || []);
     } catch {
-      toast({ message: "Error al cargar notificaciones programadas", variant: "error" });
+      /* sin toast al cargar listado */
     } finally {
       setLoading(false);
     }
@@ -120,15 +123,9 @@ export default function NotificationProgramsPage() {
     }
     try {
       if (editingId) {
-        await toast({
-          promise: updateNotificationProgram(editingId, form),
-          successMessage: "Notificación actualizada",
-        });
+        await toast({ promise: updateNotificationProgram(editingId, form) });
       } else {
-        await toast({
-          promise: createNotificationProgram(form),
-          successMessage: "Notificación creada",
-        });
+        await toast({ promise: createNotificationProgram(form) });
       }
       handleClose();
       load();
@@ -140,10 +137,7 @@ export default function NotificationProgramsPage() {
   const handleDelete = async (id) => {
     if (!window.confirm("¿Eliminar esta notificación programada?")) return;
     try {
-      await toast({
-        promise: deleteNotificationProgram(id),
-        successMessage: "Eliminada",
-      });
+      await toast({ promise: deleteNotificationProgram(id) });
       load();
     } catch {
       /* toast */
@@ -153,15 +147,10 @@ export default function NotificationProgramsPage() {
   const handleSendNow = async (id) => {
     setSendingId(id);
     try {
-      const res = await sendNotificationProgramNow(id);
-      const msg = res.data?.message || `Enviado a ${res.data?.count || 0} usuarios`;
-      toast({ message: msg, variant: "success" });
+      await toast({ promise: sendNotificationProgramNow(id) });
       load();
-    } catch (error) {
-      toast({
-        message: error?.response?.data?.message || "Error al enviar",
-        variant: "error",
-      });
+    } catch {
+      /* toast mostró error del backend */
     } finally {
       setSendingId(null);
     }

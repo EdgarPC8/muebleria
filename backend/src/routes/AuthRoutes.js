@@ -1,3 +1,4 @@
+/** Rutas /auth: login, verify token y changeRole. */
 import { Router } from "express";
 import { login, verifytoken, changeRole } from "../controllers/AuthController.js";
 import { isAuthenticated } from "../middlewares/authMiddelware.js";

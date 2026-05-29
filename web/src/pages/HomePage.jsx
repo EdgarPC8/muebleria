@@ -1,3 +1,6 @@
+/**
+ * Panel principal tras login: accesos rápidos a módulos del negocio.
+ */
 import { Grid, Paper, Typography, Box, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import InventoryIcon from "@mui/icons-material/Inventory";

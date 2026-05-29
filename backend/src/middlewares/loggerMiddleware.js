@@ -1,7 +1,12 @@
+/**
+ * Middleware que persiste logs de peticiones (excepto GET, OPTIONS, HEAD).
+ */
 import { Logs } from "../models/Logs.js";
 
+const SKIP_METHODS = new Set(["GET", "OPTIONS", "HEAD"]);
+
 export const loggerMiddleware = (req, res, next) => {
-  if (req.method === "GET") {
+  if (SKIP_METHODS.has(req.method)) {
     next();
     return;
   }
