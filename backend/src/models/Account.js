@@ -20,6 +20,8 @@ export const Account = sequelize.define(
     },
     userId: {
       type: DataTypes.INTEGER,
+      allowNull: false,
+      unique: true,
     },
   },
   {
@@ -58,10 +60,10 @@ Roles.belongsToMany(Account, {
   as: "accounts",
 });
 
-Users.hasMany(Account, {
+Users.hasOne(Account, {
   foreignKey: "userId",
   sourceKey: "id",
-  as: "accounts",
+  as: "account",
 });
 
 Account.belongsTo(Users, {

@@ -3,6 +3,7 @@
  */
 import { useEffect, useState } from "react";
 import {
+  Alert,
   Box,
   Button,
   Grid,
@@ -60,6 +61,13 @@ export default function AccountForm({ isEditing = false, datos = null, onClose, 
       toast({ message: "Seleccione una persona (usuario) para la cuenta.", variant: "warning" });
       return;
     }
+    if (!isEditing && pickedUser?.account?.id) {
+      toast({
+        message: "Esa persona ya tiene una cuenta. Solo puede existir una cuenta por usuario.",
+        variant: "warning",
+      });
+      return;
+    }
     if (!selectedRoles.length) {
       toast({ message: "Seleccione al menos un rol.", variant: "warning" });
       return;
@@ -90,6 +98,8 @@ export default function AccountForm({ isEditing = false, datos = null, onClose, 
       /* toast */
     }
   };
+
+  const usersWithoutAccount = users.filter((u) => !u.account?.id);
 
   const userColumns = [
     { id: "ci", label: "Cédula" },
@@ -182,17 +192,24 @@ export default function AccountForm({ isEditing = false, datos = null, onClose, 
             <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
               {pickedUser
                 ? `Persona seleccionada: ${fullName(pickedUser)}`
-                : "Seleccione la persona a la que pertenece esta cuenta:"}
+                : "Seleccione una persona que aún no tenga cuenta de acceso (una sola cuenta por usuario):"}
             </Typography>
-            <TablePro
-              title="Usuarios"
-              rows={users}
-              columns={userColumns}
-              showSearch
-              showPagination
-              defaultRowsPerPage={5}
-              tableMaxHeight={240}
-            />
+            {usersWithoutAccount.length === 0 ? (
+              <Alert severity="info">
+                Todas las personas registradas ya tienen cuenta. Cree una nueva persona en Usuarios o elimine
+                una cuenta existente para reasignar.
+              </Alert>
+            ) : (
+              <TablePro
+                title="Personas sin cuenta"
+                rows={usersWithoutAccount}
+                columns={userColumns}
+                showSearch
+                showPagination
+                defaultRowsPerPage={5}
+                tableMaxHeight={240}
+              />
+            )}
           </Grid>
         )}
 

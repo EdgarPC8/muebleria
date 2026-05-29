@@ -21,3 +21,6 @@ export const deleteAccountRequest = (id) => axios.delete(`/account/${id}`, auth(
 export const resetPasswordRequest = (id) => axios.put(`/account/resetPassword/${id}`, {}, auth());
 
 export const getRolRequest = () => axios.get("/rol", auth());
+
+export const updateAccountUser = (accountId, userId, rolId, data) =>
+  axios.put(`/account/updateAccountUser/${accountId}/${userId}/${rolId}`, data, auth());

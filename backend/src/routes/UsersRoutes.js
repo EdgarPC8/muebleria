@@ -9,12 +9,20 @@ import {
   addUsersBulk,
 } from "../controllers/UserController.js";
 import { getMyData, updateMyData } from "../controllers/UserDataController.js";
+import {
+  uploadPhoto,
+  deletePhoto,
+  assertOwnPhoto,
+} from "../middlewares/uploadPhotoMiddleware.js";
 import { isAuthenticated, isAdmin } from "../middlewares/authMiddelware.js";
 
 const router = new Router();
 
 router.get("/me/data", isAuthenticated, getMyData);
 router.put("/me/data", isAuthenticated, updateMyData);
+
+router.put("/photo/:userId", isAuthenticated, assertOwnPhoto, uploadPhoto);
+router.delete("/photo/:userId", isAuthenticated, assertOwnPhoto, deletePhoto);
 
 router.post("", isAuthenticated, isAdmin, addUser);
 router.post("/bulk", isAuthenticated, isAdmin, addUsersBulk);

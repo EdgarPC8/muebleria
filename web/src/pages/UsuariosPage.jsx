@@ -3,7 +3,7 @@
  */
 import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
-import { Box, Button, IconButton, Tooltip } from "@mui/material";
+import { Box, Button, Chip, IconButton, Tooltip } from "@mui/material";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -64,6 +64,17 @@ export default function UsuariosPage() {
     },
     { id: "birthday", label: "Nacimiento" },
     { id: "gender", label: "Género", render: (row) => genderLabel(row.gender) },
+    {
+      id: "cuenta",
+      label: "Cuenta de acceso",
+      getSearchValue: (r) => r.account?.username || "",
+      render: (row) =>
+        row.account?.username ? (
+          <Chip size="small" label={row.account.username} color="success" variant="outlined" />
+        ) : (
+          <Chip size="small" label="Sin cuenta" variant="outlined" />
+        ),
+    },
     {
       id: "actions",
       label: "Acciones",
@@ -140,7 +151,7 @@ export default function UsuariosPage() {
         open={deleteOpen}
         onClose={() => setDeleteOpen(false)}
         tittle="Eliminar usuario"
-        message="¿Eliminar esta persona del sistema? Las cuentas asociadas pueden verse afectadas."
+        message="¿Eliminar esta persona del sistema? Si tiene cuenta de acceso, elimínela antes en Cuentas."
         onClickAccept={confirmDelete}
       />
     </Box>

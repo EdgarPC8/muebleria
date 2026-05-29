@@ -29,6 +29,7 @@ import ArchivosPage from "./pages/ArchivosPage.jsx";
 import PedidosPage from "./pages/PedidosPage.jsx";
 import MovimientosPage from "./pages/MovimientosPage.jsx";
 import CajaPage from "./pages/CajaPage.jsx";
+import ProfilePage from "./pages/ProfilePage.jsx";
 
 export default function App() {
   return (
@@ -56,6 +57,7 @@ export default function App() {
             <Route path="/proveedores" element={<ProveedoresPage />} />
             <Route path="/unidades" element={<UnidadesPage />} />
             <Route path="/movimientos" element={<MovimientosPage />} />
+            <Route path="/perfil" element={<ProfilePage />} />
             <Route path="/notifications" element={<NotificationsPage />} />
             <Route path="/comandos" element={<ComandosPage />} />
             <Route path="/documentacion" element={<DocumentacionPage />} />

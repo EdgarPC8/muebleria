@@ -2,6 +2,7 @@
  * CRUD de usuarios del sistema (tabla users).
  */
 import { Users } from "../models/Users.js";
+import { Account } from "../models/Account.js";
 import { UniqueConstraintError } from "sequelize";
 
 export const addUser = async (req, res) => {
@@ -46,7 +47,16 @@ export const updateUserData = async (req, res) => {
 
 export const getUsers = async (req, res) => {
   try {
-    const users = await Users.findAll();
+    const users = await Users.findAll({
+      include: [
+        {
+          model: Account,
+          as: "account",
+          attributes: ["id", "username"],
+          required: false,
+        },
+      ],
+    });
 
     res.json(users || []);
   } catch (error) {

@@ -26,6 +26,17 @@ export const addAccount = async (req, res) => {
       userId,
     } = req.body;
 
+    if (!userId) {
+      return res.status(400).json({ message: "Debe indicar la persona (usuario) de la cuenta." });
+    }
+
+    const existingForUser = await Account.findOne({ where: { userId } });
+    if (existingForUser) {
+      return res.status(400).json({
+        message: "Esa persona ya tiene una cuenta de acceso. Solo se permite una cuenta por usuario.",
+      });
+    }
+
     if (!newPassword || newPassword.trim() === "") {
       return res.status(400).json({ message: "La contraseña es obligatoria" });
     }
@@ -47,6 +58,11 @@ export const addAccount = async (req, res) => {
     res.json({ message: "Cuenta creada con éxito", data: newAccount });
   } catch (error) {
     console.error("Error al crear cuenta:", error);
+    if (error.name === "SequelizeUniqueConstraintError") {
+      return res.status(400).json({
+        message: "Esa persona ya tiene una cuenta de acceso. Solo se permite una cuenta por usuario.",
+      });
+    }
     res.status(500).json({ message: error.message });
   }
 };

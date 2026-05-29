@@ -7,7 +7,7 @@ import { useSnackbar } from "notistack";
 import { loginRequest, getSessionRequest } from "../api/userRequest.js";
 import { getAccount } from "../api/accountRequest.js";
 import { changeRole as changeRoleRequest } from "../api/authRequest.js";
-import { clearToken, getToken, pathImg, setToken } from "../api/axios.js";
+import { buildImageUrl, clearToken, getToken, setToken } from "../api/axios.js";
 import { getApiErrorMessage, getApiSuccessMessage } from "../utils/apiMessages.js";
 
 const AuthContext = createContext(null);
@@ -23,14 +23,22 @@ export function AuthProvider({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState(null);
+  const [profileImageUser, setProfileImageUser] = useState(null);
   const { enqueueSnackbar } = useSnackbar();
 
   const loadUserProfile = async () => {
     const session = await getSessionRequest();
     const { data } = await getAccount(session.data.accountId, session.data.rolId);
+    const u = data.user || {};
     setUser({
-      firstName: data.user.firstName,
-      firstLastName: data.user.firstLastName,
+      firstName: u.firstName,
+      secondName: u.secondName,
+      firstLastName: u.firstLastName,
+      secondLastName: u.secondLastName,
+      ci: u.ci,
+      birthday: u.birthday,
+      gender: u.gender,
+      photo: u.photo,
       username: data.username,
       accountId: data.id,
       userId: session.data.userId,
@@ -38,6 +46,7 @@ export function AuthProvider({ children }) {
       loginRol: session.data.loginRol,
       roles: data.roles || [],
     });
+    setProfileImageUser(u.photo ? buildImageUrl(u.photo) : null);
     setIsAuthenticated(true);
     setIsLoading(false);
   };
@@ -72,6 +81,7 @@ export function AuthProvider({ children }) {
     clearToken();
     setIsAuthenticated(false);
     setUser(null);
+    setProfileImageUser(null);
     setIsLoading(false);
   };
 
@@ -160,7 +170,9 @@ export function AuthProvider({ children }) {
         isAuthenticated,
         isLoading,
         user,
-        pathImg,
+        profileImageUser,
+        setProfileImageUser,
+        loadUserProfile,
         toast,
       }}
     >

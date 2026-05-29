@@ -35,6 +35,7 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import HomeIcon from "@mui/icons-material/Home";
 import DashboardIcon from "@mui/icons-material/Dashboard";
+import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import InventoryIcon from "@mui/icons-material/Inventory";
 import CategoryIcon from "@mui/icons-material/Category";
 import PeopleIcon from "@mui/icons-material/People";
@@ -152,7 +153,7 @@ export default function NavBar() {
   const theme = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
-  const { isAuthenticated, isLoading, user, logout } = useAuth();
+  const { isAuthenticated, isLoading, user, logout, profileImageUser } = useAuth();
 
   const [drawerOpen, setDrawerOpen] = useState(true);
   const [expandedGroupId, setExpandedGroupId] = useState(null);
@@ -424,7 +425,10 @@ export default function NavBar() {
                 {displayName}
               </Typography>
               <IconButton color="inherit" onClick={(e) => setUserAnchor(e.currentTarget)}>
-                <Avatar sx={{ width: 36, height: 36, bgcolor: "secondary.main", color: "secondary.contrastText" }}>
+                <Avatar
+                  src={profileImageUser || undefined}
+                  sx={{ width: 36, height: 36, bgcolor: "secondary.main", color: "secondary.contrastText" }}
+                >
                   {(displayName[0] || "U").toUpperCase()}
                 </Avatar>
               </IconButton>
@@ -432,13 +436,13 @@ export default function NavBar() {
                 <MenuItem
                   onClick={() => {
                     setUserAnchor(null);
-                    navigate("/");
+                    navigate("/perfil");
                   }}
                 >
                   <ListItemIcon>
-                    <DashboardIcon fontSize="small" />
+                    <PersonOutlineIcon fontSize="small" />
                   </ListItemIcon>
-                  Panel
+                  Perfil
                 </MenuItem>
                 {hasMultipleRoles && (
                   <MenuItem

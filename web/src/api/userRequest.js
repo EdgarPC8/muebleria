@@ -11,3 +11,14 @@ export const getOneUserRequest = (id) => axios.get(`/users/${id}`, auth());
 export const addUserRequest = (data) => axios.post("/users", data, auth());
 export const updateUserRequest = (id, data) => axios.put(`/users/${id}`, data, auth());
 export const deleteUserRequest = (id) => axios.delete(`/users/${id}`, auth());
+
+export const updateUserPhotoRequest = (userId, formData) =>
+  axios.put(`/users/photo/${userId}`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+      Authorization: jwt(),
+    },
+  });
+
+export const deleteUserPhotoRequest = (userId) =>
+  axios.delete(`/users/photo/${userId}`, auth());
