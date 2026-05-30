@@ -108,7 +108,7 @@ export default function ClientesPage() {
       <SimpleDialog
         open={openDialog}
         onClose={() => setOpenDialog(false)}
-        tittle={editing ? "Editar cliente" : "Nuevo cliente"}
+        title={editing ? "Editar cliente" : "Nuevo cliente"}
         fullWidth
         maxWidth="md"
       >

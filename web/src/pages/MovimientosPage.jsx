@@ -154,7 +154,7 @@ export default function MovimientosPage() {
       <SimpleDialog
         open={openAdjust}
         onClose={() => setOpenAdjust(false)}
-        tittle="Ajuste de stock"
+        title="Ajuste de stock"
         maxWidth="sm"
         fullWidth
       >

@@ -19,7 +19,6 @@ import ComandosPage from "./pages/ComandosPage.jsx";
 import DocumentacionPage from "./pages/DocumentacionPage.jsx";
 import PanelControlPage from "./pages/PanelControlPage.jsx";
 import LogsPage from "./pages/LogsPage.jsx";
-import UsuariosPage from "./pages/UsuariosPage.jsx";
 import CuentasPage from "./pages/CuentasPage.jsx";
 import InfoPage from "./pages/InfoPage.jsx";
 import DonacionesPage from "./pages/DonacionesPage.jsx";
@@ -30,6 +29,7 @@ import PedidosPage from "./pages/PedidosPage.jsx";
 import MovimientosPage from "./pages/MovimientosPage.jsx";
 import CajaPage from "./pages/CajaPage.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
+import UsersPage from "./pages/UsersPage.jsx";
 
 export default function App() {
   return (
@@ -73,7 +73,7 @@ export default function App() {
             />
             <Route path="/panel_control" element={<PanelControlPage />} />
             <Route path="/logs" element={<LogsPage />} />
-            <Route path="/usuarios" element={<UsuariosPage />} />
+            <Route path="/usuarios" element={<UsersPage />} />
             <Route path="/cuentas" element={<CuentasPage />} />
             <Route path="/config-app" element={<ConfigAppPage />} />
             <Route path="/img-manager" element={<ImgManagerPage />} />

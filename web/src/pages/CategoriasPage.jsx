@@ -75,7 +75,7 @@ export default function CategoriasPage() {
         showIndex
         tableMaxHeight={440}
       />
-      <SimpleDialog open={openDialog} onClose={() => setOpenDialog(false)} tittle="Nueva categoría" fullWidth maxWidth="md">
+      <SimpleDialog open={openDialog} onClose={() => setOpenDialog(false)} title="Nueva categoría" fullWidth maxWidth="md">
         <Grid container spacing={1.5} sx={{ mt: 0.5 }}>
           <Grid item xs={12} md={5}>
             <TextField fullWidth size="small" label="Nombre *" value={name} onChange={(e) => setName(e.target.value)} />

@@ -118,7 +118,10 @@ export default function NotificationProgramsPage() {
 
   const handleSubmit = async () => {
     if (!form.code?.trim() || !form.title?.trim() || !form.message?.trim()) {
-      toast({ message: "Código, título y mensaje son requeridos", variant: "warning" });
+      toast({
+        message: "Código, título y mensaje son requeridos",
+        variant: "warning",
+      });
       return;
     }
     try {
@@ -166,25 +169,36 @@ export default function NotificationProgramsPage() {
 
   return (
     <Box>
-      <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 2 }}>
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        alignItems="center"
+        sx={{ mb: 2 }}
+      >
         <Typography variant="h5" fontWeight={700}>
           Programar notificaciones
         </Typography>
-        <Button variant="contained" startIcon={<AddIcon />} onClick={() => handleOpen()}>
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          onClick={() => handleOpen()}
+        >
           Nueva
         </Button>
       </Stack>
 
       <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-        Saludos automáticos (buenos días, buenas tardes), bienvenida, avisos de actualización, etc.
-        Activa el horario diario o envía manualmente con el botón de enviar.
+        Saludos automáticos (buenos días, buenas tardes), bienvenida, avisos de
+        actualización, etc. Activa el horario diario o envía manualmente con el
+        botón de enviar.
       </Typography>
 
       {list.length === 0 ? (
         <Card variant="outlined">
           <CardContent>
             <Typography color="text.secondary">
-              No hay plantillas. Crea una o reinicia el backend para cargar las predeterminadas.
+              No hay plantillas. Crea una o reinicia el backend para cargar las
+              predeterminadas.
             </Typography>
           </CardContent>
         </Card>
@@ -210,7 +224,12 @@ export default function NotificationProgramsPage() {
                     <Typography variant="body2" sx={{ mt: 1 }}>
                       {item.message}
                     </Typography>
-                    <Stack direction="row" spacing={1} sx={{ mt: 1 }} flexWrap="wrap">
+                    <Stack
+                      direction="row"
+                      spacing={1}
+                      sx={{ mt: 1 }}
+                      flexWrap="wrap"
+                    >
                       <Chip
                         size="small"
                         label={
@@ -218,12 +237,16 @@ export default function NotificationProgramsPage() {
                             ? `Diario ${item.scheduleTime || ""}`
                             : "Manual"
                         }
-                        color={item.scheduleType === "daily" ? "primary" : "default"}
+                        color={
+                          item.scheduleType === "daily" ? "primary" : "default"
+                        }
                       />
                       <Chip
                         size="small"
                         label={
-                          item.targetType === "all_users" ? "Todos los usuarios" : "Por rol"
+                          item.targetType === "all_users"
+                            ? "Todos los usuarios"
+                            : "Por rol"
                         }
                         variant="outlined"
                       />
@@ -252,7 +275,11 @@ export default function NotificationProgramsPage() {
                     <IconButton size="small" onClick={() => handleOpen(item)}>
                       <EditIcon />
                     </IconButton>
-                    <IconButton size="small" color="error" onClick={() => handleDelete(item.id)}>
+                    <IconButton
+                      size="small"
+                      color="error"
+                      onClick={() => handleDelete(item.id)}
+                    >
                       <DeleteIcon />
                     </IconButton>
                   </Box>
@@ -264,7 +291,9 @@ export default function NotificationProgramsPage() {
       )}
 
       <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
-        <DialogTitle>{editingId ? "Editar notificación" : "Nueva notificación"}</DialogTitle>
+        <DialogTitle>
+          {editingId ? "Editar notificación" : "Nueva notificación"}
+        </DialogTitle>
         <DialogContent>
           <Stack spacing={2} sx={{ mt: 1 }}>
             <TextField
@@ -276,14 +305,18 @@ export default function NotificationProgramsPage() {
             <TextField
               label="Título"
               value={form.title}
-              onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, title: e.target.value }))
+              }
               fullWidth
               required
             />
             <TextField
               label="Mensaje"
               value={form.message}
-              onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, message: e.target.value }))
+              }
               fullWidth
               multiline
               rows={3}
@@ -301,9 +334,13 @@ export default function NotificationProgramsPage() {
               <Select
                 value={form.scheduleType}
                 label="Tipo de programación"
-                onChange={(e) => setForm((f) => ({ ...f, scheduleType: e.target.value }))}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, scheduleType: e.target.value }))
+                }
               >
-                <MenuItem value="manual">Manual (enviar cuando quieras)</MenuItem>
+                <MenuItem value="manual">
+                  Manual (enviar cuando quieras)
+                </MenuItem>
                 <MenuItem value="daily">Diario (hora fija)</MenuItem>
               </Select>
             </FormControl>
@@ -312,7 +349,9 @@ export default function NotificationProgramsPage() {
                 label="Hora"
                 type="time"
                 value={form.scheduleTime || "08:00"}
-                onChange={(e) => setForm((f) => ({ ...f, scheduleTime: e.target.value }))}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, scheduleTime: e.target.value }))
+                }
                 InputLabelProps={{ shrink: true }}
                 fullWidth
               />
@@ -322,7 +361,9 @@ export default function NotificationProgramsPage() {
               <Select
                 value={form.targetType}
                 label="Destinatarios"
-                onChange={(e) => setForm((f) => ({ ...f, targetType: e.target.value }))}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, targetType: e.target.value }))
+                }
               >
                 <MenuItem value="all_users">Todos los usuarios</MenuItem>
                 <MenuItem value="by_role">Por rol</MenuItem>
@@ -335,9 +376,14 @@ export default function NotificationProgramsPage() {
                   multiple
                   value={form.targetRoleIds || []}
                   label="Roles"
-                  onChange={(e) => setForm((f) => ({ ...f, targetRoleIds: e.target.value }))}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, targetRoleIds: e.target.value }))
+                  }
                   renderValue={(sel) =>
-                    roles.filter((r) => sel.includes(r.id)).map((r) => r.name).join(", ")
+                    roles
+                      .filter((r) => sel.includes(r.id))
+                      .map((r) => r.name)
+                      .join(", ")
                   }
                 >
                   {roles.map((r) => (
@@ -352,7 +398,9 @@ export default function NotificationProgramsPage() {
               control={
                 <Switch
                   checked={form.active}
-                  onChange={(e) => setForm((f) => ({ ...f, active: e.target.checked }))}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, active: e.target.checked }))
+                  }
                 />
               }
               label="Activa (solo aplica a envío diario automático)"

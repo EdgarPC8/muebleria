@@ -202,7 +202,7 @@ export default function ProductosPage() {
       <SimpleDialog
         open={openDialog}
         onClose={() => setOpenDialog(false)}
-        tittle={editing ? "Editar producto" : "Nuevo producto"}
+        title={editing ? "Editar producto" : "Nuevo producto"}
         fullWidth
         maxWidth="md"
       >

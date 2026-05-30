@@ -1,29 +1,39 @@
 /**
  * Tabla MUI con búsqueda, paginación y acciones por fila.
  */
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
-  Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-  TablePagination, Paper, TextField, Typography, Box, TableSortLabel
-} from '@mui/material';
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TablePagination,
+  Paper,
+  TextField,
+  Typography,
+  Box,
+  TableSortLabel,
+} from "@mui/material";
 
 const TablePro = ({
   columns = [],
   rows = [],
-  title = '',
+  title = "",
   showSearch = true,
   showPagination = true,
   rowsPerPageOptions = [5, 10, 25],
   defaultRowsPerPage = 5,
   showIndex = false,
-  indexHeader = '#',
+  indexHeader = "#",
   tableMaxHeight = 150,
 }) => {
-  const [searchText, setSearchText] = useState('');
+  const [searchText, setSearchText] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(defaultRowsPerPage);
   const [orderBy, setOrderBy] = useState(null);
-  const [orderDirection, setOrderDirection] = useState('asc');
+  const [orderDirection, setOrderDirection] = useState("asc");
 
   const handleSearchChange = (e) => {
     setSearchText(e.target.value.toLowerCase());
@@ -40,10 +50,10 @@ const TablePro = ({
   // --- Ordenamiento ---
   const handleSort = (columnId) => {
     if (orderBy === columnId) {
-      setOrderDirection((prev) => (prev === 'asc' ? 'desc' : 'asc'));
+      setOrderDirection((prev) => (prev === "asc" ? "desc" : "asc"));
     } else {
       setOrderBy(columnId);
-      setOrderDirection('asc');
+      setOrderDirection("asc");
     }
   };
 
@@ -53,18 +63,18 @@ const TablePro = ({
     const getValue = (r) =>
       column?.getSortValue
         ? column.getSortValue(r)
-        : typeof r[orderBy] === 'string'
-        ? r[orderBy].toLowerCase()
-        : r[orderBy];
+        : typeof r[orderBy] === "string"
+          ? r[orderBy].toLowerCase()
+          : r[orderBy];
 
     return [...rows].sort((a, b) => {
       const va = getValue(a);
       const vb = getValue(b);
       if (va == null && vb == null) return 0;
-      if (va == null) return orderDirection === 'asc' ? 1 : -1;
-      if (vb == null) return orderDirection === 'asc' ? -1 : 1;
-      if (va < vb) return orderDirection === 'asc' ? -1 : 1;
-      if (va > vb) return orderDirection === 'asc' ? 1 : -1;
+      if (va == null) return orderDirection === "asc" ? 1 : -1;
+      if (vb == null) return orderDirection === "asc" ? -1 : 1;
+      if (va < vb) return orderDirection === "asc" ? -1 : 1;
+      if (va > vb) return orderDirection === "asc" ? 1 : -1;
       return 0;
     });
   }, [rows, orderBy, orderDirection, columns]);
@@ -72,14 +82,16 @@ const TablePro = ({
   // --- Filtro de búsqueda ---
   const filteredRows = sortedRows.filter((row) =>
     columns.some((column) => {
-      const raw = column.getSearchValue ? column.getSearchValue(row) : row[column.id];
+      const raw = column.getSearchValue
+        ? column.getSearchValue(row)
+        : row[column.id];
       if (raw == null) return false;
       const val =
-        typeof raw === 'string' || typeof raw === 'number'
+        typeof raw === "string" || typeof raw === "number"
           ? String(raw).toLowerCase()
-          : '';
+          : "";
       return val.includes(searchText);
-    })
+    }),
   );
 
   const paginatedRows = showPagination
@@ -87,9 +99,13 @@ const TablePro = ({
     : filteredRows;
 
   return (
-    <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+    <Paper sx={{ width: "100%", p: 2 }}>
       <Box sx={{ p: 1 }}>
-        {title && <Typography variant="h6" gutterBottom>{title}</Typography>}
+        {title && (
+          <Typography variant="h6" gutterBottom>
+            {title}
+          </Typography>
+        )}
         {showSearch && (
           <TextField
             fullWidth
@@ -105,18 +121,26 @@ const TablePro = ({
             <TableHead>
               <TableRow>
                 {showIndex && (
-                  <TableCell sx={{ width: 56, bgcolor: 'background.paper' }}>{indexHeader}</TableCell>
+                  <TableCell sx={{ width: 56, bgcolor: "background.paper" }}>
+                    {indexHeader}
+                  </TableCell>
                 )}
                 {columns.map((column) => (
                   <TableCell
                     key={column.id}
-                    sortDirection={orderBy === column.id ? orderDirection : false}
+                    sortDirection={
+                      orderBy === column.id ? orderDirection : false
+                    }
                     onClick={() => handleSort(column.id)}
-                    sx={{ cursor: 'pointer', userSelect: 'none', bgcolor: 'background.paper' }}
+                    sx={{
+                      cursor: "pointer",
+                      userSelect: "none",
+                      bgcolor: "background.paper",
+                    }}
                   >
                     <TableSortLabel
                       active={orderBy === column.id}
-                      direction={orderBy === column.id ? orderDirection : 'asc'}
+                      direction={orderBy === column.id ? orderDirection : "asc"}
                     >
                       {column.label}
                     </TableSortLabel>
@@ -144,7 +168,10 @@ const TablePro = ({
 
               {paginatedRows.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={(showIndex ? 1 : 0) + columns.length} align="center">
+                  <TableCell
+                    colSpan={(showIndex ? 1 : 0) + columns.length}
+                    align="center"
+                  >
                     No hay datos
                   </TableCell>
                 </TableRow>

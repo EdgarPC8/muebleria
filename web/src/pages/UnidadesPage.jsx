@@ -103,7 +103,7 @@ export default function UnidadesPage() {
         </Button>
       </Paper>
       <TablePro title="Listado" rows={units} columns={columns} showSearch showPagination showIndex tableMaxHeight={400} />
-      <SimpleDialog open={openDialog} onClose={() => setOpenDialog(false)} tittle="Nueva unidad" fullWidth maxWidth="sm">
+      <SimpleDialog open={openDialog} onClose={() => setOpenDialog(false)} title="Nueva unidad" fullWidth maxWidth="sm">
         <Grid container spacing={1.5} sx={{ mt: 0.5 }}>
           <Grid item xs={12}>
             <TextField select fullWidth size="small" label="Grupo" value={groupName} onChange={(e) => setGroupName(e.target.value)}>

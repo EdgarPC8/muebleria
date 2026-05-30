@@ -1,117 +1,170 @@
-/**
- * Formulario crear/editar persona (tabla users).
- */
-import { useEffect, useState } from "react";
-import { Box, Button, Grid, MenuItem, TextField } from "@mui/material";
-import { addUserRequest, getOneUserRequest, updateUserRequest } from "../../api/userRequest.js";
-import { useAuth } from "../../context/AuthContext.jsx";
+import { useState, useEffect } from "react";
+import {
+  Grid,
+  TextField,
+  Button,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Select,
+  Chip,
+  Box,
+} from "@mui/material";
 
-const EMPTY = {
-  ci: "",
-  firstName: "",
-  secondName: "",
-  firstLastName: "",
-  secondLastName: "",
-  gender: "",
-  birthday: "",
-};
+import { useRoles } from "../../hooks/useRoles";
 
-export default function UserForm({ isEditing = false, datos = null, onClose, reload }) {
-  const { toast } = useAuth();
-  const [form, setForm] = useState(EMPTY);
+export default function UsersForm({ onSubmit, initialData }) {
+  const { roles, isLoading: isLoadingRoles } = useRoles();
+  const [form, setForm] = useState({
+    email: "",
+    username: "",
+    ci: "",
+    firstName: "",
+    firstLastName: "",
+    password: "",
+    roles: [],
+  });
 
   useEffect(() => {
-    if (!isEditing || !datos?.id) return;
-    getOneUserRequest(datos.id)
-      .then((res) => {
-        const u = res.data || {};
-        setForm({
-          ci: u.ci || "",
-          firstName: u.firstName || "",
-          secondName: u.secondName || "",
-          firstLastName: u.firstLastName || "",
-          secondLastName: u.secondLastName || "",
-          gender: u.gender || "",
-          birthday: u.birthday ? String(u.birthday).slice(0, 10) : "",
-        });
-      })
-      .catch(() => {});
-  }, [isEditing, datos?.id]);
-
-  const set = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
-
-  const onSubmit = async (e) => {
-    e.preventDefault();
-    if (!form.ci?.trim() || !form.firstName?.trim() || !form.firstLastName?.trim()) {
-      toast({ message: "Cédula, primer nombre y primer apellido son obligatorios.", variant: "warning" });
-      return;
-    }
-    const payload = {
-      ...form,
-      ci: form.ci.trim(),
-      firstName: form.firstName.trim(),
-      firstLastName: form.firstLastName.trim(),
-      secondName: form.secondName?.trim() || null,
-      secondLastName: form.secondLastName?.trim() || null,
-      birthday: form.birthday || null,
-      gender: form.gender || null,
-    };
-    try {
-      await toast({
-        promise: isEditing
-          ? updateUserRequest(datos.id, payload)
-          : addUserRequest(payload),
+    if (initialData) {
+      setForm({
+        email: initialData.email || "",
+        username: initialData.username || "",
+        ci: initialData.ci || "",
+        firstName: initialData.firstName || "",
+        firstLastName: initialData.firstLastName || "",
+        password: initialData.password || "",
+        roles: initialData.roles || [],
       });
-      if (reload) await reload();
-      if (onClose) onClose();
-      if (!isEditing) setForm(EMPTY);
-    } catch {
-      /* toast */
     }
+  }, [initialData]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSubmit(form);
   };
 
   return (
-    <Box component="form" onSubmit={onSubmit} sx={{ mt: 1 }}>
+    <form onSubmit={handleSubmit}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <TextField label="Cédula" fullWidth required value={form.ci} onChange={set("ci")} />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField label="Primer nombre" fullWidth required value={form.firstName} onChange={set("firstName")} />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField label="Segundo nombre" fullWidth value={form.secondName} onChange={set("secondName")} />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField label="Primer apellido" fullWidth required value={form.firstLastName} onChange={set("firstLastName")} />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField label="Segundo apellido" fullWidth value={form.secondLastName} onChange={set("secondLastName")} />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField select label="Género" fullWidth value={form.gender} onChange={set("gender")}>
-            <MenuItem value="">—</MenuItem>
-            <MenuItem value="M">Masculino</MenuItem>
-            <MenuItem value="F">Femenino</MenuItem>
-            <MenuItem value="otro">Otro</MenuItem>
-          </TextField>
-        </Grid>
-        <Grid item xs={6}>
           <TextField
-            label="Fecha de nacimiento"
-            type="date"
             fullWidth
-            InputLabelProps={{ shrink: true }}
-            value={form.birthday}
-            onChange={set("birthday")}
+            size="small"
+            label="Email"
+            name="email"
+            type="email"
+            value={form.email}
+            onChange={handleChange}
+            required
           />
         </Grid>
         <Grid item xs={12}>
+          <TextField
+            fullWidth
+            size="small"
+            label="Nombre de usuario"
+            name="username"
+            value={form.username}
+            onChange={handleChange}
+            required
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            fullWidth
+            size="small"
+            label="CI / Cédula de identidad"
+            name="ci"
+            value={form.ci}
+            onChange={handleChange}
+            required
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            fullWidth
+            size="small"
+            label="Primer nombre"
+            name="firstName"
+            value={form.firstName}
+            onChange={handleChange}
+            required
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            fullWidth
+            size="small"
+            label="Primer apellido"
+            name="firstLastName"
+            value={form.firstLastName}
+            onChange={handleChange}
+            required
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <FormControl fullWidth size="small">
+            <InputLabel>Roles</InputLabel>
+            <Select
+              multiple
+              name="roles"
+              required
+              value={form.roles}
+              onChange={handleChange}
+              label="Roles"
+              renderValue={(selected) => (
+                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                  {selected.map((id) => {
+                    const role = roles?.find((r) => r.id === id);
+                    return <Chip key={id} label={role?.name} />;
+                  })}
+                </Box>
+              )}
+            >
+              {roles?.map((c) => (
+                <MenuItem key={c.id} value={c.id}>
+                  {c.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item xs={12}>
+          {!!initialData ? (
+            <TextField
+              fullWidth
+              size="small"
+              label="Nueva Contraseña"
+              name="password"
+              type="password"
+              value={form.password}
+              onChange={handleChange}
+            />
+          ) : (
+            <TextField
+              fullWidth
+              size="small"
+              label="Contraseña"
+              name="password"
+              type="password"
+              value={form.password}
+              onChange={handleChange}
+              required
+            />
+          )}
+        </Grid>
+        <Grid item xs={12}>
           <Button type="submit" variant="contained" fullWidth>
-            {isEditing ? "Guardar cambios" : "Crear usuario"}
+            {initialData ? "Actualizar" : "Registrar"}
           </Button>
         </Grid>
       </Grid>
-    </Box>
+    </form>
   );
 }

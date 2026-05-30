@@ -385,7 +385,7 @@ export default function ProfilePage() {
       <SimpleDialog
         open={openEditAccount}
         onClose={() => setOpenEditAccount(false)}
-        tittle="Cambiar contraseña"
+        title="Cambiar contraseña"
         maxWidth="sm"
         fullWidth
       >
@@ -395,7 +395,7 @@ export default function ProfilePage() {
       <SimpleDialog
         open={openDeletePhoto}
         onClose={() => setOpenDeletePhoto(false)}
-        tittle="Eliminar foto"
+        title="Eliminar foto"
         message="¿Eliminar su foto de perfil?"
         onClickAccept={handleDeletePhoto}
       />

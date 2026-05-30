@@ -156,7 +156,7 @@ export default function CuentasPage() {
       <SimpleDialog
         open={formOpen}
         onClose={() => setFormOpen(false)}
-        tittle={editing ? "Editar cuenta" : "Nueva cuenta"}
+        title={editing ? "Editar cuenta" : "Nueva cuenta"}
         maxWidth="md"
         fullWidth
       >
@@ -171,7 +171,7 @@ export default function CuentasPage() {
       <SimpleDialog
         open={deleteOpen}
         onClose={() => setDeleteOpen(false)}
-        tittle="Eliminar cuenta"
+        title="Eliminar cuenta"
         message="¿Eliminar esta cuenta de acceso?"
         onClickAccept={confirmDelete}
       />
@@ -179,7 +179,7 @@ export default function CuentasPage() {
       <SimpleDialog
         open={resetOpen}
         onClose={() => setResetOpen(false)}
-        tittle="Resetear contraseña"
+        title="Resetear contraseña"
         message="La contraseña quedará en 12345678. ¿Continuar?"
         onClickAccept={confirmReset}
       />

@@ -178,7 +178,7 @@ export default function ComandosPage() {
             setReloadDialog({ open: false, progress: 0, message: "", loading: false });
           }
         }}
-        tittle="Recargando base de datos"
+        title="Recargando base de datos"
         maxWidth="sm"
         fullWidth
         hideClose={reloadDialog.loading}

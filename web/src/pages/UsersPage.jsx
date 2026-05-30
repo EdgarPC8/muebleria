@@ -1,23 +1,39 @@
 import { Button, Paper } from "@mui/material";
 import { Box } from "@mui/system";
 import { useState } from "react";
-import CustomerFormFields from "../components/CustomerFormFields";
 import SimpleDialog from "../components/Dialogs/SimpleDialog";
-import UsersForm from "../components/UsersForm";
+import UsersForm from "../components/Forms/UserForm";
 import TablePro from "../components/Tables/TablePro";
 import { useUsers } from "../hooks/useUsers";
-import { addUser } from "../api/userRequest";
+
+import { addUser, updateUser } from "../api/userRequest";
 import { useSnackbar } from "notistack";
 
-export default function UsuariosPage() {
+export default function UsersPage() {
   const [isOpen, setIsOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const { users, isLoading, fetchUsers } = useUsers();
+
   const { enqueueSnackbar } = useSnackbar();
   const [form, setForm] = useState(null);
+  const [userId, setUserId] = useState(null);
 
   const onSubmit = async (data) => {
     try {
+      if (isEditing) {
+        const res = await updateUser(data, userId);
+
+        enqueueSnackbar("Usuario actualizado exitosamente", {
+          variant: "success",
+        });
+        fetchUsers();
+
+        setForm(null);
+        setIsEditing(false);
+        setUserId(null);
+        return;
+      }
+
       const res = await addUser(data);
       if (res.data.success) {
         enqueueSnackbar("Usuario Agregado exitosamente", {
@@ -45,8 +61,12 @@ export default function UsuariosPage() {
       </Paper>
       <SimpleDialog
         open={isOpen}
-        onClose={() => setIsOpen(false)}
-        tittle={isEditing ? "Editar usuario" : "Nuevo usuario"}
+        onClose={() => {
+          setIsOpen(false);
+          setIsEditing(false);
+          setForm(null);
+        }}
+        title={isEditing ? "Editar usuario" : "Nuevo usuario"}
         fullWidth
         maxWidth="md"
       >
@@ -54,7 +74,7 @@ export default function UsuariosPage() {
       </SimpleDialog>
 
       <TablePro
-        title="Listado"
+        title="Usuarios del Sistema"
         rows={users}
         columns={[
           { id: "id", label: "ID" },
@@ -64,7 +84,14 @@ export default function UsuariosPage() {
             render: (r) => <p>{r.ci}</p>,
           },
 
-          { id: "phone", label: "Teléfono", render: (r) => r.phone || "—" },
+          { id: "email", label: "Correo", render: (r) => r.email || "—" },
+          { id: "Nombre", label: "Nombre", render: (r) => r.firstName || "—" },
+          {
+            id: "username",
+            label: "Usuario",
+            render: (r) => r.account.username || "—",
+          },
+
           {
             id: "acc",
             label: "",
@@ -74,12 +101,16 @@ export default function UsuariosPage() {
                 onClick={() => {
                   setIsOpen(true);
                   setIsEditing(true);
+                  setUserId(r.id);
+                  console.log(r);
                   setForm({
                     email: r.email,
-                    username: r.username,
                     firstName: r.firstName,
                     firstLastName: r.firstLastName,
+                    username: r.account.username,
+                    ci: r.ci,
                     password: "",
+                    roles: r.account.roles?.map((r) => r.id),
                   });
                 }}
               >

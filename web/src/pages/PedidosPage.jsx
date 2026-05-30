@@ -901,7 +901,7 @@ export default function PedidosPage() {
       <SimpleDialog
         open={openEditEventDialog}
         onClose={closeEditEventDialog}
-        tittle={editingEvent ? `Editar pedido ${editingEvent.kind === "customer" ? "cliente" : "proveedor"} #${editingEvent.id}` : "Editar pedido"}
+        title={editingEvent ? `Editar pedido ${editingEvent.kind === "customer" ? "cliente" : "proveedor"} #${editingEvent.id}` : "Editar pedido"}
         fullWidth
         maxWidth="md"
       >
@@ -1019,7 +1019,7 @@ export default function PedidosPage() {
       <SimpleDialog
         open={openCustomerDialog}
         onClose={() => setOpenCustomerDialog(false)}
-        tittle="Añadir pedido de cliente"
+        title="Añadir pedido de cliente"
         fullWidth
         maxWidth="md"
       >
@@ -1117,7 +1117,7 @@ export default function PedidosPage() {
       <SimpleDialog
         open={openSupplierDialog}
         onClose={() => setOpenSupplierDialog(false)}
-        tittle="Añadir pedido de proveedor"
+        title="Añadir pedido de proveedor"
         fullWidth
         maxWidth="md"
       >

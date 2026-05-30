@@ -75,7 +75,7 @@ export default function ProveedoresPage() {
         defaultRowsPerPage={10}
         tableMaxHeight={480}
       />
-      <SimpleDialog open={openDialog} onClose={() => setOpenDialog(false)} tittle="Nuevo proveedor" fullWidth maxWidth="md">
+      <SimpleDialog open={openDialog} onClose={() => setOpenDialog(false)} title="Nuevo proveedor" fullWidth maxWidth="md">
         <Grid container spacing={1.5} sx={{ mt: 0.5 }}>
           <Grid item xs={12} md={6}>
             <TextField fullWidth size="small" label="Nombre *" value={form.name} onChange={(e) => setForm((s) => ({ ...s, name: e.target.value }))} />

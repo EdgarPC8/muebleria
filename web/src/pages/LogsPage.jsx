@@ -105,7 +105,7 @@ export default function LogsPage() {
       <SimpleDialog
         open={open}
         onClose={() => setOpen(false)}
-        tittle="Detalle del log"
+        title="Detalle del log"
         maxWidth="md"
         fullWidth
       >

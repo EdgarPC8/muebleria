@@ -150,7 +150,7 @@ export default function ArchivosPage() {
 
       <TablePro title="Archivos" rows={rows} columns={columns} showSearch showPagination defaultRowsPerPage={10} />
 
-      <SimpleDialog open={openUpload} onClose={() => setOpenUpload(false)} tittle="Subir archivo" maxWidth="sm" fullWidth>
+      <SimpleDialog open={openUpload} onClose={() => setOpenUpload(false)} title="Subir archivo" maxWidth="sm" fullWidth>
         <UploadFileForm
           defaultFolder={folder}
           onClose={() => setOpenUpload(false)}
@@ -164,7 +164,7 @@ export default function ArchivosPage() {
       <SimpleDialog
         open={openDelete}
         onClose={() => setOpenDelete(false)}
-        tittle="Eliminar archivo"
+        title="Eliminar archivo"
         message={`¿Eliminar ${rowToDelete?.relPath}?`}
         onClickAccept={confirmDelete}
       />

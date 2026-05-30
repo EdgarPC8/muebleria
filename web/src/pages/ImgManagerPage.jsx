@@ -162,7 +162,7 @@ export default function ImgManagerPage() {
 
       <TablePro title="Imágenes" rows={rows} columns={columns} showSearch showPagination defaultRowsPerPage={10} />
 
-      <SimpleDialog open={openUpload} onClose={() => setOpenUpload(false)} tittle="Subir imagen" maxWidth="sm" fullWidth>
+      <SimpleDialog open={openUpload} onClose={() => setOpenUpload(false)} title="Subir imagen" maxWidth="sm" fullWidth>
         <UploadImageForm
           defaultFolder={folder}
           onClose={() => setOpenUpload(false)}
@@ -176,7 +176,7 @@ export default function ImgManagerPage() {
       <SimpleDialog
         open={openDelete}
         onClose={() => setOpenDelete(false)}
-        tittle="Eliminar imagen"
+        title="Eliminar imagen"
         message={`¿Eliminar ${rowToDelete?.relPath}?`}
         onClickAccept={confirmDelete}
       />

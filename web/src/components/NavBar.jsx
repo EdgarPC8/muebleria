@@ -475,7 +475,7 @@ export default function NavBar() {
               <SimpleDialog
                 open={openChangeRol}
                 onClose={() => setOpenChangeRol(false)}
-                tittle="Cambiar de rol"
+                title="Cambiar de rol"
                 maxWidth="xs"
                 fullWidth
               >
