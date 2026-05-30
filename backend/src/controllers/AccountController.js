@@ -18,22 +18,19 @@ export const getRoles = async (req, res) => {
 
 export const addAccount = async (req, res) => {
   try {
-    const {
-      username,
-      newPassword,
-      confirmPassword,
-      roles,
-      userId,
-    } = req.body;
+    const { username, newPassword, confirmPassword, roles, userId } = req.body;
 
     if (!userId) {
-      return res.status(400).json({ message: "Debe indicar la persona (usuario) de la cuenta." });
+      return res
+        .status(400)
+        .json({ message: "Debe indicar la persona (usuario) de la cuenta." });
     }
 
     const existingForUser = await Account.findOne({ where: { userId } });
     if (existingForUser) {
       return res.status(400).json({
-        message: "Esa persona ya tiene una cuenta de acceso. Solo se permite una cuenta por usuario.",
+        message:
+          "Esa persona ya tiene una cuenta de acceso. Solo se permite una cuenta por usuario.",
       });
     }
 
@@ -60,7 +57,8 @@ export const addAccount = async (req, res) => {
     console.error("Error al crear cuenta:", error);
     if (error.name === "SequelizeUniqueConstraintError") {
       return res.status(400).json({
-        message: "Esa persona ya tiene una cuenta de acceso. Solo se permite una cuenta por usuario.",
+        message:
+          "Esa persona ya tiene una cuenta de acceso. Solo se permite una cuenta por usuario.",
       });
     }
     res.status(500).json({ message: error.message });
@@ -84,7 +82,9 @@ export const updateAccount = async (req, res) => {
 
     if (data.newPassword && data.confirmPassword) {
       if (data.newPassword !== data.confirmPassword) {
-        return res.status(400).json({ message: "Las contraseñas nuevas no coinciden" });
+        return res
+          .status(400)
+          .json({ message: "Las contraseñas nuevas no coinciden" });
       }
 
       const passgenerate = await bcrypt.hash(data.newPassword, 10);
@@ -127,7 +127,9 @@ export const updateAccountUser = async (req, res) => {
     if (data.oldPassword && data.newPassword) {
       const isValid = await bcrypt.compare(data.oldPassword, cuenta.password);
       if (!isValid) {
-        return res.status(401).json({ message: "La contraseña anterior es incorrecta" });
+        return res
+          .status(401)
+          .json({ message: "La contraseña anterior es incorrecta" });
       }
 
       const hashed = await bcrypt.hash(data.newPassword, 10);
@@ -285,7 +287,7 @@ export const resetPassword = async (req, res) => {
         where: {
           id: idAccount,
         },
-      }
+      },
     );
     res.json({ message: "Password Reseteda a 12345678 con éxito" });
   } catch (error) {

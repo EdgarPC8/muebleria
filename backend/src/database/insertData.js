@@ -16,7 +16,10 @@ import { Notifications } from "../models/Notifications.js";
 import { UserData } from "../models/UserData.js";
 import { Logs } from "../models/Logs.js";
 import { NotificationProgram } from "../models/NotificationProgram.js";
-import { applyMuebleriaBackup, exportMuebleriaBackup } from "./muebleriaBackup.js";
+import {
+  applyMuebleriaBackup,
+  exportMuebleriaBackup,
+} from "./muebleriaBackup.js";
 
 /** JSON principal de respaldo (auth + catálogo + pedidos de prueba). */
 export const backupFilePath = resolve(__dirname, "backup.json");
@@ -40,7 +43,8 @@ const emptyBackup = () => ({
     SaleOrderItems: "Líneas de pedidos de clientes.",
     SupplierOrders: "Pedidos a proveedores (cabecera).",
     SupplierOrderItems: "Líneas de pedidos a proveedor.",
-    StockMovements: "Kardex de inventario: entradas, salidas y ajustes de stock.",
+    StockMovements:
+      "Kardex de inventario: entradas, salidas y ajustes de stock.",
   },
   Roles: [],
   Users: [],
@@ -82,7 +86,10 @@ async function applyBackupFromJson(jsonData, opts = {}) {
     await Account.bulkCreate(jsonData.Account || [], opt);
     await AccountRoles.bulkCreate(jsonData.AccountRoles || [], opt);
     await Notifications.bulkCreate(jsonData.Notifications || [], opt);
-    await NotificationProgram.bulkCreate(jsonData.NotificationProgram || [], opt);
+    await NotificationProgram.bulkCreate(
+      jsonData.NotificationProgram || [],
+      opt,
+    );
     await Logs.bulkCreate(jsonData.Logs || [], opt);
 
     await t.commit();
@@ -98,7 +105,9 @@ export async function insertDataIfEmpty() {
   try {
     const cuentaCount = await Account.count();
     if (cuentaCount > 0) {
-      console.log("ℹ️  BD ya tiene cuentas; omitiendo importación inicial desde backup.json.");
+      console.log(
+        "ℹ️  BD ya tiene cuentas; omitiendo importación inicial desde backup.json.",
+      );
       return;
     }
 
@@ -108,7 +117,10 @@ export async function insertDataIfEmpty() {
       jsonData = JSON.parse(raw);
     } catch (e) {
       if (e.code === "ENOENT") {
-        await fs.writeFile(backupFilePath, JSON.stringify(emptyBackup(), null, 2));
+        await fs.writeFile(
+          backupFilePath,
+          JSON.stringify(emptyBackup(), null, 2),
+        );
         console.log("📄 Creado backup.json vacío en:", backupFilePath);
         return;
       }
@@ -135,7 +147,10 @@ export const insertData = async () => {
     console.log("✅ Datos insertados desde backup.json (muebleria).");
   } catch (error) {
     if (error.code === "ENOENT") {
-      await fs.writeFile(backupFilePath, JSON.stringify(emptyBackup(), null, 2));
+      await fs.writeFile(
+        backupFilePath,
+        JSON.stringify(emptyBackup(), null, 2),
+      );
       console.log("📄 Creado backup.json vacío en:", backupFilePath);
     } else {
       console.error("Error al insertar datos:", error);
@@ -205,7 +220,9 @@ export const downloadBackup = async (req, res) => {
       if (err) {
         console.error("Error al enviar el archivo:", err);
         if (!res.headersSent) {
-          res.status(500).json({ message: "Error al enviar el archivo de backup." });
+          res
+            .status(500)
+            .json({ message: "Error al enviar el archivo de backup." });
         }
       }
     });

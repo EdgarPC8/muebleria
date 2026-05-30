@@ -20,13 +20,22 @@ import { isAuthenticated, isAdmin } from "../middlewares/authMiddelware.js";
 const router = new Router();
 
 router.get("/account/:accountId/:rolId", isAuthenticated, getAccount);
-router.put("/account/updateAccountUser/:id/:userId/:rolId", isAuthenticated, updateAccountUser);
+router.put(
+  "/account/updateAccountUser/:id/:userId/:rolId",
+  isAuthenticated,
+  updateAccountUser,
+);
 
 router.get("/account", isAuthenticated, isAdmin, getAccounts);
 router.get("/account/:id", isAuthenticated, isAdmin, getOneAccount);
 router.post("/account", isAuthenticated, isAdmin, addAccount);
 router.delete("/account/:id", isAuthenticated, isAdmin, deleteAccount);
-router.put("/account/resetPassword/:id", isAuthenticated, isAdmin, resetPassword);
+router.put(
+  "/account/resetPassword/:id",
+  isAuthenticated,
+  isAdmin,
+  resetPassword,
+);
 router.put("/account/:id", isAuthenticated, isAdmin, updateAccount);
 
 router.get("/rol", isAuthenticated, isAdmin, getRoles);

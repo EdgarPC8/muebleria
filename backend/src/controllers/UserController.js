@@ -1,10 +1,11 @@
 /**
  * CRUD de usuarios del sistema (tabla users).
  */
-import { Account } from "../models/Account.js";
+import { Account, AccountRoles } from "../models/Account.js";
 import { Users } from "../models/Users.js";
-import { UniqueConstraintError } from "sequelize";
+import { UniqueConstraintError, where } from "sequelize";
 import bcrypt from "bcrypt";
+import { Roles } from "../models/Roles.js";
 
 export const addUser = async (req, res) => {
   try {
@@ -12,19 +13,28 @@ export const addUser = async (req, res) => {
 
     const newUser = await Users.create({
       ci: data.ci,
+      email: data.email,
       firstName: data.firstName,
       firstLastName: data.firstLastName,
     });
 
     const hashedPassword = await bcrypt.hash(data.password, 10);
+
     const newAccount = await Account.create({
       username: data.username,
       password: hashedPassword,
       userId: newUser.id,
     });
 
+    const roles = data.roles.map((v) => ({
+      accountId: newAccount.id,
+      roleId: v,
+    }));
+
+    await AccountRoles.bulkCreate(roles);
+
     return res.json({
-      message: "agregado con éxito",
+      message: "Agregado con éxito",
       user: newUser,
       success: true,
     });
@@ -49,9 +59,42 @@ export const updateUserData = async (req, res) => {
   try {
     const { photo, ...data } = req.body;
 
-    await Users.update(data, {
+    const userData = {
+      ci: data.ci,
+      email: data.email,
+      firstName: data.firstName,
+      firstLastName: data.firstLastName,
+    };
+
+    const acocuntData = {
+      username: data.username,
+    };
+
+    if (data.password) {
+      const hashedPassword = await bcrypt.hash(data.password, 10);
+      acocuntData.password = hashedPassword;
+    }
+
+    await Users.update(userData, {
       where: { id: req.params.userId },
     });
+    await Account.update(acocuntData, { where: { userId: req.params.userId } });
+
+    const account = await Account.findOne({
+      where: { userId: req.params.userId },
+    });
+    await AccountRoles.destroy({
+      where: {
+        accountId: account.id,
+      },
+    });
+
+    const mapped = data.roles.map((roleId) => ({
+      roleId,
+      accountId: account.id,
+    }));
+
+    await AccountRoles.bulkCreate(mapped);
 
     return res.json({ message: "usuario editado con éxito" });
   } catch (error) {
@@ -70,6 +113,12 @@ export const getUsers = async (req, res) => {
           as: "account",
           attributes: ["id", "username"],
           required: false,
+          include: {
+            model: Roles,
+            as: "roles",
+            attributes: ["id"],
+            through: { attributes: [] },
+          },
         },
       ],
     });

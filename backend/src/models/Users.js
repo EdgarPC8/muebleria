@@ -14,9 +14,10 @@ export const Users = sequelize.define(
       type: DataTypes.STRING,
       unique: true,
     },
-    documentType: {
+    email: {
       type: DataTypes.STRING,
     },
+
     firstName: {
       type: DataTypes.STRING,
     },
@@ -41,5 +42,5 @@ export const Users = sequelize.define(
   },
   {
     timestamps: false,
-  }
+  },
 );

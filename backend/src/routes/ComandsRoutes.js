@@ -22,6 +22,11 @@ router.get("/getLogs", isAuthenticated, isAdmin, getLogs);
 router.get("/saveBackup", isAuthenticated, saveBackupController);
 router.get("/downloadBackup", isAuthenticated, downloadBackup);
 router.get("/reloadBD", isAuthenticated, reloadBdController);
-router.post("/upload-backup", isAuthenticated, upload.single("backup"), uploadBackupController);
+router.post(
+  "/upload-backup",
+  isAuthenticated,
+  upload.single("backup"),
+  uploadBackupController,
+);
 
 export default router;

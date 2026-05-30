@@ -34,26 +34,26 @@
     {
       "id": 1,
       "ci": "0000000001",
-      "documentType": "Cedula",
       "firstName": "Admin",
       "secondName": "",
       "firstLastName": "Muebleria",
       "secondLastName": "",
       "birthday": "2000-01-01",
       "gender": "M",
-      "photo": null
+      "photo": null,
+      "email": "admin@gmail.com"
     },
     {
       "id": 2,
       "ci": "1106011420",
-      "documentType": null,
       "firstName": "Patricio",
       "secondName": "Alexander",
       "firstLastName": "Briceño",
       "secondLastName": "Sarango",
       "birthday": "2003-05-23",
       "gender": "M",
-      "photo": null
+      "photo": null,
+      "email": "pabrisdev@gmail.com"
     }
   ],
   "UserData": [],
