@@ -46,6 +46,7 @@ function getLocalIP() {
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
 const httpServer = createServer(app);
 const api = "muebleriaapi";
 const PORT = Number(process.env.MUEBLERIA_API_PORT || 3007);

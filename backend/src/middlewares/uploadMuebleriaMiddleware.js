@@ -10,6 +10,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const IMG_PRODUCTS_DIR = path.join(__dirname, "..", "img", "products");
+
 if (!fs.existsSync(IMG_PRODUCTS_DIR)) {
   fs.mkdirSync(IMG_PRODUCTS_DIR, { recursive: true });
 }
