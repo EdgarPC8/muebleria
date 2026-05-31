@@ -55,7 +55,12 @@ export default function ProductosPage() {
   const [newBrand, setNewBrand] = useState("");
 
   const loadAll = async () => {
-    const [p, c, b, u] = await Promise.all([getProducts(), getCategories(), getBrands(), getUnits()]);
+    const [p, c, b, u] = await Promise.all([
+      getProducts(),
+      getCategories(),
+      getBrands(),
+      getUnits(),
+    ]);
     setProducts(p.data || []);
     setCategories(c.data || []);
     setBrands(b.data || []);
@@ -70,8 +75,10 @@ export default function ProductosPage() {
     setEditing(null);
     setForm(emptyForm());
     setImageFile(null);
-    const defaultUnit = units.find((x) => x.isBase && x.groupName === "unit") || units[0];
-    if (defaultUnit) setForm((f) => ({ ...f, baseUnitId: String(defaultUnit.id) }));
+    const defaultUnit =
+      units.find((x) => x.isBase && x.groupName === "unit") || units[0];
+    if (defaultUnit)
+      setForm((f) => ({ ...f, baseUnitId: String(defaultUnit.id) }));
     setOpenDialog(true);
   };
 
@@ -88,13 +95,16 @@ export default function ProductosPage() {
       stockBase: String(row.stockBase ?? 0),
       minStockBase: String(row.minStockBase ?? 0),
     });
-    setImageFile(null);
+    setImageFile(buildImageUrl(row.primaryImageUrl));
     setOpenDialog(true);
   };
 
   const onSave = async () => {
     if (!form.name.trim() || !form.baseUnitId) {
-      toast({ message: "Nombre y unidad son obligatorios.", variant: "warning" });
+      toast({
+        message: "Nombre y unidad son obligatorios.",
+        variant: "warning",
+      });
       return;
     }
     const fd = new FormData();
@@ -155,7 +165,12 @@ export default function ProductosPage() {
           <Grid item xs={12} sm={6} md={3} key={p.id}>
             <Card sx={{ borderRadius: 2, height: "100%" }}>
               {p.primaryImageUrl && (
-                <CardMedia component="img" height={120} image={buildImageUrl(p.primaryImageUrl)} alt={p.name} />
+                <CardMedia
+                  component="img"
+                  height={120}
+                  image={buildImageUrl(p.primaryImageUrl)}
+                  alt={p.name}
+                />
               )}
               <CardContent>
                 <Typography variant="subtitle1" fontWeight={700} noWrap>
@@ -164,7 +179,12 @@ export default function ProductosPage() {
                 <Typography variant="body2" color="text.secondary">
                   ${Number(p.salePrice).toFixed(2)}
                 </Typography>
-                <Chip size="small" label={`Stock: ${p.stockBase}`} sx={{ mt: 1 }} color={p.stockBase <= p.minStockBase ? "warning" : "default"} />
+                <Chip
+                  size="small"
+                  label={`Stock: ${p.stockBase}`}
+                  sx={{ mt: 1 }}
+                  color={p.stockBase <= p.minStockBase ? "warning" : "default"}
+                />
               </CardContent>
             </Card>
           </Grid>
@@ -178,10 +198,22 @@ export default function ProductosPage() {
           { id: "id", label: "ID" },
           { id: "name", label: "Producto" },
           { id: "sku", label: "SKU" },
-          { id: "cat", label: "Categoría", render: (r) => r.category?.name || "—" },
+          {
+            id: "cat",
+            label: "Categoría",
+            render: (r) => r.category?.name || "—",
+          },
           { id: "brand", label: "Marca", render: (r) => r.brand?.name || "—" },
-          { id: "unit", label: "Unidad", render: (r) => r.baseUnit?.abbreviation || "—" },
-          { id: "salePrice", label: "Precio", render: (r) => `$${Number(r.salePrice).toFixed(2)}` },
+          {
+            id: "unit",
+            label: "Unidad",
+            render: (r) => r.baseUnit?.abbreviation || "—",
+          },
+          {
+            id: "salePrice",
+            label: "Precio",
+            render: (r) => `$${Number(r.salePrice).toFixed(2)}`,
+          },
           { id: "stockBase", label: "Stock" },
           {
             id: "edit",
@@ -208,16 +240,46 @@ export default function ProductosPage() {
       >
         <Grid container spacing={1.5} sx={{ mt: 0.5 }}>
           <Grid item xs={12}>
-            <TextField fullWidth size="small" label="Nombre *" value={form.name} onChange={(e) => setForm((s) => ({ ...s, name: e.target.value }))} />
+            <TextField
+              fullWidth
+              size="small"
+              label="Nombre *"
+              value={form.name}
+              onChange={(e) => setForm((s) => ({ ...s, name: e.target.value }))}
+            />
           </Grid>
           <Grid item xs={12} sm={6}>
-            <TextField fullWidth size="small" label="SKU" value={form.sku} onChange={(e) => setForm((s) => ({ ...s, sku: e.target.value }))} />
+            <TextField
+              fullWidth
+              size="small"
+              label="SKU"
+              value={form.sku}
+              onChange={(e) => setForm((s) => ({ ...s, sku: e.target.value }))}
+            />
           </Grid>
           <Grid item xs={12} sm={6}>
-            <TextField fullWidth size="small" label="Medidas / tamaño" value={form.sizeLabel} onChange={(e) => setForm((s) => ({ ...s, sizeLabel: e.target.value }))} placeholder="ej. 2m x 1m" />
+            <TextField
+              fullWidth
+              size="small"
+              label="Medidas / tamaño"
+              value={form.sizeLabel}
+              onChange={(e) =>
+                setForm((s) => ({ ...s, sizeLabel: e.target.value }))
+              }
+              placeholder="ej. 2m x 1m"
+            />
           </Grid>
           <Grid item xs={12} sm={4}>
-            <TextField select fullWidth size="small" label="Categoría" value={form.categoryId} onChange={(e) => setForm((s) => ({ ...s, categoryId: e.target.value }))}>
+            <TextField
+              select
+              fullWidth
+              size="small"
+              label="Categoría"
+              value={form.categoryId}
+              onChange={(e) =>
+                setForm((s) => ({ ...s, categoryId: e.target.value }))
+              }
+            >
               <MenuItem value="">—</MenuItem>
               {categories.map((c) => (
                 <MenuItem key={c.id} value={c.id}>
@@ -227,7 +289,16 @@ export default function ProductosPage() {
             </TextField>
           </Grid>
           <Grid item xs={12} sm={4}>
-            <TextField select fullWidth size="small" label="Marca" value={form.brandId} onChange={(e) => setForm((s) => ({ ...s, brandId: e.target.value }))}>
+            <TextField
+              select
+              fullWidth
+              size="small"
+              label="Marca"
+              value={form.brandId}
+              onChange={(e) =>
+                setForm((s) => ({ ...s, brandId: e.target.value }))
+              }
+            >
               <MenuItem value="">—</MenuItem>
               {brands.map((b) => (
                 <MenuItem key={b.id} value={b.id}>
@@ -237,7 +308,16 @@ export default function ProductosPage() {
             </TextField>
           </Grid>
           <Grid item xs={12} sm={4}>
-            <TextField select fullWidth size="small" label="Unidad *" value={form.baseUnitId} onChange={(e) => setForm((s) => ({ ...s, baseUnitId: e.target.value }))}>
+            <TextField
+              select
+              fullWidth
+              size="small"
+              label="Unidad *"
+              value={form.baseUnitId}
+              onChange={(e) =>
+                setForm((s) => ({ ...s, baseUnitId: e.target.value }))
+              }
+            >
               {units.map((u) => (
                 <MenuItem key={u.id} value={u.id}>
                   {u.name} ({u.abbreviation})
@@ -246,22 +326,88 @@ export default function ProductosPage() {
             </TextField>
           </Grid>
           <Grid item xs={12} sm={4}>
-            <TextField fullWidth size="small" label="Precio venta" type="number" value={form.salePrice} onChange={(e) => setForm((s) => ({ ...s, salePrice: e.target.value }))} />
+            <TextField
+              fullWidth
+              size="small"
+              label="Precio venta"
+              type="number"
+              value={form.salePrice}
+              onChange={(e) =>
+                setForm((s) => ({ ...s, salePrice: e.target.value }))
+              }
+            />
           </Grid>
           <Grid item xs={12} sm={4}>
-            <TextField fullWidth size="small" label="Stock" type="number" value={form.stockBase} onChange={(e) => setForm((s) => ({ ...s, stockBase: e.target.value }))} />
+            <TextField
+              fullWidth
+              size="small"
+              label="Stock"
+              type="number"
+              value={form.stockBase}
+              onChange={(e) =>
+                setForm((s) => ({ ...s, stockBase: e.target.value }))
+              }
+            />
           </Grid>
           <Grid item xs={12} sm={4}>
-            <TextField fullWidth size="small" label="Stock mínimo" type="number" value={form.minStockBase} onChange={(e) => setForm((s) => ({ ...s, minStockBase: e.target.value }))} />
+            <TextField
+              fullWidth
+              size="small"
+              label="Stock mínimo"
+              type="number"
+              value={form.minStockBase}
+              onChange={(e) =>
+                setForm((s) => ({ ...s, minStockBase: e.target.value }))
+              }
+            />
           </Grid>
           <Grid item xs={12}>
-            <Button variant="outlined" component="label" size="small">
-              {imageFile ? imageFile.name : "Subir foto"}
-              <input type="file" accept="image/*" hidden onChange={(e) => setImageFile(e.target.files?.[0] || null)} />
-            </Button>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 2,
+                alignItems: "flex-start",
+              }}
+            >
+              {imageFile && (
+                <img
+                  src={
+                    imageFile instanceof File
+                      ? URL.createObjectURL(imageFile)
+                      : imageFile
+                  }
+                  loading="lazy"
+                  style={{
+                    maxWidth: 100,
+                    borderRadius: 10,
+                    height: "auto",
+                  }}
+                />
+              )}
+              <Button variant="outlined" component="label" size="small">
+                {typeof imageFile === File
+                  ? imageFile.name
+                  : editing
+                    ? "Reemplazar foto"
+                    : "Subir foto"}
+                <input
+                  type="file"
+                  accept="image/*"
+                  hidden
+                  onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+                />
+              </Button>
+            </Box>
           </Grid>
           <Grid item xs={12} sm={8}>
-            <TextField fullWidth size="small" label="Nueva marca" value={newBrand} onChange={(e) => setNewBrand(e.target.value)} />
+            <TextField
+              fullWidth
+              size="small"
+              label="Nueva marca"
+              value={newBrand}
+              onChange={(e) => setNewBrand(e.target.value)}
+            />
           </Grid>
           <Grid item xs={12} sm={4}>
             <Button fullWidth variant="outlined" onClick={addBrand}>

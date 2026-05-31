@@ -33,6 +33,13 @@ import {
 import { entityWithMessage } from "../utils/jsonResponse.js";
 import { exportDatabaseSchema } from "../utils/databaseSchemaExport.js";
 
+import fs from "fs/promises";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const slugify = (value = "") =>
   value
     .toString()
@@ -252,6 +259,7 @@ export const createProduct = async (req, res) => {
 export const updateProduct = async (req, res) => {
   const { id } = req.params;
   const product = await StoreProduct.findByPk(id);
+
   if (!product)
     return res.status(404).json({ message: "Producto no encontrado." });
 
@@ -286,6 +294,7 @@ export const updateProduct = async (req, res) => {
 
   if (req.uploadInfo?.relPath) {
     payload.primaryImageUrl = req.uploadInfo.relPath;
+    await fs.unlink(path.join(__dirname, "..", "img", product.primaryImageUrl));
   }
 
   await product.update(payload);
