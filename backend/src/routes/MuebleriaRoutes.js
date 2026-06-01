@@ -11,6 +11,8 @@ import {
   createUnit,
   getCategories,
   createCategory,
+  updateCategory,
+  deleteCategory,
   getBrands,
   createBrand,
   getProducts,
@@ -54,6 +56,8 @@ router.get("/units", isAuthenticated, getUnits);
 router.post("/units", isAuthenticated, createUnit);
 router.get("/categories", isAuthenticated, getCategories);
 router.post("/categories", isAuthenticated, createCategory);
+router.put("/categories/:id", isAuthenticated, updateCategory);
+router.delete("/categories/:id", isAuthenticated, deleteCategory);
 router.get("/brands", isAuthenticated, getBrands);
 router.post("/brands", isAuthenticated, createBrand);
 router.get("/products", isAuthenticated, getProducts);

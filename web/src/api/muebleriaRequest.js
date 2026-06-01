@@ -11,6 +11,8 @@ export const createUnit = (payload) => axios.post("/muebleria/units", payload, a
 
 export const getCategories = () => axios.get("/muebleria/categories", auth());
 export const createCategory = (payload) => axios.post("/muebleria/categories", payload, auth());
+export const updateCategory = (id, payload) => axios.put(`/muebleria/categories/${id}`, payload, auth());
+export const deleteCategory = (id) => axios.delete(`/muebleria/categories/${id}`, auth());
 
 export const getBrands = () => axios.get("/muebleria/brands", auth());
 export const createBrand = (payload) => axios.post("/muebleria/brands", payload, auth());

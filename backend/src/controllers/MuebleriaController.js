@@ -161,6 +161,57 @@ export const getCategories = async (_req, res) => {
   res.json(data);
 };
 
+export const updateCategory = async (req, res) => {
+  const { id } = req.params;
+  const category = await ProductCategory.findByPk(id);
+  if (!category)
+    return res.status(404).json({ message: "Categoría no encontrada." });
+
+  const { name, description, parentId, sortOrder } = req.body;
+
+  let slug = category.slug;
+  if (name?.trim() && name.trim() !== category.name) {
+    const slugBase = slugify(name);
+    if (!slugBase)
+      return res.status(400).json({ message: "No se pudo generar slug válido." });
+    slug = slugBase;
+    let i = 1;
+    while (await ProductCategory.findOne({ where: { slug, id: { [Op.ne]: id } } })) {
+      i += 1;
+      slug = `${slugBase}-${i}`;
+    }
+  }
+
+  if (parentId && Number(parentId) === Number(id)) {
+    return res.status(400).json({ message: "Una categoría no puede ser padre de sí misma." });
+  }
+  if (parentId) {
+    const parent = await ProductCategory.findByPk(parentId);
+    if (!parent)
+      return res.status(400).json({ message: "La categoría padre no existe." });
+  }
+
+  await category.update({
+    name: name?.trim() || category.name,
+    slug,
+    parentId: parentId !== undefined ? (parentId || null) : category.parentId,
+    description: description !== undefined ? (description?.trim() || null) : category.description,
+    sortOrder: sortOrder !== undefined ? Number(sortOrder) : category.sortOrder,
+  });
+  await category.reload();
+  res.json(entityWithMessage(category, "Categoría actualizada correctamente."));
+};
+
+export const deleteCategory = async (req, res) => {
+  const { id } = req.params;
+  const category = await ProductCategory.findByPk(id);
+  if (!category)
+    return res.status(404).json({ message: "Categoría no encontrada." });
+
+  await category.update({ isActive: false });
+  res.json({ message: "Categoría desactivada correctamente." });
+};
+
 export const getBrands = async (_req, res) => {
   const data = await Brand.findAll({ order: [["name", "ASC"]] });
   res.json(data);

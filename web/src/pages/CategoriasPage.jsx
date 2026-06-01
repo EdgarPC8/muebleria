@@ -1,29 +1,34 @@
-/**
- * Categorías de producto (árbol padre/hijo).
- */
 import { useEffect, useState } from "react";
 import {
   Box,
-  Paper,
-  Typography,
-  Grid,
-  TextField,
   Button,
+  Grid,
   MenuItem,
+  Paper,
+  TextField,
+  Typography,
 } from "@mui/material";
 import TablePro from "../components/Tables/TablePro.jsx";
 import SimpleDialog from "../components/Dialogs/SimpleDialog.jsx";
-import { createCategory, getCategories } from "../api/muebleriaRequest.js";
+import {
+  createCategory,
+  deleteCategory,
+  getCategories,
+  updateCategory,
+} from "../api/muebleriaRequest.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import { withMutationToast } from "../utils/mutationToast.js";
+
+const EMPTY_FORM = { name: "", description: "", parentId: "" };
 
 export default function CategoriasPage() {
   const { toast } = useAuth();
   const [categories, setCategories] = useState([]);
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [parentId, setParentId] = useState("");
+  const [form, setForm] = useState(EMPTY_FORM);
   const [openDialog, setOpenDialog] = useState(false);
+  const [openConfirm, setOpenConfirm] = useState(false);
+  const [editing, setEditing] = useState(null);
+  const [deleting, setDeleting] = useState(null);
 
   const loadData = async () => {
     const { data } = await getCategories();
@@ -34,23 +39,59 @@ export default function CategoriasPage() {
     loadData();
   }, []);
 
-  const onCreate = async () => {
-    if (!name.trim()) {
+  const activeCategories = categories.filter((c) => c.isActive !== false);
+
+  const openNew = () => {
+    setEditing(null);
+    setForm(EMPTY_FORM);
+    setOpenDialog(true);
+  };
+
+  const openEdit = (cat) => {
+    setEditing(cat);
+    setForm({
+      name: cat.name || "",
+      description: cat.description || "",
+      parentId: cat.parentId || "",
+    });
+    setOpenDialog(true);
+  };
+
+  const onSave = async () => {
+    if (!form.name.trim()) {
       toast({ message: "El nombre es obligatorio.", variant: "warning" });
       return;
     }
+    const payload = {
+      name: form.name.trim(),
+      description: form.description.trim() || null,
+      parentId: form.parentId || null,
+    };
     try {
       await withMutationToast(toast, {
-        promise: createCategory({
-          name: name.trim(),
-          description: description.trim() || null,
-          parentId: parentId || null,
-        }),
+        promise: editing
+          ? updateCategory(editing.id, payload)
+          : createCategory(payload),
         onSuccess: async () => {
-          setName("");
-          setDescription("");
-          setParentId("");
+          setForm(EMPTY_FORM);
+          setEditing(null);
           setOpenDialog(false);
+          await loadData();
+        },
+      });
+    } catch {
+      /* toast mostró error */
+    }
+  };
+
+  const onDelete = async () => {
+    if (!deleting) return;
+    try {
+      await withMutationToast(toast, {
+        promise: deleteCategory(deleting.id),
+        onSuccess: async () => {
+          setDeleting(null);
+          setOpenConfirm(false);
           await loadData();
         },
       });
@@ -65,7 +106,7 @@ export default function CategoriasPage() {
         Categorías
       </Typography>
       <Paper variant="panel" sx={{ p: 2, mb: 2 }}>
-        <Button variant="contained" onClick={() => setOpenDialog(true)}>
+        <Button variant="contained" onClick={openNew}>
           Nueva categoría
         </Button>
       </Paper>
@@ -81,14 +122,33 @@ export default function CategoriasPage() {
             label: "Padre",
             render: (r) => r.parent?.name || "—",
           },
-
           {
-            id: "actions",
-            label: "Accines",
-            render: (r) => {
-              <Button size="small">Editar</Button>;
-              <Button size="small">Eliminar</Button>;
-            },
+            id: "isActive",
+            label: "Estado",
+            render: (r) => (r.isActive !== false ? "Activa" : "Inactiva"),
+          },
+          {
+            id: "acc",
+            label: "",
+            render: (r) => (
+              <Box sx={{ display: "flex", gap: 0.5 }}>
+                <Button size="small" onClick={() => openEdit(r)}>
+                  Editar
+                </Button>
+                {r.isActive !== false && (
+                  <Button
+                    size="small"
+                    color="error"
+                    onClick={() => {
+                      setDeleting(r);
+                      setOpenConfirm(true);
+                    }}
+                  >
+                    Desactivar
+                  </Button>
+                )}
+              </Box>
+            ),
           },
         ]}
         showSearch
@@ -99,7 +159,7 @@ export default function CategoriasPage() {
       <SimpleDialog
         open={openDialog}
         onClose={() => setOpenDialog(false)}
-        title="Nueva categoría"
+        title={editing ? "Editar categoría" : "Nueva categoría"}
         fullWidth
         maxWidth="md"
       >
@@ -109,8 +169,8 @@ export default function CategoriasPage() {
               fullWidth
               size="small"
               label="Nombre *"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
             />
           </Grid>
           <Grid item xs={12} md={4}>
@@ -119,15 +179,17 @@ export default function CategoriasPage() {
               fullWidth
               size="small"
               label="Padre"
-              value={parentId}
-              onChange={(e) => setParentId(e.target.value)}
+              value={form.parentId}
+              onChange={(e) => setForm({ ...form, parentId: e.target.value })}
             >
               <MenuItem value="">Raíz</MenuItem>
-              {categories.map((c) => (
-                <MenuItem key={c.id} value={c.id}>
-                  {c.name}
-                </MenuItem>
-              ))}
+              {activeCategories
+                .filter((c) => !editing || c.id !== editing.id)
+                .map((c) => (
+                  <MenuItem key={c.id} value={c.id}>
+                    {c.name}
+                  </MenuItem>
+                ))}
             </TextField>
           </Grid>
           <Grid item xs={12} md={3}>
@@ -135,17 +197,26 @@ export default function CategoriasPage() {
               fullWidth
               size="small"
               label="Descripción"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              value={form.description}
+              onChange={(e) =>
+                setForm({ ...form, description: e.target.value })
+              }
             />
           </Grid>
           <Grid item xs={12}>
-            <Button fullWidth variant="contained" onClick={onCreate}>
+            <Button fullWidth variant="contained" onClick={onSave}>
               Guardar
             </Button>
           </Grid>
         </Grid>
       </SimpleDialog>
+      <SimpleDialog
+        open={openConfirm}
+        onClose={() => setOpenConfirm(false)}
+        title="Desactivar categoría"
+        message={`¿Desactivar "${deleting?.name}"? Quedará oculta pero los productos asociados no se eliminan.`}
+        onClickAccept={onDelete}
+      />
     </Box>
   );
 }
