@@ -28,6 +28,7 @@ import ArchivosPage from "./pages/ArchivosPage.jsx";
 import PedidosPage from "./pages/PedidosPage.jsx";
 import MovimientosPage from "./pages/MovimientosPage.jsx";
 import CajaPage from "./pages/CajaPage.jsx";
+import VentasPage from "./pages/VentasPage.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
 import UsersPage from "./pages/UsersPage.jsx";
 
@@ -52,6 +53,7 @@ export default function App() {
             <Route path="/clientes" element={<ClientesPage />} />
             <Route path="/pedidos" element={<PedidosPage />} />
             <Route path="/caja" element={<CajaPage />} />
+            <Route path="/ventas" element={<VentasPage />} />
             <Route
               path="/pedidos-clientes"
               element={<Navigate to="/pedidos" replace />}

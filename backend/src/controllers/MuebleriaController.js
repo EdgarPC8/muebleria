@@ -292,9 +292,11 @@ export const updateProduct = async (req, res) => {
     minStockBase: Number(req.body.minStockBase ?? product.minStockBase ?? 0),
   };
 
-  if (req.uploadInfo?.relPath) {
+  if (req.uploadInfo?.relPath && product.primaryImageUrl) {
     payload.primaryImageUrl = req.uploadInfo.relPath;
     await fs.unlink(path.join(__dirname, "..", "img", product.primaryImageUrl));
+  } else {
+    payload.primaryImageUrl = req.uploadInfo.relPath;
   }
 
   await product.update(payload);

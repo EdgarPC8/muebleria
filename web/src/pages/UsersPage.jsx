@@ -102,7 +102,6 @@ export default function UsersPage() {
                   setIsOpen(true);
                   setIsEditing(true);
                   setUserId(r.id);
-                  console.log(r);
                   setForm({
                     email: r.email,
                     firstName: r.firstName,

@@ -57,6 +57,7 @@ import GroupIcon from "@mui/icons-material/Group";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
+import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
 import SwapVertIcon from "@mui/icons-material/SwapVert";
 
 import { useAuth } from "../context/AuthContext.jsx";
@@ -76,6 +77,7 @@ const MENU_GROUPS = [
     label: "General",
     items: [
       { name: "Panel", link: "/", icon: <DashboardIcon />, roles: ["Programador", "Administrador", "Empleado"] },
+      { name: "Ventas", link: "/ventas", icon: <ReceiptLongIcon />, roles: ["Programador", "Administrador", "Empleado"] },
       { name: "Notificaciones", link: "/notifications", icon: <NotificationsIcon />, roles: ["Programador", "Administrador", "Empleado"] },
     ],
   },
@@ -337,6 +339,21 @@ export default function NavBar() {
                   }}
                 >
                   Caja
+                </Button>
+              )}
+              {["Programador", "Administrador", "Empleado"].includes(user?.loginRol) && (
+                <Button
+                  color="inherit"
+                  startIcon={<ReceiptLongIcon />}
+                  onClick={() => navigate("/ventas")}
+                  sx={{
+                    textTransform: "none",
+                    fontWeight: 600,
+                    mr: 1,
+                    ...(location.pathname === "/ventas" && { bgcolor: "rgba(255,255,255,0.12)" }),
+                  }}
+                >
+                  Ventas
                 </Button>
               )}
             </>

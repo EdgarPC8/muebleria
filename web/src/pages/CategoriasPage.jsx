@@ -2,7 +2,15 @@
  * Categorías de producto (árbol padre/hijo).
  */
 import { useEffect, useState } from "react";
-import { Box, Paper, Typography, Grid, TextField, Button, MenuItem } from "@mui/material";
+import {
+  Box,
+  Paper,
+  Typography,
+  Grid,
+  TextField,
+  Button,
+  MenuItem,
+} from "@mui/material";
 import TablePro from "../components/Tables/TablePro.jsx";
 import SimpleDialog from "../components/Dialogs/SimpleDialog.jsx";
 import { createCategory, getCategories } from "../api/muebleriaRequest.js";
@@ -68,20 +76,52 @@ export default function CategoriasPage() {
           { id: "id", label: "ID" },
           { id: "name", label: "Nombre" },
           { id: "slug", label: "Slug" },
-          { id: "parent", label: "Padre", render: (r) => r.parent?.name || "—" },
+          {
+            id: "parent",
+            label: "Padre",
+            render: (r) => r.parent?.name || "—",
+          },
+
+          {
+            id: "actions",
+            label: "Accines",
+            render: (r) => {
+              <Button size="small">Editar</Button>;
+              <Button size="small">Eliminar</Button>;
+            },
+          },
         ]}
         showSearch
         showPagination
         showIndex
         tableMaxHeight={440}
       />
-      <SimpleDialog open={openDialog} onClose={() => setOpenDialog(false)} title="Nueva categoría" fullWidth maxWidth="md">
+      <SimpleDialog
+        open={openDialog}
+        onClose={() => setOpenDialog(false)}
+        title="Nueva categoría"
+        fullWidth
+        maxWidth="md"
+      >
         <Grid container spacing={1.5} sx={{ mt: 0.5 }}>
           <Grid item xs={12} md={5}>
-            <TextField fullWidth size="small" label="Nombre *" value={name} onChange={(e) => setName(e.target.value)} />
+            <TextField
+              fullWidth
+              size="small"
+              label="Nombre *"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
           </Grid>
           <Grid item xs={12} md={4}>
-            <TextField select fullWidth size="small" label="Padre" value={parentId} onChange={(e) => setParentId(e.target.value)}>
+            <TextField
+              select
+              fullWidth
+              size="small"
+              label="Padre"
+              value={parentId}
+              onChange={(e) => setParentId(e.target.value)}
+            >
               <MenuItem value="">Raíz</MenuItem>
               {categories.map((c) => (
                 <MenuItem key={c.id} value={c.id}>
@@ -91,7 +131,13 @@ export default function CategoriasPage() {
             </TextField>
           </Grid>
           <Grid item xs={12} md={3}>
-            <TextField fullWidth size="small" label="Descripción" value={description} onChange={(e) => setDescription(e.target.value)} />
+            <TextField
+              fullWidth
+              size="small"
+              label="Descripción"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
           </Grid>
           <Grid item xs={12}>
             <Button fullWidth variant="contained" onClick={onCreate}>
