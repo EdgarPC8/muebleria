@@ -1107,6 +1107,7 @@
       "city": "Guayaquil",
       "reference": "Casa esquina verde",
       "notes": "Cliente frecuente",
+      "isActive": true,
       "createdAt": "2026-05-29T21:33:06.000Z",
       "updatedAt": "2026-05-29T21:33:06.000Z"
     },
@@ -1129,6 +1130,7 @@
       "city": "Quito",
       "reference": null,
       "notes": null,
+      "isActive": true,
       "createdAt": "2026-05-29T21:33:06.000Z",
       "updatedAt": "2026-05-29T21:33:06.000Z"
     },
@@ -1151,6 +1153,7 @@
       "city": "Cuenca",
       "reference": "Edificio azul piso 2",
       "notes": "Prefiere entrega fines de semana",
+      "isActive": true,
       "createdAt": "2026-05-29T21:33:06.000Z",
       "updatedAt": "2026-05-29T21:33:06.000Z"
     },
@@ -1173,6 +1176,7 @@
       "city": "Guayaquil",
       "reference": null,
       "notes": "Compras corporativas oficina",
+      "isActive": true,
       "createdAt": "2026-05-29T21:33:06.000Z",
       "updatedAt": "2026-05-29T21:33:06.000Z"
     },
@@ -1195,6 +1199,7 @@
       "city": "Quito",
       "reference": "Conjunto Los Pinos",
       "notes": null,
+      "isActive": true,
       "createdAt": "2026-05-29T21:33:06.000Z",
       "updatedAt": "2026-05-29T21:33:06.000Z"
     },
@@ -1217,6 +1222,7 @@
       "city": "Cuenca",
       "reference": null,
       "notes": "Cliente mayorista ocasional",
+      "isActive": true,
       "createdAt": "2026-05-29T21:33:06.000Z",
       "updatedAt": "2026-05-29T21:33:06.000Z"
     },
@@ -1239,6 +1245,7 @@
       "city": "Guayaquil",
       "reference": "Villa club",
       "notes": "Amuebla departamento nuevo",
+      "isActive": true,
       "createdAt": "2026-05-29T21:33:06.000Z",
       "updatedAt": "2026-05-29T21:33:06.000Z"
     },
@@ -1261,6 +1268,7 @@
       "city": "Quito",
       "reference": null,
       "notes": null,
+      "isActive": true,
       "createdAt": "2026-05-29T21:33:06.000Z",
       "updatedAt": "2026-05-29T21:33:06.000Z"
     }
@@ -1606,3 +1614,4 @@
   ],
   "StockMovements": []
 }
+

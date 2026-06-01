@@ -1,12 +1,14 @@
-/**
- * Gestión de clientes: listado y formulario crear/editar.
- */
 import { useEffect, useState } from "react";
 import { Box, Button, Paper, Typography } from "@mui/material";
 import TablePro from "../components/Tables/TablePro.jsx";
 import SimpleDialog from "../components/Dialogs/SimpleDialog.jsx";
 import CustomerFormFields from "../components/CustomerFormFields.jsx";
-import { createCustomer, getCustomers, updateCustomer } from "../api/muebleriaRequest.js";
+import {
+  createCustomer,
+  deleteCustomer,
+  getCustomers,
+  updateCustomer,
+} from "../api/muebleriaRequest.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import { withMutationToast } from "../utils/mutationToast.js";
 import {
@@ -24,6 +26,8 @@ export default function ClientesPage() {
   const [form, setForm] = useState(EMPTY_CUSTOMER_FORM);
   const [openDialog, setOpenDialog] = useState(false);
   const [editing, setEditing] = useState(null);
+  const [deleting, setDeleting] = useState(null);
+  const [openConfirm, setOpenConfirm] = useState(false);
 
   const load = async () => {
     const res = await getCustomers();
@@ -44,11 +48,29 @@ export default function ClientesPage() {
     const isEdit = Boolean(editing?.id);
     try {
       await withMutationToast(toast, {
-        promise: isEdit ? updateCustomer(editing.id, payload) : createCustomer(payload),
+        promise: isEdit
+          ? updateCustomer(editing.id, payload)
+          : createCustomer(payload),
         onSuccess: async () => {
           setForm(EMPTY_CUSTOMER_FORM);
           setEditing(null);
           setOpenDialog(false);
+          await load();
+        },
+      });
+    } catch {
+      /* toast mostró error */
+    }
+  };
+
+  const onDelete = async () => {
+    if (!deleting) return;
+    try {
+      await withMutationToast(toast, {
+        promise: deleteCustomer(deleting.id),
+        onSuccess: async () => {
+          setDeleting(null);
+          setOpenConfirm(false);
           await load();
         },
       });
@@ -79,24 +101,44 @@ export default function ClientesPage() {
         rows={customers}
         columns={[
           { id: "id", label: "ID" },
-          { id: "name", label: "Cliente", render: (r) => buildCustomerDisplayName(r) },
-          { id: "doc", label: "Documento", render: (r) => formatCustomerDocument(r) || "—" },
+          {
+            id: "name",
+            label: "Cliente",
+            render: (r) => buildCustomerDisplayName(r),
+          },
+          {
+            id: "doc",
+            label: "Documento",
+            render: (r) => formatCustomerDocument(r) || "—",
+          },
           { id: "phone", label: "Teléfono", render: (r) => r.phone || "—" },
           { id: "city", label: "Ciudad", render: (r) => r.city || "—" },
           {
             id: "acc",
             label: "",
             render: (r) => (
-              <Button
-                size="small"
-                onClick={() => {
-                  setEditing(r);
-                  setForm(customerToForm(r));
-                  setOpenDialog(true);
-                }}
-              >
-                Editar
-              </Button>
+              <Box sx={{ display: "flex", gap: 0.5 }}>
+                <Button
+                  size="small"
+                  onClick={() => {
+                    setEditing(r);
+                    setForm(customerToForm(r));
+                    setOpenDialog(true);
+                  }}
+                >
+                  Editar
+                </Button>
+                <Button
+                  size="small"
+                  color="error"
+                  onClick={() => {
+                    setDeleting(r);
+                    setOpenConfirm(true);
+                  }}
+                >
+                  Desactivar
+                </Button>
+              </Box>
             ),
           },
         ]}
@@ -117,6 +159,13 @@ export default function ClientesPage() {
           Guardar
         </Button>
       </SimpleDialog>
+      <SimpleDialog
+        open={openConfirm}
+        onClose={() => setOpenConfirm(false)}
+        title="Desactivar cliente"
+        message={`¿Desactivar a "${buildCustomerDisplayName(deleting || {})}"? El cliente quedará oculto pero sus pedidos históricos se conservan.`}
+        onClickAccept={onDelete}
+      />
     </Box>
   );
 }

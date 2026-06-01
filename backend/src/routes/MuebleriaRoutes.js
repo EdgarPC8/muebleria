@@ -31,6 +31,7 @@ import {
   getCustomers,
   createCustomer,
   updateCustomer,
+  deleteCustomer,
   getOrders,
   createOrder,
   updateOrder,
@@ -79,6 +80,7 @@ router.get("/database/schema", isAuthenticated, getDatabaseSchema);
 router.get("/customers", isAuthenticated, getCustomers);
 router.post("/customers", isAuthenticated, createCustomer);
 router.put("/customers/:id", isAuthenticated, updateCustomer);
+router.delete("/customers/:id", isAuthenticated, deleteCustomer);
 router.get("/orders", isAuthenticated, getOrders);
 router.post("/orders", isAuthenticated, createOrder);
 router.put("/orders/:id", isAuthenticated, updateOrder);

@@ -42,6 +42,7 @@ export const updateProduct = (id, payload) => {
 export const getCustomers = () => axios.get("/muebleria/customers", auth());
 export const createCustomer = (payload) => axios.post("/muebleria/customers", payload, auth());
 export const updateCustomer = (id, payload) => axios.put(`/muebleria/customers/${id}`, payload, auth());
+export const deleteCustomer = (id) => axios.delete(`/muebleria/customers/${id}`, auth());
 
 /** Pedidos de clientes (tienda). */
 export const getOrders = () => axios.get("/muebleria/orders", auth());
