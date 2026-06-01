@@ -135,6 +135,7 @@ export const Customer = sequelize.define(
     city: { type: DataTypes.STRING(80), allowNull: true },
     reference: { type: DataTypes.STRING(240), allowNull: true },
     notes: { type: DataTypes.TEXT, allowNull: true },
+    isActive: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: true },
   },
   { timestamps: true }
 );

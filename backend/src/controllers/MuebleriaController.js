@@ -863,6 +863,7 @@ export const getExpiryAlerts = async (req, res) => {
 
 export const getCustomers = async (_req, res) => {
   const data = await Customer.findAll({
+    where: { isActive: true },
     order: [
       ["firstName", "ASC"],
       ["firstLastName", "ASC"],
@@ -922,6 +923,21 @@ export const updateCustomer = async (req, res) => {
     res
       .status(500)
       .json({ message: error.message || "Error al actualizar cliente." });
+  }
+};
+
+export const deleteCustomer = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const customer = await Customer.findByPk(id);
+    if (!customer)
+      return res.status(404).json({ message: "Cliente no encontrado." });
+    await customer.update({ isActive: false });
+    res.json({ message: "Cliente desactivado correctamente." });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: error.message || "Error al desactivar cliente." });
   }
 };
 
