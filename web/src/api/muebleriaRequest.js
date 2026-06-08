@@ -8,6 +8,7 @@ export const createSupplier = (payload) => axios.post("/muebleria/suppliers", pa
 
 export const getUnits = () => axios.get("/muebleria/units", auth());
 export const createUnit = (payload) => axios.post("/muebleria/units", payload, auth());
+export const updateUnit = (id, payload) => axios.put(`/muebleria/units/${id}`, payload, auth());
 
 export const getCategories = () => axios.get("/muebleria/categories", auth());
 export const createCategory = (payload) => axios.post("/muebleria/categories", payload, auth());
