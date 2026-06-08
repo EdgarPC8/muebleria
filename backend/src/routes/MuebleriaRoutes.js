@@ -46,6 +46,7 @@ import {
   getMyTaskItems,
   updateTaskItemStatus,
   executeTaskOpenBox,
+  updateUnit,
 } from "../controllers/MuebleriaController.js";
 
 const router = Router();
@@ -55,6 +56,7 @@ router.get("/suppliers", isAuthenticated, getSuppliers);
 router.post("/suppliers", isAuthenticated, createSupplier);
 router.get("/units", isAuthenticated, getUnits);
 router.post("/units", isAuthenticated, createUnit);
+router.put("/units/:id", isAuthenticated, updateUnit);
 router.get("/categories", isAuthenticated, getCategories);
 router.post("/categories", isAuthenticated, createCategory);
 router.put("/categories/:id", isAuthenticated, updateCategory);
@@ -63,7 +65,12 @@ router.get("/brands", isAuthenticated, getBrands);
 router.post("/brands", isAuthenticated, createBrand);
 router.get("/products", isAuthenticated, getProducts);
 router.post("/products", isAuthenticated, muebleriaUploadSingle, createProduct);
-router.put("/products/:id", isAuthenticated, muebleriaUploadSingle, updateProduct);
+router.put(
+  "/products/:id",
+  isAuthenticated,
+  muebleriaUploadSingle,
+  updateProduct,
+);
 
 // Compras + kardex
 router.get("/purchases", isAuthenticated, getPurchases);
@@ -93,6 +100,10 @@ router.post("/tasks/plans", isAuthenticated, createTaskPlan);
 router.post("/tasks/plans/:id/publish", isAuthenticated, publishTaskPlan);
 router.get("/tasks/my-items", isAuthenticated, getMyTaskItems);
 router.put("/tasks/items/:id/status", isAuthenticated, updateTaskItemStatus);
-router.post("/tasks/items/:id/execute-open-box", isAuthenticated, executeTaskOpenBox);
+router.post(
+  "/tasks/items/:id/execute-open-box",
+  isAuthenticated,
+  executeTaskOpenBox,
+);
 
 export default router;

@@ -144,6 +144,36 @@ export const createUnit = async (req, res) => {
   }
 };
 
+export const updateUnit = async (req, res) => {
+  const { name, abbreviation, groupName, factorToBase, isBase } = req.body;
+  const params = req.params;
+
+  try {
+    const factor = Number(factorToBase);
+
+    await MeasureUnit.update(
+      {
+        name: name.trim(),
+        abbreviation: abbreviation.trim(),
+        groupName: groupName.trim(),
+        factorToBase: factor,
+        isBase: Boolean(isBase),
+      },
+      {
+        where: {
+          id: params.id,
+        },
+      },
+    );
+
+    return res
+      .status(200)
+      .json({ message: "Unidad actualizado correctamente" });
+  } catch (error) {
+    return res.status(500).json({ message: "Hubo un error" });
+  }
+};
+
 export const getCategories = async (_req, res) => {
   const data = await ProductCategory.findAll({
     include: [
@@ -173,17 +203,23 @@ export const updateCategory = async (req, res) => {
   if (name?.trim() && name.trim() !== category.name) {
     const slugBase = slugify(name);
     if (!slugBase)
-      return res.status(400).json({ message: "No se pudo generar slug válido." });
+      return res
+        .status(400)
+        .json({ message: "No se pudo generar slug válido." });
     slug = slugBase;
     let i = 1;
-    while (await ProductCategory.findOne({ where: { slug, id: { [Op.ne]: id } } })) {
+    while (
+      await ProductCategory.findOne({ where: { slug, id: { [Op.ne]: id } } })
+    ) {
       i += 1;
       slug = `${slugBase}-${i}`;
     }
   }
 
   if (parentId && Number(parentId) === Number(id)) {
-    return res.status(400).json({ message: "Una categoría no puede ser padre de sí misma." });
+    return res
+      .status(400)
+      .json({ message: "Una categoría no puede ser padre de sí misma." });
   }
   if (parentId) {
     const parent = await ProductCategory.findByPk(parentId);
@@ -194,8 +230,11 @@ export const updateCategory = async (req, res) => {
   await category.update({
     name: name?.trim() || category.name,
     slug,
-    parentId: parentId !== undefined ? (parentId || null) : category.parentId,
-    description: description !== undefined ? (description?.trim() || null) : category.description,
+    parentId: parentId !== undefined ? parentId || null : category.parentId,
+    description:
+      description !== undefined
+        ? description?.trim() || null
+        : category.description,
     sortOrder: sortOrder !== undefined ? Number(sortOrder) : category.sortOrder,
   });
   await category.reload();
