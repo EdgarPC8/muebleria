@@ -7,4 +7,5 @@ import "./Notifications.js";
 import "./NotificationProgram.js";
 import "./Logs.js";
 import "./AppSettings.js";
+import "./MuebleriaInfo.js";
 import "./Muebleria.js";

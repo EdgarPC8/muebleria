@@ -18,6 +18,7 @@ import {
   getProducts,
   createProduct,
   updateProduct,
+  getPublicProducts,
   createPurchase,
   openProductBoxes,
   getPurchases,
@@ -63,6 +64,9 @@ router.post("/brands", isAuthenticated, createBrand);
 router.get("/products", isAuthenticated, getProducts);
 router.post("/products", isAuthenticated, muebleriaUploadSingle, createProduct);
 router.put("/products/:id", isAuthenticated, muebleriaUploadSingle, updateProduct);
+
+// Público (sin autenticación)
+router.get("/muebles", getPublicProducts);
 
 // Compras + kardex
 router.get("/purchases", isAuthenticated, getPurchases);

@@ -21,6 +21,7 @@ import ComandsRoutes from "./src/routes/ComandsRoutes.js";
 import ImgRoutes from "./src/routes/ImgRoutes.js";
 import MuebleriaRoutes from "./src/routes/MuebleriaRoutes.js";
 import AppSettingsRoutes from "./src/routes/AppSettingsRoutes.js";
+import MuebleriaInfoRoutes from "./src/routes/MuebleriaInfoRoutes.js";
 import FilesRoutes from "./src/routes/FilesRoutes.js";
 import SubscriptionsRoutes from "./src/routes/SubscriptionsRoutes.js";
 
@@ -29,6 +30,7 @@ import { insertDataIfEmpty } from "./src/database/insertData.js";
 import { seedMuebleriaFromBackupIfEmpty } from "./src/database/muebleriaBackup.js";
 import { seedNotificationProgramsIfEmpty } from "./src/database/seedNotificationPrograms.js";
 import { seedAppSettingsIfEmpty } from "./src/database/seedAppSettings.js";
+import { seedMuebleriaInfoIfEmpty } from "./src/database/seedMuebleriaInfo.js";
 import { startNotificationScheduler } from "./src/jobs/notificationScheduler.js";
 
 import os from "os";
@@ -88,6 +90,7 @@ app.use(`/${api}/img`, express.static(path.join(__dirname, "src", "img")));
 app.use(`/${api}/files`, FilesRoutes);
 app.use(`/${api}/files`, express.static(path.join(__dirname, "src", "files")));
 app.use(`/${api}/app-settings`, AppSettingsRoutes);
+app.use(`/${api}/muebleria-info`, MuebleriaInfoRoutes);
 
 app.set("muebleriaApiPrefix", api);
 
@@ -119,6 +122,7 @@ async function main() {
     await seedMuebleriaFromBackupIfEmpty();
     await seedNotificationProgramsIfEmpty();
     await seedAppSettingsIfEmpty();
+    await seedMuebleriaInfoIfEmpty();
 
     startNotificationScheduler();
 
