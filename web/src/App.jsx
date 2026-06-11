@@ -22,7 +22,9 @@ import LogsPage from "./pages/LogsPage.jsx";
 import CuentasPage from "./pages/CuentasPage.jsx";
 import InfoPage from "./pages/InfoPage.jsx";
 import DonacionesPage from "./pages/DonacionesPage.jsx";
+import MueblesPage from "./pages/MueblesPage.jsx";
 import ConfigAppPage from "./pages/ConfigAppPage.jsx";
+import MuebleriaInfoPage from "./pages/MuebleriaInfoPage.jsx";
 import ImgManagerPage from "./pages/ImgManagerPage.jsx";
 import ArchivosPage from "./pages/ArchivosPage.jsx";
 import PedidosPage from "./pages/PedidosPage.jsx";
@@ -45,6 +47,7 @@ export default function App() {
         <Route element={<NavBar />}>
           <Route path="/inicio" element={<HomePublic />} />
           <Route path="/info" element={<InfoPage />} />
+          <Route path="/muebles" element={<MueblesPage />} />
           <Route path="/donaciones" element={<DonacionesPage />} />
 
           <Route path="/no-subscription" element={<NoSubscriptionPage />} />
@@ -83,6 +86,7 @@ export default function App() {
             <Route path="/usuarios" element={<UsersPage />} />
             <Route path="/cuentas" element={<CuentasPage />} />
             <Route path="/config-app" element={<ConfigAppPage />} />
+            <Route path="/info-negocio" element={<MuebleriaInfoPage />} />
             <Route path="/img-manager" element={<ImgManagerPage />} />
             <Route path="/archivos" element={<ArchivosPage />} />
           </Route>

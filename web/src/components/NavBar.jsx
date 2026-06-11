@@ -51,6 +51,7 @@ import DnsIcon from "@mui/icons-material/Dns";
 import GroupIcon from "@mui/icons-material/Group";
 import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
 import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
+import StorefrontIcon from "@mui/icons-material/Storefront";
 
 import { useAuth } from "../context/AuthContext.jsx";
 import ThemeSwitcher from "./ThemeSwitcher.jsx";
@@ -62,6 +63,7 @@ import { useNotificationSocket } from "../hooks/useNotificationSocket.js";
 import { useSubscriptions } from "../hooks/useSubscriptions.js";
 
 import { LOGO_PATH } from "../config.js";
+import { buildImageUrl } from "../api/axios.js";
 
 const DRAWER_W = 260;
 
@@ -160,6 +162,12 @@ const MENU_GROUPS = [
         link: "/logs",
         icon: <HistoryIcon />,
         roles: ["Programador", "Administrador"],
+      },
+      {
+        name: "Info del negocio",
+        link: "/info-negocio",
+        icon: <StorefrontIcon />,
+        roles: ["Programador"],
       },
       {
         name: "Comandos",
@@ -292,7 +300,7 @@ export default function NavBar() {
         >
           <Box
             component="img"
-            src={LOGO_PATH}
+            src={buildImageUrl("/branding/logo-negocio.png")}
             alt="Calva Cueva"
             sx={{
               width: 44,
@@ -452,14 +460,31 @@ export default function NavBar() {
           )}
 
           {!showUserActions && !profileLoading && (
-            <Button
-              color="inherit"
-              startIcon={<HomeIcon />}
-              onClick={() => navigate("/home")}
-              sx={{ textTransform: "none", fontWeight: 600, mr: 1 }}
-            >
-              Inicio
-            </Button>
+            <>
+              <Button
+                color="inherit"
+                startIcon={<HomeIcon />}
+                onClick={() => navigate("/home")}
+                sx={{ textTransform: "none", fontWeight: 600, mr: 1 }}
+              >
+                Inicio
+              </Button>
+              <Button
+                color="inherit"
+                startIcon={<StorefrontIcon />}
+                onClick={() => navigate("/muebles")}
+                sx={{
+                  textTransform: "none",
+                  fontWeight: 600,
+                  mr: 1,
+                  ...(location.pathname === "/muebles" && {
+                    bgcolor: "rgba(255,255,255,0.12)",
+                  }),
+                }}
+              >
+                Muebles
+              </Button>
+            </>
           )}
 
           <Box sx={{ flexGrow: 1 }} />
@@ -561,6 +586,17 @@ export default function NavBar() {
                     <PersonOutlineIcon fontSize="small" />
                   </ListItemIcon>
                   Perfil
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    setUserAnchor(null);
+                    navigate("/info-negocio");
+                  }}
+                >
+                  <ListItemIcon>
+                    <StorefrontIcon fontSize="small" />
+                  </ListItemIcon>
+                  Acerca del negocio
                 </MenuItem>
                 {hasMultipleRoles && (
                   <MenuItem

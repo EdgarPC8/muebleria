@@ -11,7 +11,7 @@ const API_PATH = "muebleriaapi";
 const API_PORT = 3007;
 /** Servidor en red (pruebas / despliegue interno) */
 
-const PATO = "192.168.110.161";
+const PATO = "192.168.110.81";
 const EDGAR = "192.168.110.199";
 
 const SERVER_HOST = PATO;
