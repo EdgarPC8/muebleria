@@ -46,19 +46,11 @@ import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import TerminalIcon from "@mui/icons-material/Terminal";
 import HistoryIcon from "@mui/icons-material/History";
-import MenuBookIcon from "@mui/icons-material/MenuBook";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import CardGiftcardIcon from "@mui/icons-material/CardGiftcard";
-import ImageIcon from "@mui/icons-material/Image";
-import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
-import SettingsApplicationsIcon from "@mui/icons-material/SettingsApplications";
+
 import DnsIcon from "@mui/icons-material/Dns";
 import GroupIcon from "@mui/icons-material/Group";
-import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
 import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
-import SwapVertIcon from "@mui/icons-material/SwapVert";
 
 import { useAuth } from "../context/AuthContext.jsx";
 import ThemeSwitcher from "./ThemeSwitcher.jsx";
@@ -67,6 +59,8 @@ import CambiarRol from "./CambiarRol.jsx";
 import SimpleDialog from "./Dialogs/SimpleDialog.jsx";
 import { getUnreadCount } from "../api/notificationsRequest.js";
 import { useNotificationSocket } from "../hooks/useNotificationSocket.js";
+import { useSubscriptions } from "../hooks/useSubscriptions.js";
+
 import { LOGO_PATH } from "../config.js";
 
 const DRAWER_W = 260;
@@ -75,31 +69,104 @@ const MENU_GROUPS = [
   {
     id: "general",
     label: "General",
+    key: "dashboard",
     items: [
-      { name: "Panel", link: "/", icon: <DashboardIcon />, roles: ["Programador", "Administrador", "Empleado"] },
-      { name: "Ventas", link: "/ventas", icon: <ReceiptLongIcon />, roles: ["Programador", "Administrador", "Empleado"] },
-      { name: "Notificaciones", link: "/notifications", icon: <NotificationsIcon />, roles: ["Programador", "Administrador", "Empleado"] },
+      {
+        name: "Panel",
+        link: "/panel",
+        icon: <DashboardIcon />,
+        roles: ["Programador", "Administrador", "Empleado"],
+      },
+      {
+        name: "Ventas",
+        link: "/ventas",
+        icon: <ReceiptLongIcon />,
+        roles: ["Programador", "Administrador", "Empleado"],
+      },
+      {
+        name: "Notificaciones",
+        link: "/notifications",
+        icon: <NotificationsIcon />,
+        roles: ["Programador", "Administrador", "Empleado"],
+      },
     ],
   },
   {
-    id: "catalog",
-    label: "Catálogo",
+    id: "inventory",
+    label: "Inventario",
+    key: "inventario",
     items: [
-      { name: "Productos", link: "/productos", icon: <InventoryIcon />, roles: ["Programador", "Administrador", "Empleado"] },
-      { name: "Categorías", link: "/categorias", icon: <CategoryIcon />, roles: ["Programador", "Administrador"] },
-      { name: "Clientes", link: "/clientes", icon: <PeopleIcon />, roles: ["Programador", "Administrador", "Empleado"] },
-      { name: "Proveedores", link: "/proveedores", icon: <LocalShippingIcon />, roles: ["Programador", "Administrador"] },
-      { name: "Unidades", link: "/unidades", icon: <StraightenIcon />, roles: ["Programador", "Administrador"] },
+      {
+        name: "Productos",
+        link: "/productos",
+        icon: <InventoryIcon />,
+        roles: ["Programador", "Administrador", "Empleado"],
+      },
+      {
+        name: "Categorías",
+        link: "/categorias",
+        icon: <CategoryIcon />,
+        roles: ["Programador", "Administrador"],
+      },
+
+      {
+        name: "Proveedores",
+        link: "/proveedores",
+        icon: <LocalShippingIcon />,
+        roles: ["Programador", "Administrador"],
+      },
+      {
+        name: "Unidades",
+        link: "/unidades",
+        icon: <StraightenIcon />,
+        roles: ["Programador", "Administrador"],
+      },
     ],
   },
+
+  {
+    id: "customers",
+    label: "Clientes",
+    key: "clientes",
+    items: [
+      {
+        name: "Clientes",
+        link: "/clientes",
+        icon: <PeopleIcon />,
+        roles: ["Programador", "Administrador", "Empleado"],
+      },
+    ],
+  },
+
   {
     id: "admin",
     label: "Administración",
+    key: "administracion",
     items: [
-      { name: "Usuarios", link: "/usuarios", icon: <GroupIcon />, roles: ["Administrador"] },
-      { name: "Panel de control", link: "/panel_control", icon: <DnsIcon />, roles: ["Programador", "Administrador"] },
-      { name: "Logs", link: "/logs", icon: <HistoryIcon />, roles: ["Programador", "Administrador"] },
-      { name: "Comandos", link: "/comandos", icon: <TerminalIcon />, roles: ["Programador"] },
+      {
+        name: "Usuarios",
+        link: "/usuarios",
+        icon: <GroupIcon />,
+        roles: ["Administrador"],
+      },
+      {
+        name: "Panel de control",
+        link: "/panel_control",
+        icon: <DnsIcon />,
+        roles: ["Programador", "Administrador"],
+      },
+      {
+        name: "Logs",
+        link: "/logs",
+        icon: <HistoryIcon />,
+        roles: ["Programador", "Administrador"],
+      },
+      {
+        name: "Comandos",
+        link: "/comandos",
+        icon: <TerminalIcon />,
+        roles: ["Programador"],
+      },
     ],
   },
 ];
@@ -124,7 +191,10 @@ export default function NavBar() {
   const theme = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
-  const { isAuthenticated, isLoading, user, logout, profileImageUser } = useAuth();
+  const { isAuthenticated, isLoading, user, logout, profileImageUser } =
+    useAuth();
+
+  const { subscription } = useSubscriptions();
 
   const [drawerOpen, setDrawerOpen] = useState(true);
   const [expandedGroupId, setExpandedGroupId] = useState(null);
@@ -132,7 +202,6 @@ export default function NavBar() {
   const [notifAnchor, setNotifAnchor] = useState(null);
   const [openChangeRol, setOpenChangeRol] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
-
   const hasMultipleRoles = (user?.roles?.length ?? 0) > 1;
 
   const profileReady = Boolean(user?.loginRol);
@@ -145,11 +214,17 @@ export default function NavBar() {
     user?.username ||
     "";
 
-  const menuGroups = useMemo(() => menuGroupsForRole(user?.loginRol), [user?.loginRol]);
+  const menuGroups = useMemo(
+    () =>
+      menuGroupsForRole(user?.loginRol).filter((group) =>
+        subscription?.subscription?.modules.some((m) => m.key === group.key),
+      ),
+    [user?.loginRol, subscription],
+  );
 
   useEffect(() => {
     const activeGroup = menuGroups.find((group) =>
-      group.items.some((item) => item.link === location.pathname)
+      group.items.some((item) => item.link === location.pathname),
     );
     if (activeGroup) {
       setExpandedGroupId(activeGroup.id);
@@ -161,7 +236,11 @@ export default function NavBar() {
   };
 
   const renderMenuItem = (item, nested = false) => (
-    <ListItem key={item.link} disablePadding sx={{ display: "block", pl: nested ? 1 : 0 }}>
+    <ListItem
+      key={item.link}
+      disablePadding
+      sx={{ display: "block", pl: nested ? 1 : 0 }}
+    >
       <ListItemButton
         selected={location.pathname === item.link}
         onClick={() => navigate(item.link)}
@@ -173,7 +252,12 @@ export default function NavBar() {
         }}
       >
         <Tooltip title={!drawerOpen ? item.name : ""} placement="right">
-          <ListItemIcon sx={{ minWidth: drawerOpen ? 40 : "auto", justifyContent: "center" }}>
+          <ListItemIcon
+            sx={{
+              minWidth: drawerOpen ? 40 : "auto",
+              justifyContent: "center",
+            }}
+          >
             {item.icon}
           </ListItemIcon>
         </Tooltip>
@@ -281,7 +365,7 @@ export default function NavBar() {
               {groupIndex > 0 && <Divider sx={{ my: 0.75 }} />}
               {group.items.map((item) => renderMenuItem(item))}
             </Box>
-          )
+          ),
         )}
       </List>
     </>
@@ -326,7 +410,9 @@ export default function NavBar() {
               >
                 Inicio
               </Button>
-              {["Programador", "Administrador", "Empleado"].includes(user?.loginRol) && (
+              {["Programador", "Administrador", "Empleado"].includes(
+                user?.loginRol,
+              ) && (
                 <Button
                   color="inherit"
                   startIcon={<PointOfSaleIcon />}
@@ -335,13 +421,17 @@ export default function NavBar() {
                     textTransform: "none",
                     fontWeight: 600,
                     mr: 1,
-                    ...(location.pathname === "/caja" && { bgcolor: "rgba(255,255,255,0.12)" }),
+                    ...(location.pathname === "/caja" && {
+                      bgcolor: "rgba(255,255,255,0.12)",
+                    }),
                   }}
                 >
                   Caja
                 </Button>
               )}
-              {["Programador", "Administrador", "Empleado"].includes(user?.loginRol) && (
+              {["Programador", "Administrador", "Empleado"].includes(
+                user?.loginRol,
+              ) && (
                 <Button
                   color="inherit"
                   startIcon={<ReceiptLongIcon />}
@@ -350,7 +440,9 @@ export default function NavBar() {
                     textTransform: "none",
                     fontWeight: 600,
                     mr: 1,
-                    ...(location.pathname === "/ventas" && { bgcolor: "rgba(255,255,255,0.12)" }),
+                    ...(location.pathname === "/ventas" && {
+                      bgcolor: "rgba(255,255,255,0.12)",
+                    }),
                   }}
                 >
                   Ventas
@@ -438,10 +530,18 @@ export default function NavBar() {
               >
                 {displayName}
               </Typography>
-              <IconButton color="inherit" onClick={(e) => setUserAnchor(e.currentTarget)}>
+              <IconButton
+                color="inherit"
+                onClick={(e) => setUserAnchor(e.currentTarget)}
+              >
                 <Avatar
                   src={profileImageUser || undefined}
-                  sx={{ width: 36, height: 36, bgcolor: "secondary.main", color: "secondary.contrastText" }}
+                  sx={{
+                    width: 36,
+                    height: 36,
+                    bgcolor: "secondary.main",
+                    color: "secondary.contrastText",
+                  }}
                 >
                   {(displayName[0] || "U").toUpperCase()}
                 </Avatar>

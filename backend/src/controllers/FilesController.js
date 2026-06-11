@@ -9,7 +9,9 @@ const FILES_BASE_DIR = path.resolve(__dirname, "../files");
 
 // ✅ MISMA seguridad que ImgController
 const safeRelPath = (rel = "") => {
-  const s = String(rel || "").replace(/\\/g, "/").trim();
+  const s = String(rel || "")
+    .replace(/\\/g, "/")
+    .trim();
   if (s.includes("..")) throw new Error("Ruta inválida");
   if (s.startsWith("/") || s.startsWith("~")) throw new Error("Ruta inválida");
   if (!/^[a-zA-Z0-9/._\- ]*$/.test(s)) throw new Error("Ruta inválida");
@@ -32,7 +34,9 @@ export const downloadFolderZip = async (req, res) => {
       return res.status(404).json({ ok: false, message: "Carpeta no existe" });
     }
     if (!fs.statSync(folderAbs).isDirectory()) {
-      return res.status(400).json({ ok: false, message: "folder no es una carpeta" });
+      return res
+        .status(400)
+        .json({ ok: false, message: "folder no es una carpeta" });
     }
 
     const zipName = `${(folderRel || "files").replace(/[\/\\]/g, "_")}.zip`;
@@ -44,7 +48,8 @@ export const downloadFolderZip = async (req, res) => {
 
     archive.on("error", (err) => {
       console.error("ZIP error:", err);
-      if (!res.headersSent) res.status(500).json({ ok: false, message: "Error creando ZIP" });
+      if (!res.headersSent)
+        res.status(500).json({ ok: false, message: "Error creando ZIP" });
     });
 
     archive.pipe(res);
@@ -67,7 +72,9 @@ export const uploadFile = async (req, res) => {
 
   return res.json({
     ok: true,
-    message: f.replaced ? "Archivo reemplazado correctamente" : "Archivo subido correctamente",
+    message: f.replaced
+      ? "Archivo reemplazado correctamente"
+      : "Archivo subido correctamente",
     data: {
       fileName: f.fileName,
       relativePath: f.relativePath,
@@ -120,7 +127,8 @@ export const deleteFolder = async (req, res) => {
 export const downloadFile = async (req, res) => {
   try {
     const relPath = safeRelPath(req.query.relPath || "");
-    if (!relPath) return res.status(400).json({ ok: false, message: "Falta relPath" });
+    if (!relPath)
+      return res.status(400).json({ ok: false, message: "Falta relPath" });
 
     const abs = path.resolve(FILES_BASE_DIR, relPath);
     if (!abs.startsWith(FILES_BASE_DIR)) {
@@ -132,7 +140,9 @@ export const downloadFile = async (req, res) => {
     }
     const st = fs.statSync(abs);
     if (!st.isFile()) {
-      return res.status(400).json({ ok: false, message: "relPath no es un archivo" });
+      return res
+        .status(400)
+        .json({ ok: false, message: "relPath no es un archivo" });
     }
 
     // descarga como attachment
@@ -149,7 +159,8 @@ export const downloadFile = async (req, res) => {
 export const viewFileInline = async (req, res) => {
   try {
     const relPath = safeRelPath(req.query.relPath || "");
-    if (!relPath) return res.status(400).json({ ok: false, message: "Falta relPath" });
+    if (!relPath)
+      return res.status(400).json({ ok: false, message: "Falta relPath" });
 
     const abs = path.resolve(FILES_BASE_DIR, relPath);
     if (!abs.startsWith(FILES_BASE_DIR)) {
@@ -162,11 +173,16 @@ export const viewFileInline = async (req, res) => {
 
     const st = fs.statSync(abs);
     if (!st.isFile()) {
-      return res.status(400).json({ ok: false, message: "relPath no es un archivo" });
+      return res
+        .status(400)
+        .json({ ok: false, message: "relPath no es un archivo" });
     }
 
     // inline
-    res.setHeader("Content-Disposition", `inline; filename="${path.basename(abs)}"`);
+    res.setHeader(
+      "Content-Disposition",
+      `inline; filename="${path.basename(abs)}"`,
+    );
     return res.sendFile(abs);
   } catch (e) {
     return res.status(400).json({ ok: false, message: e.message });

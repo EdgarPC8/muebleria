@@ -31,6 +31,8 @@ import CajaPage from "./pages/CajaPage.jsx";
 import VentasPage from "./pages/VentasPage.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
 import UsersPage from "./pages/UsersPage.jsx";
+import NoSubscriptionPage from "./pages/NoSubscriptionPage.jsx";
+import SubscriptionExpiredPage from "./pages/SubscriptionExpiredPage.jsx";
 
 export default function App() {
   return (
@@ -41,12 +43,15 @@ export default function App() {
         </Route>
 
         <Route element={<NavBar />}>
-          <Route path="/home" element={<HomePublic />} />
+          <Route path="/inicio" element={<HomePublic />} />
           <Route path="/info" element={<InfoPage />} />
           <Route path="/donaciones" element={<DonacionesPage />} />
 
+          <Route path="/no-subscription" element={<NoSubscriptionPage />} />
+          <Route path="/subscription-expired" element={<SubscriptionExpiredPage />} />
+
           <Route element={<ProtectedRoute />}>
-            <Route path="/" element={<HomePage />} />
+            <Route path="/dashboard" element={<HomePage />} />
             <Route path="/inicio" element={<HomePublic />} />
             <Route path="/productos" element={<ProductosPage />} />
             <Route path="/categorias" element={<CategoriasPage />} />
@@ -83,7 +88,7 @@ export default function App() {
           </Route>
         </Route>
 
-        <Route path="*" element={<Navigate to="/home" replace />} />
+        <Route path="*" element={<Navigate to="/inicio" replace />} />
       </Routes>
     </AuthProvider>
   );

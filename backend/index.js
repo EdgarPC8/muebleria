@@ -22,6 +22,8 @@ import ImgRoutes from "./src/routes/ImgRoutes.js";
 import MuebleriaRoutes from "./src/routes/MuebleriaRoutes.js";
 import AppSettingsRoutes from "./src/routes/AppSettingsRoutes.js";
 import FilesRoutes from "./src/routes/FilesRoutes.js";
+import SubscriptionsRoutes from "./src/routes/SubscriptionsRoutes.js";
+
 import { initNotificationSocket } from "./src/sockets/notificationSocket.js";
 import { insertDataIfEmpty } from "./src/database/insertData.js";
 import { seedMuebleriaFromBackupIfEmpty } from "./src/database/muebleriaBackup.js";
@@ -96,6 +98,9 @@ app.use(`/${api}/notifications`, NotificationsRoutes);
 app.use(`/${api}/notification-programs`, NotificationProgramRoutes);
 app.use(`/${api}/comands`, ComandsRoutes);
 app.use(`/${api}/muebleria`, MuebleriaRoutes);
+
+app.use(`/${api}/subscriptions`, SubscriptionsRoutes);
+
 app.get(`/${api}/health`, (_, res) =>
   res.json({ ok: true, service: "muebleria" }),
 );
