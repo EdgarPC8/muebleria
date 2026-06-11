@@ -18,6 +18,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useNavigate, Link as RouterLink } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 import { LOGO_PATH } from "../config.js";
+import { buildImageUrl } from "../api/axios.js";
 
 export default function Login() {
   const theme = useTheme();
@@ -104,7 +105,7 @@ export default function Login() {
         >
           <Box
             component="img"
-            src={LOGO_PATH}
+            src={buildImageUrl("/branding/logo-negocio.png")}
             alt="Comercial Calva Cueva"
             sx={{
               width: 220,
@@ -115,10 +116,19 @@ export default function Login() {
             }}
           />
         </Box>
-        <Typography variant="h4" fontWeight={800} color="#fff" textAlign="center" gutterBottom>
+        <Typography
+          variant="h4"
+          fontWeight={800}
+          color="#fff"
+          textAlign="center"
+          gutterBottom
+        >
           Comercial Calva Cueva
         </Typography>
-        <Typography variant="body1" sx={{ color: alpha("#fff", 0.9), textAlign: "center", maxWidth: 320 }}>
+        <Typography
+          variant="body1"
+          sx={{ color: alpha("#fff", 0.9), textAlign: "center", maxWidth: 320 }}
+        >
           Sistema de gestión — muebles, clientes e inventario
         </Typography>
       </Box>
@@ -167,7 +177,9 @@ export default function Login() {
             {selectingRole ? "Elige tu rol" : "Bienvenido"}
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-            {selectingRole ? "Tu cuenta tiene varios roles asignados." : "Ingresa con tu usuario del sistema."}
+            {selectingRole
+              ? "Tu cuenta tiene varios roles asignados."
+              : "Ingresa con tu usuario del sistema."}
           </Typography>
 
           {!selectingRole ? (
@@ -198,7 +210,10 @@ export default function Login() {
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
-                        <IconButton onClick={() => setShowPassword((v) => !v)} edge="end">
+                        <IconButton
+                          onClick={() => setShowPassword((v) => !v)}
+                          edge="end"
+                        >
                           {showPassword ? <VisibilityOff /> : <Visibility />}
                         </IconButton>
                       </InputAdornment>
@@ -220,7 +235,13 @@ export default function Login() {
                   Iniciar sesión
                 </Button>
               </Box>
-              <Button component={RouterLink} to="/home" fullWidth sx={{ mt: 2 }} color="inherit">
+              <Button
+                component={RouterLink}
+                to="/home"
+                fullWidth
+                sx={{ mt: 2 }}
+                color="inherit"
+              >
                 Volver al inicio
               </Button>
             </>

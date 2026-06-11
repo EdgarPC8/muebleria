@@ -40,8 +40,8 @@ export const MODULES_PROJECT = [
     routes: ["/comandos", "/documentacion", "/img-manager", "/archivos"],
   },
   {
-    name: "notificaciones",
+    name: "perfil",
     description: "Notificaciones y perfil",
-    routes: ["/notifications", "/perfil"],
+    routes: ["/notifications", "/perfil", "/info-negocio"],
   },
 ];

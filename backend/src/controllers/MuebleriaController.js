@@ -1739,6 +1739,19 @@ export const updateTaskItemStatus = async (req, res) => {
   res.json(item);
 };
 
+export const getPublicProducts = async (_req, res) => {
+  const data = await StoreProduct.findAll({
+    where: { isActive: true },
+    include: [
+      { model: ProductCategory, as: "category", attributes: ["id", "name"] },
+      { model: Brand, as: "brand", attributes: ["id", "name"] },
+    ],
+    attributes: ["id", "name", "sku", "salePrice", "sizeLabel", "primaryImageUrl", "stockBase"],
+    order: [["name", "ASC"]],
+  });
+  res.json(data);
+};
+
 export const executeTaskOpenBox = async (req, res) => {
   const { id } = req.params;
   const item = await TaskItem.findByPk(id);

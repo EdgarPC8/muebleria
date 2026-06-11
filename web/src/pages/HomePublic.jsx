@@ -20,10 +20,19 @@ import WeekendIcon from "@mui/icons-material/Weekend";
 import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 import { useAuth } from "../context/AuthContext.jsx";
 import { LOGO_PATH } from "../config.js";
+import { buildImageUrl } from "../api/axios.js";
 
 const PROMOS = [
-  { title: "Salas y comedores", desc: "Diseños modernos para tu hogar", badge: "Nuevo" },
-  { title: "Colchones y dormitorio", desc: "Descanso con garantía", badge: "Oferta" },
+  {
+    title: "Salas y comedores",
+    desc: "Diseños modernos para tu hogar",
+    badge: "Nuevo",
+  },
+  {
+    title: "Colchones y dormitorio",
+    desc: "Descanso con garantía",
+    badge: "Oferta",
+  },
   { title: "Muebles de cocina", desc: "Armados a medida", badge: "Consultar" },
 ];
 
@@ -57,7 +66,7 @@ export default function HomePublic() {
               >
                 <Box
                   component="img"
-                  src={LOGO_PATH}
+                  src={buildImageUrl("/branding/logo-negocio.png")}
                   alt="Comercial Calva Cueva"
                   sx={{
                     width: { xs: 160, md: 200 },
@@ -69,14 +78,25 @@ export default function HomePublic() {
               </Box>
             </Grid>
             <Grid item xs={12} md={7}>
-              <Typography variant="overline" sx={{ opacity: 0.9, letterSpacing: 3 }}>
+              <Typography
+                variant="overline"
+                sx={{ opacity: 0.9, letterSpacing: 3 }}
+              >
                 Comercial Calva Cueva
               </Typography>
-              <Typography variant="h3" fontWeight={800} sx={{ mb: 1.5, lineHeight: 1.15 }}>
+              <Typography
+                variant="h3"
+                fontWeight={800}
+                sx={{ mb: 1.5, lineHeight: 1.15 }}
+              >
                 Muebles para tu hogar y negocio
               </Typography>
-              <Typography variant="body1" sx={{ opacity: 0.92, maxWidth: 520, mb: 3 }}>
-                Calidad, variedad y atención personalizada. Explora promociones o ingresa al sistema de gestión.
+              <Typography
+                variant="body1"
+                sx={{ opacity: 0.92, maxWidth: 520, mb: 3 }}
+              >
+                Calidad, variedad y atención personalizada. Explora promociones
+                o ingresa al sistema de gestión.
               </Typography>
               <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5}>
                 {!isLoading && !loggedIn && (
@@ -113,7 +133,12 @@ export default function HomePublic() {
                     Ir al panel
                   </Button>
                 )}
-                <Button variant="outlined" size="large" href="#promos" sx={{ borderColor: "rgba(255,255,255,0.6)", color: "#fff" }}>
+                <Button
+                  variant="outlined"
+                  size="large"
+                  href="#promos"
+                  sx={{ borderColor: "rgba(255,255,255,0.6)", color: "#fff" }}
+                >
                   Ver promociones
                 </Button>
               </Stack>
@@ -133,7 +158,12 @@ export default function HomePublic() {
           {PROMOS.map((p) => (
             <Grid item xs={12} sm={4} key={p.title}>
               <Paper variant="panel" sx={{ p: 2.5, height: "100%" }}>
-                <Chip label={p.badge} color="secondary" size="small" sx={{ mb: 1, fontWeight: 700 }} />
+                <Chip
+                  label={p.badge}
+                  color="secondary"
+                  size="small"
+                  sx={{ mb: 1, fontWeight: 700 }}
+                />
                 <Stack direction="row" spacing={1} alignItems="center" mb={1}>
                   <WeekendIcon color="primary" />
                   <Typography variant="h6" fontWeight={700}>
@@ -149,12 +179,34 @@ export default function HomePublic() {
         </Grid>
       </Container>
 
-      <Box sx={{ py: 3, textAlign: "center", borderTop: 1, borderColor: "divider" }}>
-        <Stack direction="row" spacing={2} justifyContent="center" flexWrap="wrap">
-          <Button component={RouterLink} to="/info" size="small" color="inherit">
+      <Box
+        sx={{
+          py: 3,
+          textAlign: "center",
+          borderTop: 1,
+          borderColor: "divider",
+        }}
+      >
+        <Stack
+          direction="row"
+          spacing={2}
+          justifyContent="center"
+          flexWrap="wrap"
+        >
+          <Button
+            component={RouterLink}
+            to="/info"
+            size="small"
+            color="inherit"
+          >
             Info del sistema
           </Button>
-          <Button component={RouterLink} to="/donaciones" size="small" color="inherit">
+          <Button
+            component={RouterLink}
+            to="/donaciones"
+            size="small"
+            color="inherit"
+          >
             Donaciones
           </Button>
         </Stack>
