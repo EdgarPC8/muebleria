@@ -44,7 +44,10 @@ import CustomerFormDialog from "../components/CustomerFormDialog.jsx";
 import SearchableSelect from "../components/SearchableSelect.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
 import { CAJA_POS_TAG } from "../utils/posOrderUtils.js";
-import { buildCustomerDisplayName, formatCustomerDocument } from "../utils/customerUtils.js";
+import {
+  buildCustomerDisplayName,
+  formatCustomerDocument,
+} from "../utils/customerUtils.js";
 
 const to2 = (n) => Number(Number(n || 0).toFixed(2));
 
@@ -140,25 +143,48 @@ export default function CajaPage() {
   }, []);
 
   const findProductByQuery = (query) => {
-    const q = String(query || "").trim().toLowerCase();
+    const q = String(query || "")
+      .trim()
+      .toLowerCase();
     if (!q) return null;
     return (
-      products.find((p) => String(p.barcode || "").trim().toLowerCase() === q) ||
-      products.find((p) => String(p.sku || "").trim().toLowerCase() === q) ||
-      products.find((p) => String(p.name || "").trim().toLowerCase() === q) ||
-      products.find((p) => String(p.name || "").toLowerCase().includes(q)) ||
+      products.find(
+        (p) =>
+          String(p.barcode || "")
+            .trim()
+            .toLowerCase() === q,
+      ) ||
+      products.find(
+        (p) =>
+          String(p.sku || "")
+            .trim()
+            .toLowerCase() === q,
+      ) ||
+      products.find(
+        (p) =>
+          String(p.name || "")
+            .trim()
+            .toLowerCase() === q,
+      ) ||
+      products.find((p) =>
+        String(p.name || "")
+          .toLowerCase()
+          .includes(q),
+      ) ||
       null
     );
   };
 
   const addToCart = (product) => {
     setCart((prev) => {
-      const exists = prev.find((row) => Number(row.productId) === Number(product.id));
+      const exists = prev.find(
+        (row) => Number(row.productId) === Number(product.id),
+      );
       if (exists) {
         return prev.map((row) =>
           Number(row.productId) === Number(product.id)
             ? { ...row, quantity: Number(row.quantity) + 1 }
-            : row
+            : row,
         );
       }
       return [
@@ -178,9 +204,14 @@ export default function CajaPage() {
   };
 
   const addSelectedProduct = () => {
-    const found = products.find((p) => String(p.id) === String(selectedProductId));
+    const found = products.find(
+      (p) => String(p.id) === String(selectedProductId),
+    );
     if (!found) {
-      void toast?.({ message: "Selecciona un producto para agregar.", variant: "warning" });
+      void toast?.({
+        message: "Selecciona un producto para agregar.",
+        variant: "warning",
+      });
       return;
     }
     addToCart(found);
@@ -190,13 +221,17 @@ export default function CajaPage() {
   const updateCartRow = (productId, key, value) => {
     setCart((prev) =>
       prev.map((row) =>
-        Number(row.productId) === Number(productId) ? { ...row, [key]: value } : row
-      )
+        Number(row.productId) === Number(productId)
+          ? { ...row, [key]: value }
+          : row,
+      ),
     );
   };
 
   const removeRow = (productId) => {
-    setCart((prev) => prev.filter((row) => Number(row.productId) !== Number(productId)));
+    setCart((prev) =>
+      prev.filter((row) => Number(row.productId) !== Number(productId)),
+    );
   };
 
   const summary = useMemo(() => {
@@ -208,28 +243,40 @@ export default function CajaPage() {
         acc.total += total;
         return acc;
       },
-      { subtotal: 0, iva: 0, total: 0 }
+      { subtotal: 0, iva: 0, total: 0 },
     );
   }, [cart]);
   const subtotal = to2(summary.subtotal);
   const iva = to2(summary.iva);
   const total = to2(summary.total);
-  const receivedNum = Number(String(amountReceived ?? "").trim().replace(",", "."));
+  const receivedNum = Number(
+    String(amountReceived ?? "")
+      .trim()
+      .replace(",", "."),
+  );
   const receivedParsed = Number.isFinite(receivedNum) ? to2(receivedNum) : NaN;
-  const change = Math.max((Number.isFinite(receivedParsed) ? receivedParsed : 0) - total, 0);
+  const change = Math.max(
+    (Number.isFinite(receivedParsed) ? receivedParsed : 0) - total,
+    0,
+  );
 
   const productsByStockDesc = useMemo(() => {
-    return [...products].sort((a, b) => Number(b.stockBase || 0) - Number(a.stockBase || 0));
+    return [...products].sort(
+      (a, b) => Number(b.stockBase || 0) - Number(a.stockBase || 0),
+    );
   }, [products]);
 
   const quickDownProduct = useMemo(
     () => products.find((p) => String(p.id) === String(quickDownProductId)),
-    [products, quickDownProductId]
+    [products, quickDownProductId],
   );
 
   const applyQuickDownStock = async () => {
     if (!quickDownProductId || !String(quickDownQty).trim()) {
-      void toast?.({ message: "Elige producto y cantidad a rebajar.", variant: "warning" });
+      void toast?.({
+        message: "Elige producto y cantidad a rebajar.",
+        variant: "warning",
+      });
       return;
     }
     const q = Number(String(quickDownQty).trim().replace(",", "."));
@@ -246,7 +293,10 @@ export default function CajaPage() {
         flagForReview: true,
         note: quickDownNote || undefined,
       });
-      void toast?.({ message: "Listo: stock en sistema rebajado.", variant: "success" });
+      void toast?.({
+        message: "Listo: stock en sistema rebajado.",
+        variant: "success",
+      });
       setQuickDownOpen(false);
       setQuickDownProductId("");
       setQuickDownQty("");
@@ -254,7 +304,8 @@ export default function CajaPage() {
       await loadData();
     } catch (e) {
       void toast?.({
-        message: e?.response?.data?.message || "No se pudo registrar la salida.",
+        message:
+          e?.response?.data?.message || "No se pudo registrar la salida.",
         variant: "error",
       });
     } finally {
@@ -262,14 +313,21 @@ export default function CajaPage() {
     }
   };
 
-  const performSaleDelivery = async ({ resolvedCustomerId, notesText, isInvoice, useCustomerDataFlag }) => {
+  const performSaleDelivery = async ({
+    resolvedCustomerId,
+    notesText,
+    isInvoice,
+    useCustomerDataFlag,
+  }) => {
     const orderDateIso = new Date().toISOString();
     const baseNote =
       (notesText || "").trim() ||
       (isInvoice || useCustomerDataFlag
         ? "Venta generada desde caja"
         : "Venta mostrador sin datos de cliente (consumidor final)");
-    const orderNotes = baseNote.includes(CAJA_POS_TAG) ? baseNote : `${CAJA_POS_TAG} ${baseNote}`.trim();
+    const orderNotes = baseNote.includes(CAJA_POS_TAG)
+      ? baseNote
+      : `${CAJA_POS_TAG} ${baseNote}`.trim();
     const { data } = await createOrder({
       customerId: Number(resolvedCustomerId),
       date: orderDateIso,
@@ -310,7 +368,9 @@ export default function CajaPage() {
   const handleConfirmStockAdjustAndCheckout = async () => {
     if (!pendingCheckout) return;
     for (const issue of stockIssues) {
-      const raw = String(stockAdjustQty[issue.productId] ?? "").trim().replace(",", ".");
+      const raw = String(stockAdjustQty[issue.productId] ?? "")
+        .trim()
+        .replace(",", ".");
       const adj = Number(raw);
       if (!Number.isFinite(adj) || adj < issue.deficit) {
         void toast?.({
@@ -323,7 +383,9 @@ export default function CajaPage() {
     try {
       setSaving(true);
       for (const issue of stockIssues) {
-        const raw = String(stockAdjustQty[issue.productId] ?? "").trim().replace(",", ".");
+        const raw = String(stockAdjustQty[issue.productId] ?? "")
+          .trim()
+          .replace(",", ".");
         const adj = Number(raw);
         await createStockAdjustment({
           productId: issue.productId,
@@ -343,7 +405,8 @@ export default function CajaPage() {
         });
         setStockAdjustQty(init);
         void toast?.({
-          message: "Aún no alcanza: sube la entrada o baja cantidades en el carrito.",
+          message:
+            "Aún no alcanza: sube la entrada o baja cantidades en el carrito.",
           variant: "warning",
         });
         return;
@@ -360,11 +423,17 @@ export default function CajaPage() {
         isInvoice: ctx.isInvoice,
         useCustomerDataFlag: ctx.useCustomerData,
       });
-      void toast?.({ message: "Ajuste aplicado y venta registrada.", variant: "success" });
+      void toast?.({
+        message: "Ajuste aplicado y venta registrada.",
+        variant: "success",
+      });
       await loadData();
     } catch (e) {
       void toast?.({
-        message: e?.response?.data?.message || e.message || "Error al ajustar o cobrar.",
+        message:
+          e?.response?.data?.message ||
+          e.message ||
+          "Error al ajustar o cobrar.",
         variant: "error",
       });
     } finally {
@@ -386,17 +455,26 @@ export default function CajaPage() {
 
   const onCheckout = async () => {
     if (cart.length === 0) {
-      void toast?.({ message: "Agrega al menos un producto al carrito.", variant: "warning" });
+      void toast?.({
+        message: "Agrega al menos un producto al carrito.",
+        variant: "warning",
+      });
       return;
     }
     const hasInvalidQty = cart.some((row) => Number(row.quantity || 0) <= 0);
     if (hasInvalidQty) {
-      void toast?.({ message: "Todas las cantidades deben ser mayores a 0.", variant: "warning" });
+      void toast?.({
+        message: "Todas las cantidades deben ser mayores a 0.",
+        variant: "warning",
+      });
       return;
     }
     const isInvoice = documentType === "factura";
     if (isInvoice && !customerId) {
-      void toast?.({ message: "Para factura debes seleccionar un cliente.", variant: "warning" });
+      void toast?.({
+        message: "Para factura debes seleccionar un cliente.",
+        variant: "warning",
+      });
       return;
     }
     const fallbackCustomer =
@@ -404,10 +482,14 @@ export default function CajaPage() {
         const n = String(c.name || "").toLowerCase();
         return n.includes("consumidor") || n.includes("final");
       }) || customers[0];
-    const resolvedCustomerId = isInvoice || useCustomerData ? customerId : String(fallbackCustomer?.id || "");
+    const resolvedCustomerId =
+      isInvoice || useCustomerData
+        ? customerId
+        : String(fallbackCustomer?.id || "");
     if (!resolvedCustomerId) {
       void toast?.({
-        message: "No hay clientes registrados. Crea uno (idealmente 'Consumidor Final') para continuar.",
+        message:
+          "No hay clientes registrados. Crea uno (idealmente 'Consumidor Final') para continuar.",
         variant: "warning",
       });
       return;
@@ -464,11 +546,17 @@ export default function CajaPage() {
         isInvoice,
         useCustomerDataFlag: useCustomerData,
       });
-      void toast?.({ message: "Venta registrada correctamente.", variant: "success" });
+      void toast?.({
+        message: "Venta registrada correctamente.",
+        variant: "success",
+      });
       await loadData();
     } catch (error) {
       void toast?.({
-        message: error?.response?.data?.message || error.message || "No se pudo registrar la venta.",
+        message:
+          error?.response?.data?.message ||
+          error.message ||
+          "No se pudo registrar la venta.",
         variant: "error",
       });
     } finally {
@@ -484,7 +572,7 @@ export default function CajaPage() {
 
       <Grid container spacing={1.5}>
         <Grid item xs={12} lg={8.5}>
-          <Paper sx={{ p: 1.5, borderRadius: 2 }}>
+          <Paper sx={{ p: 1.5, borderRadius: 2, height: "100%" }}>
             <Stack
               direction={{ xs: "column", md: "row" }}
               alignItems={{ xs: "stretch", md: "center" }}
@@ -497,7 +585,11 @@ export default function CajaPage() {
               </Typography>
             </Stack>
 
-            <Stack direction={{ xs: "column", md: "row" }} spacing={1} sx={{ mb: 1 }}>
+            <Stack
+              direction={{ xs: "column", md: "row" }}
+              spacing={1}
+              sx={{ mb: 1 }}
+            >
               <SearchableSelect
                 fullWidth
                 label="Producto"
@@ -512,7 +604,11 @@ export default function CajaPage() {
                 }
                 getOptionValue={(item) => String(item.id)}
               />
-              <Button variant="outlined" startIcon={<QrCodeScannerIcon />} onClick={() => setOpenScanner(true)}>
+              <Button
+                variant="outlined"
+                startIcon={<QrCodeScannerIcon />}
+                onClick={() => setOpenScanner(true)}
+              >
                 Escanear
               </Button>
               <Button variant="contained" onClick={addSelectedProduct}>
@@ -539,13 +635,24 @@ export default function CajaPage() {
                 >
                   Realizar venta
                 </Button>
-                <Button size="small" color="error" variant="outlined" onClick={() => setCart([])}>
+                <Button
+                  size="small"
+                  color="error"
+                  variant="outlined"
+                  onClick={() => setCart([])}
+                >
                   Vaciar listado
                 </Button>
               </Stack>
             </Stack>
 
-            <TableContainer sx={{ border: "1px solid", borderColor: "divider", borderRadius: 1 }}>
+            <TableContainer
+              sx={{
+                border: "1px solid",
+                borderColor: "divider",
+                borderRadius: 1,
+              }}
+            >
               <Table size="small">
                 <TableHead>
                   <TableRow>
@@ -569,7 +676,11 @@ export default function CajaPage() {
                           size="small"
                           value={row.quantity}
                           onChange={(e) =>
-                            updateCartRow(row.productId, "quantity", Number(e.target.value || 0))
+                            updateCartRow(
+                              row.productId,
+                              "quantity",
+                              Number(e.target.value || 0),
+                            )
                           }
                           inputProps={{ min: 0, step: "1" }}
                         />
@@ -580,18 +691,34 @@ export default function CajaPage() {
                           size="small"
                           value={row.price}
                           onChange={(e) =>
-                            updateCartRow(row.productId, "price", Number(e.target.value || 0))
+                            updateCartRow(
+                              row.productId,
+                              "price",
+                              Number(e.target.value || 0),
+                            )
                           }
                           InputProps={{
-                            startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                $
+                              </InputAdornment>
+                            ),
                           }}
                           inputProps={{ min: 0, step: "0.01" }}
                         />
                       </TableCell>
-                      <TableCell align="right">${lineBreakdown(row).iva.toFixed(2)}</TableCell>
-                      <TableCell align="right">${lineBreakdown(row).total.toFixed(2)}</TableCell>
+                      <TableCell align="right">
+                        ${lineBreakdown(row).iva.toFixed(2)}
+                      </TableCell>
+                      <TableCell align="right">
+                        ${lineBreakdown(row).total.toFixed(2)}
+                      </TableCell>
                       <TableCell align="center">
-                        <IconButton size="small" color="error" onClick={() => removeRow(row.productId)}>
+                        <IconButton
+                          size="small"
+                          color="error"
+                          onClick={() => removeRow(row.productId)}
+                        >
                           <DeleteIcon fontSize="small" />
                         </IconButton>
                       </TableCell>
@@ -657,7 +784,11 @@ export default function CajaPage() {
                 }
                 label="Registrar datos del cliente"
               />
-              <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: -0.5 }}>
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                sx={{ display: "block", mt: -0.5 }}
+              >
                 {documentType === "factura"
                   ? "En factura es obligatorio registrar cliente."
                   : "Si no marcas la casilla, se usa Consumidor Final automáticamente."}
@@ -673,7 +804,9 @@ export default function CajaPage() {
                       items={customers}
                       getOptionLabel={(customer) => {
                         const doc = formatCustomerDocument(customer);
-                        const phone = customer.phone ? ` · ${customer.phone}` : "";
+                        const phone = customer.phone
+                          ? ` · ${customer.phone}`
+                          : "";
                         return `${buildCustomerDisplayName(customer)}${doc ? ` · ${doc}` : ""}${phone}`;
                       }}
                       getOptionValue={(customer) => String(customer.id)}
@@ -707,7 +840,12 @@ export default function CajaPage() {
               <Button
                 size="small"
                 variant="text"
-                sx={{ alignSelf: "flex-start", textTransform: "none", fontSize: "0.8rem", py: 0 }}
+                sx={{
+                  alignSelf: "flex-start",
+                  textTransform: "none",
+                  fontSize: "0.8rem",
+                  py: 0,
+                }}
                 onClick={() => {
                   setQuickDownProductId("");
                   setQuickDownQty("");
@@ -744,27 +882,53 @@ export default function CajaPage() {
                 value={amountReceived}
                 onChange={(e) => setAmountReceived(e.target.value)}
                 InputProps={{
-                  startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                  startAdornment: (
+                    <InputAdornment position="start">$</InputAdornment>
+                  ),
                 }}
               />
-              <Typography variant="body2">Vuelto: ${change.toFixed(2)}</Typography>
-              <Typography variant="body2">SUBTOTAL: ${subtotal.toFixed(2)}</Typography>
+              <Typography variant="body2">
+                Vuelto: ${change.toFixed(2)}
+              </Typography>
+              <Typography variant="body2">
+                SUBTOTAL: ${subtotal.toFixed(2)}
+              </Typography>
               <Typography variant="body2">IVA: ${iva.toFixed(2)}</Typography>
-              <Typography fontWeight={700}>TOTAL: ${total.toFixed(2)}</Typography>
+              <Typography fontWeight={700}>
+                TOTAL: ${total.toFixed(2)}
+              </Typography>
             </Stack>
           </Paper>
         </Grid>
       </Grid>
 
-      <Dialog open={stockDialogOpen} onClose={closeStockDialog} maxWidth="sm" fullWidth>
+      <Dialog
+        open={stockDialogOpen}
+        onClose={closeStockDialog}
+        maxWidth="sm"
+        fullWidth
+      >
         <DialogTitle sx={{ fontSize: "1rem", py: 1.5 }}>
           Sistema con menos stock que el carrito
         </DialogTitle>
         <DialogContent dividers sx={{ pt: 1 }}>
-          <Typography variant="caption" color="text.secondary" display="block" sx={{ mb: 1.5 }}>
-            Suma unidades al inventario del sistema y cobra (movimiento con marca de revisión).
+          <Typography
+            variant="caption"
+            color="text.secondary"
+            display="block"
+            sx={{ mb: 1.5 }}
+          >
+            Suma unidades al inventario del sistema y cobra (movimiento con
+            marca de revisión).
           </Typography>
-          <TableContainer sx={{ border: "1px solid", borderColor: "divider", borderRadius: 1, mb: 1.5 }}>
+          <TableContainer
+            sx={{
+              border: "1px solid",
+              borderColor: "divider",
+              borderRadius: 1,
+              mb: 1.5,
+            }}
+          >
             <Table size="small">
               <TableHead>
                 <TableRow>
@@ -825,11 +989,24 @@ export default function CajaPage() {
         </DialogActions>
       </Dialog>
 
-      <Dialog open={quickDownOpen} onClose={() => !saving && setQuickDownOpen(false)} maxWidth="xs" fullWidth>
-        <DialogTitle sx={{ fontSize: "1rem", py: 1.5 }}>Bajar stock en sistema</DialogTitle>
+      <Dialog
+        open={quickDownOpen}
+        onClose={() => !saving && setQuickDownOpen(false)}
+        maxWidth="xs"
+        fullWidth
+      >
+        <DialogTitle sx={{ fontSize: "1rem", py: 1.5 }}>
+          Bajar stock en sistema
+        </DialogTitle>
         <DialogContent dividers sx={{ pt: 1 }}>
-          <Typography variant="caption" color="text.secondary" display="block" sx={{ mb: 1 }}>
-            Si el sistema marca de más (robo, merma, error de carga), rebaja aquí antes o después de vender.
+          <Typography
+            variant="caption"
+            color="text.secondary"
+            display="block"
+            sx={{ mb: 1 }}
+          >
+            Si el sistema marca de más (robo, merma, error de carga), rebaja
+            aquí antes o después de vender.
           </Typography>
           <SearchableSelect
             fullWidth
@@ -844,7 +1021,11 @@ export default function CajaPage() {
             getOptionValue={(item) => String(item.id)}
           />
           {quickDownProductId ? (
-            <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 0.5, mb: 1 }}>
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              sx={{ display: "block", mt: 0.5, mb: 1 }}
+            >
               Stock en sistema ahora: {quickDownProduct?.stockBase ?? "—"}
             </Typography>
           ) : null}
@@ -868,16 +1049,29 @@ export default function CajaPage() {
           />
         </DialogContent>
         <DialogActions sx={{ px: 2, py: 1.5 }}>
-          <Button size="small" onClick={() => setQuickDownOpen(false)} disabled={saving}>
+          <Button
+            size="small"
+            onClick={() => setQuickDownOpen(false)}
+            disabled={saving}
+          >
             Cerrar
           </Button>
-          <Button size="small" variant="contained" disabled={saving} onClick={() => void applyQuickDownStock()}>
+          <Button
+            size="small"
+            variant="contained"
+            disabled={saving}
+            onClick={() => void applyQuickDownStock()}
+          >
             {saving ? "…" : "Guardar salida"}
           </Button>
         </DialogActions>
       </Dialog>
 
-      <BarcodeScanDialog open={openScanner} onClose={() => setOpenScanner(false)} onDecoded={onScanDecoded} />
+      <BarcodeScanDialog
+        open={openScanner}
+        onClose={() => setOpenScanner(false)}
+        onDecoded={onScanDecoded}
+      />
 
       <CustomerFormDialog
         open={addCustomerOpen}
@@ -886,12 +1080,19 @@ export default function CajaPage() {
         onCreated={(created) => {
           if (!created?.id) return;
           setCustomers((prev) => {
-            const exists = prev.some((c) => Number(c.id) === Number(created.id));
+            const exists = prev.some(
+              (c) => Number(c.id) === Number(created.id),
+            );
             if (exists) {
-              return prev.map((c) => (Number(c.id) === Number(created.id) ? { ...c, ...created } : c));
+              return prev.map((c) =>
+                Number(c.id) === Number(created.id) ? { ...c, ...created } : c,
+              );
             }
             return [...prev, created].sort((a, b) =>
-              buildCustomerDisplayName(a).localeCompare(buildCustomerDisplayName(b), "es")
+              buildCustomerDisplayName(a).localeCompare(
+                buildCustomerDisplayName(b),
+                "es",
+              ),
             );
           });
           setCustomerId(String(created.id));

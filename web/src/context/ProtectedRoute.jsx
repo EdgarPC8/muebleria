@@ -47,13 +47,9 @@ export default function ProtectedRoute() {
     return <Navigate to="/subscription-expired" replace />;
   }
 
-  const module = MODULES_PROJECT.filter((e) =>
-    e.routes.includes(location.pathname),
+  const hasAccess = subscription.subscription.modules.find((m) =>
+    m.sections.includes(location.pathname),
   );
-
-  const hasAccess =
-    module.length &&
-    subscription?.subscription.modules?.find((m) => m.key === module[0].name);
 
   if (!hasAccess) {
     return <Navigate to="/no-subscription" replace />;
