@@ -15,12 +15,11 @@ const router = new Router();
 
 router.get("/", getMuebleriaInfo);
 
-router.put("/", isAuthenticated, isAdmin, updateMuebleriaInfo);
+router.put("/", isAuthenticated, isAuthenticated, updateMuebleriaInfo);
 
 router.post(
   "/logo",
   isAuthenticated,
-  isProgramador,
   makeImageUpload({
     fieldName: "logo",
     folderResolver: () => "branding",

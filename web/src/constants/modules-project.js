@@ -17,7 +17,14 @@ export const MODULES_PROJECT = [
   {
     name: "inventario",
     description: "Gestión de inventario",
-    routes: ["/productos", "/categorias", "/proveedores", "/unidades"],
+    routes: [
+      "/productos",
+      "/categorias",
+      "/proveedores",
+      "/unidades",
+      "/caja",
+      "/ventas",
+    ],
   },
   {
     name: "ventas",

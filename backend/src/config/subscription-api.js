@@ -1,4 +1,4 @@
 export const subscription = {
-  api: "http://localhost:3000/api",
-  apikey: "gc_74f8ff12dc10a197818751680e42622a",
+  api: "https://aplicaciones.marianosamaniego.edu.ec/gestor-proyectos-negocios/api",
+  apikey: "gc_d5d1ebaf317dbb7a3889e48f9e8af070",
 };

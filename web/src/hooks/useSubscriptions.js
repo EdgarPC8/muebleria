@@ -5,6 +5,8 @@ export const useSubscriptions = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [subscription, setSubscription] = useState(null);
 
+  console.log(subscription);
+
   const fetchSub = async () => {
     try {
       const res = await checkSubscription();

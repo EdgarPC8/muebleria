@@ -21,14 +21,23 @@ export default function NoSubscriptionPage() {
 
   if (isLoading) {
     return (
-      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
         <CircularProgress size={64} />
       </Box>
     );
   }
 
-  const enabledModules = subscription?.subscription?.modules?.map((m) => m.key) || [];
-  const modules = MODULES_PROJECT.filter((m) => enabledModules.includes(m.name));
+  const modules = subscription.subscription.modules;
+
+  //const enabledModules = subscription?.subscription?.modules?.map((m) => m.key) || [];
+  //const modules = MODULES_PROJECT.filter((m) => enabledModules.includes(m.name));
 
   return (
     <Container maxWidth="sm" sx={{ py: 8 }}>
@@ -62,11 +71,15 @@ export default function NoSubscriptionPage() {
               <CheckCircleIcon color="success" fontSize="small" />
               <Box>
                 <Typography variant="body2" fontWeight={600}>
-                  {mod.description}
+                  {mod.name}
                 </Typography>
-                <Typography variant="caption" color="text.secondary">
-                  {mod.routes.join(" · ")}
-                </Typography>
+                <Box>
+                  {mod.sections.map((s) => (
+                    <Typography variant="caption" color="text.secondary">
+                      {s.name}
+                    </Typography>
+                  ))}
+                </Box>
               </Box>
             </Box>
           ))}
